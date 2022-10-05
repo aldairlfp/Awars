@@ -21,3 +21,9 @@ class Unit:
 
     def get_alive(self):
         return self._alive
+
+    def set_posx(self, posx):
+        self._posx = posx
+
+    def set_posy(self, posy):
+        self._posy = posy
