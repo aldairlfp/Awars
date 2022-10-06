@@ -2,11 +2,12 @@ from unit import *
 
 class State:
     """State of the battle, the position of all units and more"""
-    def __init__(self, rows:int, cols:int) -> None:
+    def __init__(self, rows:int, cols:int, units:list) -> None:
         self._rows = rows
         self._cols = cols
-        self._units = []
+        self._units = units
         self._map = [[None for _ in range(cols)] for _ in range(rows)]
+        self._turn = units[0]
 
     def add_unit(self, unit:Unit) -> None:
         """Add a unit to the state"""

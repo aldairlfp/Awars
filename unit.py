@@ -1,9 +1,7 @@
-from attr import has
-
-
 class Unit:
     """The units are the agents to interact in the battle"""
-    def __init__(self, id, posx, posy, weapon):
+
+    def __init__(self, id:str, posx, posy, weapon):
         self._id = id
         self._posx = posx
         self._posy = posy
