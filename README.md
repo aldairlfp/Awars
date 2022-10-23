@@ -3,12 +3,12 @@
 ## Integrantes
 
 - Jesús Aldair Alfonso Pérez C-312
-- Mauro Bolado Vizoso C-313
+- Mauro Bolado Vizoso C-311
 - Raúl Beltrán Gómez C-312
 
 ## Resumen
 
-Awars es un simulador de batallas donde varias unidades pelean entre si para salir vencedoras ya sea por equipos o individualmente. 
+Awars es un simulador de batallas donde varias unidades pelean entre sí para salir vencedoras ya sea por equipos o individualmente. 
 
 ## Campo de batalla
 
