@@ -1,4 +1,4 @@
-# Battle-Simulation
+# Awars
 
 ## Integrantes
 
@@ -8,7 +8,7 @@
 
 ## Resumen
 
-Battle Simulation es un simulador de batallas donde varias unidades pelean entre si para salir vencedoras ya sea por equipos o individualmente. 
+Awars es un simulador de batallas donde varias unidades pelean entre si para salir vencedoras ya sea por equipos o individualmente. 
 
 ## Campo de batalla
 
@@ -28,4 +28,4 @@ Se podrán crear unidades controladas por inteligencia artificial, usando algori
 
 ## Lenguaje
 
-Para controlar a las unidades, crear el campo de batalla, crear las armas y demás se utilizara un Domain Specific Language llamado `awars`. Cuenta con las principales funcionalidades de control de flujos como `if` y `while`.
+Para controlar a las unidades, crear el campo de batalla, crear las armas y demás se utilizara un Domain Specific Language llamado `awar`. Cuenta con las principales funcionalidades de control de flujos como `if` y `while`.
