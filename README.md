@@ -9,6 +9,9 @@
 ## Resumen
 
 Awars es un simulador de batallas donde varias unidades pelean entre sí para salir vencedoras ya sea por equipos o individualmente. 
+Tiene como objetivo determinar el resultado de la batalla mediante una simulacion por agentes de cada individuo implicado en la batalla.
+Se utilizarán algoritmos de IA y un componente aleatorio para determinar el accionar de cada sujeto, ya sea su interacción con el entorno,
+su modo de combate o la estrategia en equipo si la simulación específica lo permite. 
 
 ## Campo de batalla
 
@@ -16,15 +19,15 @@ El campo de batalla tiene varios obstáculos que dependiendo de varias caracter�
 
 ## Unidad
 
-Las unidades cuentan con un nivel de vida, cuando este nivel llega a 0, la unidad es eliminada, también cuentan con armas con las que pueden atacar a otras unidades y restarle salud.
+Las unidades cuentan con una vida, una eficiencia por heridas y una aleatoriedad dada por el carácter y su habilidad para enfrentar situaciones de presión. las mismas pueden estar equipadas o no con armas y mecanismos de defensa para acercar bastante a cada agente a la realidad.
 
 ## Arma
 
-Las armas tienen un rango de ataque, la cantidad de daño que pueden infligir a las unidades y el porciento de acierto.
+Las armas tienen un rango de ataque, la cantidad de daño que pueden infligir a las unidades. Las armas tienen un requerimiento de habilidad y cuando el portador no cuente con ello afecta su efectividad y acierto.
 
 ## Inteligencia artificial
 
-Se podrán crear unidades controladas por inteligencia artificial, usando algoritmos óptimos y eficientes para las estrategias en combate.
+Objetivamente la IA del proyecto está pensada para poder llevar a cabo el moviemiento, el combate y la estrategia, en conjunto con los conceptos de simulación dado la fuerte componente aleatoria del problema y la complejidad que presenta el mismo, además de la realidad que presenta una ineficiencia por parte de algoritmos deterministas en hallar solución al problema, se explora en estos campos para obtener resultados más acordes a lo que ocurre en la realidad y poder representar la situación.
 
 ## Lenguaje
 
