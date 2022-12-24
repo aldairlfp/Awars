@@ -1,34 +1,27 @@
-from collections import defaultdict
+class Field:
+    def __init__(self, width=10, height=10):
+        self.field = {}
+        self.soldiers = {}
+        self.soldiers_count = 0
+        self.width = width
+        self.height = height
 
+    def add_soldier(self, soldier):
+        self.soldiers_count += 1
+        self.soldiers[soldier.get_posx(), soldier.get_posy()] = soldier
+        self.field.update(self.soldiers)
 
-class Field(defaultdict):
-    """A board has the player to move, a cached utility value, 
-    and a dict of {(x, y): player} entries, where player is 'X' or 'O'."""
-    empty = '.'
-    off = '#'
-
-    def __init__(self, width: int = 8, height: int = 8, **kwargs):
-        super().__init__()
-        self.__dict__.update(width=width, height=height, **kwargs)
-
-    def new(self, changes: dict, **kwds) -> 'Field':
-        """Given a dict of {(x, y): contents} changes, return a new Board with the changes."""
-        board = Field(width=self.width, height=self.height, **kwds)
-        board.update(self)
-        board.update(changes)
-        return board
-
-    def __missing__(self, loc):
-        x, y = loc
-        if 0 <= x < self.width and 0 <= y < self.height:
-            return self.empty
-        else:
-            return self.off
-
-    def __hash__(self):
-        return hash(tuple(sorted(self.items()))) + hash(self.to_move)
+    def __str__(self):
+        return self.__repr__()
 
     def __repr__(self):
-        def row(y): return ' '.join(self[x, y] for x in range(self.width))
-
-        return '\n'.join(map(row, range(self.height))) + '\n'
+        str = ''
+        for i in range(self.width):
+            for j in range(self.height):
+                str += '  '
+                if (i, j) in self.field:
+                    str += 'S'
+                else:
+                    str += '.'
+            str += '\n'
+        return str
