@@ -33,6 +33,13 @@ class Unit:
     def set_posy(self, posy):
         self._posy = posy
 
+    def attack(self, unit):
+        """Attack another unit"""
+        if self._weapon is None:
+            return False
+        else:
+            return self._weapon.attack(unit)
+
     def __hash__(self) -> int:
         return hash(self._id)
 
