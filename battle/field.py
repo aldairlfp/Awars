@@ -11,6 +11,14 @@ class Field:
         self.soldiers[soldier.get_posx(), soldier.get_posy()] = soldier
         self.field.update(self.soldiers)
 
+    def move_soldier(self, soldier, x, y):
+        if (x, y) in self.field:
+            return False
+        else:
+            self.field.pop((soldier.get_posx(), soldier.get_posy()))
+            self.field.update({(x, y): soldier})
+            return True
+
     def __str__(self):
         return self.__repr__()
 
