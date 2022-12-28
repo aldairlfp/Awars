@@ -1,5 +1,7 @@
 from unit import *
 from state import *
+from field import *
+
 
 class Battle:
     """A battle is similar to a problem, but it has a terminal test instead of 
@@ -8,32 +10,49 @@ class Battle:
     and `utility`. You will also need to set the .initial attribute to the 
     initial state; this can be done in the constructor."""
 
-    def actions(self, state:State):
-        """Return a collection of the allowable moves from this state."""
-        raise NotImplementedError
+    def __init__(self, field: Field):
+        """Specify the initial state."""
+        self._field = field
+        self._units = {}
+        self._units_count = 0
 
-    def result(self, state:State, move):
-        """Return the state that results from making a move from a state."""
-        raise NotImplementedError
+    def add_unit(self, unit: Unit):
+        self._units_count += 1
+        self._units[unit.get_posx(), unit.get_posy()] = unit
 
-    def is_terminal(self, state: State):
-        """Return True if this is a final state for the battle."""
-        return not self.actions(state)
-    
-    def utility(self, state: State, unit: Unit):
-        """Return the value of this final state to player."""
-        raise NotImplementedError
-        
+    def move_unit(self, unit: Unit, x: int, y: int):
+        if (x, y) in self._field:
+            return False
+        else:
+            self._units[unit.get_posx(), unit.get_posy()] = None
+            self._units[x, y] = unit
+            return True
 
-def simulate_battle(battle: Battle, strategies: dict, verbose=False):
-    """Play a turn-taking battle. `strategies` is a {player_name: function} dict,
-    where function(state, battle) is used to get the player's move."""
-    state = battle.initial
-    while not battle.is_terminal(state):
-        player = state.to_move
-        move = strategies[player](battle, state)
-        state = battle.result(state, move)
-        if verbose: 
-            print('Player', player, 'move:', move)
-            print(state)
-    return state
+    def remove_unit(self, unit: Unit):
+        self._units_count -= 1
+        self._units[unit.get_posx(), unit.get_posy()] = None
+
+    def get_unit(self, x: int, y: int):
+        return self._units[x, y]
+
+    def get_units(self):
+        return self._units
+
+    def get_units_count(self):
+        return self._units_count
+
+    def get_field(self):
+        return self._field
+
+    def get_field_size(self):
+        return self._field.get_size()
+
+    def get_field_cell(self, x: int, y: int):
+        return self._field.get_cell(x, y)
+
+    def get_field_cells(self):
+        return self._field.get_cells()
+
+    def __str__(self):
+        """Return a string representation of the battle."""
+        return f"<Battle: {self._field}>"
