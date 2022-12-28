@@ -55,4 +55,18 @@ class Battle:
 
     def __str__(self):
         """Return a string representation of the battle."""
-        return f"<Battle: {self._field}>"
+        s = ""
+        for i in range(self._field.get_width()):
+            for j in range(self._field.get_height()):
+                if (i, j) in self._units:
+                    if self._units[i, j].get_alive():
+                        if self._units[i, j] is Soldier:
+                            s += "S    "
+                        else:
+                            s += "U    "
+                    else:
+                        s += "X    "
+                else:
+                    s += ".    "
+            s += "\n"
+        return s
