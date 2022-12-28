@@ -3,24 +3,21 @@ import unit
 
 class Field:
     def __init__(self, width=10, height=10):
-        self.field = {}
-        self.width = width
-        self.height = height
+        self._field = {}
+        self._width = width
+        self._height = height
 
-    def __str__(self):
-        return self.__repr__()
+    def get_width(self):
+        return self._width
 
-    def __repr__(self):
-        str = ''
-        for i in range(self.width):
-            for j in range(self.height):
-                str += '  '
-                if (i, j) in self.field:
-                    if self.field[i, j] in self.soldiers.values():
-                        str += 'S'
-                    else:
-                        str += 'W'
-                else:
-                    str += '.'
-            str += '\n'
-        return str
+    def get_height(self):
+        return self._height
+
+    def get_size(self):
+        return self._width, self._height
+
+    def get_cell(self, x, y):
+        return self._field[x, y]
+
+    def get_cells(self):
+        return self._field
