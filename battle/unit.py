@@ -1,13 +1,19 @@
 import weapon
 
+rd = [1, -1, 0, 0, 1, -1, 1, -1]
+cd = [0, 0, 1, -1, 1, -1, -1, 1]
+
+
 class Unit:
     """The units are the agents to interact in the battle"""
 
     def __init__(self, posx, posy, weapon=None):
+        global rd, cd
         self._posx = posx
         self._posy = posy
         self._weapon = weapon
         self._hp = 100
+        self.dir = rd[0], cd[0]
 
     def get_posx(self):
         return self._posx
