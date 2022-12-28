@@ -1,16 +1,13 @@
+import weapon
+
 class Unit:
     """The units are the agents to interact in the battle"""
 
-    def __init__(self, id: str, posx, posy, weapon=None):
-        self._id = id
+    def __init__(self, posx, posy, weapon=None):
         self._posx = posx
         self._posy = posy
         self._weapon = weapon
         self._hp = 100
-        self._alive = True
-
-    def get_id(self):
-        return self._id
 
     def get_posx(self):
         return self._posx
@@ -25,7 +22,7 @@ class Unit:
         return self._hp
 
     def get_alive(self):
-        return self._alive
+        return self._hp > 0
 
     def set_posx(self, posx):
         self._posx = posx
@@ -38,17 +35,18 @@ class Unit:
         if self._weapon is None:
             return False
         else:
-            return self._weapon.attack(unit)
-
-    def __hash__(self) -> int:
-        return hash(self._id)
+            if self._weapon.range() >= abs(self._posx - unit.get_posx()) + abs(self._posy - unit.get_posy()):
+                unit.set_hp(unit.get_hp() - self._weapon.damage())
+                if unit.get_hp() <= 0:
+                    unit._alive = False
+                return True
 
 
 class Soldier(Unit):
     """Soldiers are the basic units"""
 
-    def __init__(self, id: str, posx, posy):
-        super().__init__(id, posx, posy)
+    def __init__(self, posx, posy):
+        super().__init__(posx, posy, weapon.FireWeapon(10, 1, 10))
 
     def __repr__(self):
-        return f"Soldier {self._id} at ({self._posx}, {self._posy})"
+        return f"Soldier at ({self._posx}, {self._posy})"
