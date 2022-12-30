@@ -7,8 +7,6 @@ class Simulator():
         self._turn = 0
         self._max_turn = max_turn
         self._mode = mode
-        
-    
     
     def get_board(self):
         return self._board
@@ -38,12 +36,10 @@ class Simulator():
             raise Exception("Can't change board after the simulation begins")
     
     def check_winner(self):
-    # TODO: make it work
-        pass
+        return self._mode.win_condition(self._board)
         
     def action_validator(self, unit, action):
-    #   TODO: make it work  
-        pass
+        return self._mode.action_validator(unit, action)
     
     def set_units(self, units_pos):
         """

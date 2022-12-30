@@ -32,7 +32,7 @@ class Board():
         return self._weather
                 
     def create_map(self):
-        self._map_initializer(self)
+        self._map = self._map_initializer(self)
         
     def allocate_units(self):
         self._units_allocator(self)
