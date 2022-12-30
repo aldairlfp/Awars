@@ -1,4 +1,4 @@
-from board import Board
+from simulation.board import Board
 
 class Simulator():
     def __init__(self, mode, max_turn = 100, units = []) -> None:
