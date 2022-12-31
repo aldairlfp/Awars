@@ -1,4 +1,4 @@
-from unit import *
+from simulation.unit import *
 from state import *
 
 class Battle:

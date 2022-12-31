@@ -1,4 +1,4 @@
-from unit import Unit
+from simulation.unit import Unit
 from random import randint
 
 class Basic_distribution():

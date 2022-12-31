@@ -1,4 +1,4 @@
-from unit import *
+from simulation.unit import *
 
 class State:
     """State of the battle, the position of all units and more"""

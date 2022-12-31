@@ -1,6 +1,28 @@
-class Normal_mode():
+class Mode():
     def __init__(self) -> None:
         pass
+    
+    def action_validator(self, board, unit, action):
+        pass
+    
+    def win_condition(self, board):
+        pass
+    
+    def calculate_offensive_power(self, basic, ini_pos, end_pos):
+        pass
+    
+    def calculate_defensive_power(self, basic, ini_pos, end_pos):
+        pass
+        
+    def calculate_movement_power(self, basic, ini_pos, end_pos):
+        pass
+        
+    def calculate_accuracy(self, basic, ini_pos, end_pos):
+        pass
+
+class Normal_mode(Mode):
+    def __init__(self) -> None:
+        super().__init__()
     
     def win_condition(self, board):
         reaminings = []
@@ -24,4 +46,15 @@ class Normal_mode():
         else:
             action.make_action(unit, board)
             return True, "Action executed"
-                
+            
+    def calculate_offensive_power(self, basic, ini_pos, end_pos):
+        return basic
+    
+    def calculate_defensive_power(self, basic, ini_pos, end_pos):
+        return basic
+    
+    def calculate_movement_power(self, basic, ini_pos, end_pos):
+        return basic
+    
+    def calculate_accuracy(self, basic, ini_pos, end_pos):
+        return basic

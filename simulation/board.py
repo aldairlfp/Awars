@@ -16,6 +16,9 @@ class Board():
     def get_width(self):
         return self._width
     
+    def get_cell(self, pos):
+        return self._map[pos[0]][pos[1]]
+    
     def get_map(self):
         return self._map
     

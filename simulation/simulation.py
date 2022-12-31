@@ -40,6 +40,9 @@ class Simulator():
         
     def action_validator(self, unit, action):
         return self._mode.action_validator(unit, action)
+        
+    def calculate_damage(self, basic, ini_pos, end_pos):
+        return self._mode.calculate_offensive_power(basic, ini_pos, end_pos)
     
     def set_units(self, units_pos):
         """
