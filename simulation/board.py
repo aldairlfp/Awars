@@ -1,5 +1,5 @@
 class Board():
-    def __init__(self, height, width, map_initializer, units_allocator, map_type, weather):
+    def __init__(self, height, width, map_initializer, units_allocator, map_type):
         self._height = height
         self._width = width
         self._map = []
@@ -8,7 +8,6 @@ class Board():
         self._structures = []
         self._map_type = map_type
         self._map_initializer = map_initializer
-        self._weather = weather
         
     def get_height(self):
         return self._height
@@ -28,21 +27,18 @@ class Board():
     def get_structures(self):
         return self._structures
     
-    def get_map_type(self):\
+    def get_map_type(self):
         return self._map_type
-    
-    def get_weather(self):
-        return self._weather
                 
     def create_map(self):
         self._map = self._map_initializer(self)
         
     def allocate_units(self):
-        self._units_allocator(self)
+        self._units = self._units_allocator(self)
     
-    def set_structure(self, structure, pos_x, pos_y):
+    def set_structure(self, structure, pos):
         try:
-            if self._map[pos_x][pos_y].set_structure(structure):
+            if self._map[pos[0]][pos[1]].set_structure(structure):
                 self._structures.append(structure)
             else:
                 raise IndexError("The cell is already occupied")
@@ -76,14 +72,31 @@ class Structure():
         return self._cost
 
 class Cell():
-    def __init__(self, pos_x, pos_y, altitude, structure):
-        self._pos_x = pos_x
-        self._pos_y = pos_y
-        self._altitude = altitude
+    def __init__(self, pos, structure, weather):
+        self._pos = pos
         self._structure = structure
+        self._weather = weather
+        self._altitude = None
+        self._terrain = None
 
     def set_structure(self,structure):
         if self._structure == None: 
             self._structure = structure
             return True
         return False
+        
+    def set_terrain(self, altitude, terrain):
+        self._terrain = terrain
+        self._altitude = altitude
+    
+    def get_structure(self):
+        return self._structure
+    
+    def get_altitude(self):
+        return self._altitude
+    
+    def get_pos(self):
+        return self._pos
+    
+    def get_weather(self):
+        return self._weather

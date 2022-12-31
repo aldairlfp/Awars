@@ -1,9 +1,9 @@
 from simulation.board import Board
 
 class Simulator():
-    def __init__(self, mode, max_turn = 100, units = []) -> None:
+    def __init__(self, mode, max_turn = 100) -> None:
         self._board = Board()
-        self._units = units
+        self._units = []
         self._turn = 0
         self._max_turn = max_turn
         self._mode = mode
@@ -44,13 +44,8 @@ class Simulator():
     def calculate_damage(self, basic, ini_pos, end_pos):
         return self._mode.calculate_offensive_power(basic, ini_pos, end_pos)
     
-    def set_units(self, units_pos):
-        """
-        recieves a list of tuples with the position of the units and the units itself
-        """
-        # TODO: make it work
-        pass
-        
+    def set_unit(self, unit_generator):
+        self._units.append(unit_generator(self._board))
     
     def reset():
     #  TODO: make it work

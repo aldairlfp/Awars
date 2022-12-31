@@ -9,7 +9,7 @@ class Action():
     
     def make_action(self, unit, board):
         if self.action_type == "move":
-            self.move(unit, board)
+            self.move(board)
         elif self.action_type == "attack":
             self.attack(board)
             
