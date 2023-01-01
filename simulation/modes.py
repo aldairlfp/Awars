@@ -1,6 +1,9 @@
 class Mode():
-    def __init__(self) -> None:
-        pass
+    def __init__(self, board_gen, map_generator) -> None:
+        self._board_gen = board_gen
+    
+    def generate_board(self, height, width):
+        return self._board_gen.generate_board(height, width)
     
     def action_validator(self, board, unit, action):
         pass
@@ -36,7 +39,7 @@ class Normal_mode(Mode):
             return False, "No winner yet"
     
     def action_validator(self, board, unit, action):
-        is_ally = unit.get_team() == action.get_receiver().get_team()
+        is_ally = unit.get_team() == action.receiver.get_team()
         end_pos = action.get_end_pos()
         
         if is_ally:

@@ -1,9 +1,11 @@
 from random import randint
+from simulation.weapon import Hand
 
 class Unit:
     """The units are the agents to interact in the battle"""
 
-    def __init__(self, id, pos, vision_range, speed, caracteristics, strategy, weapon, hp = 100):
+    def __init__(self, name, id, pos, vision_range, speed, caracteristics, strategy, weapon, hp = 100):
+        self._name = name
         self._id = id
         self._pos = pos
         self._strategy = strategy
@@ -13,6 +15,13 @@ class Unit:
         self._strategies = {}
         self._speed = speed
         self._hp = hp
+        self._team = None
+        
+    def get_team(self):
+        return self._team
+    
+    def set_team(self, team):
+        self._team = team
         
     def get_id(self):
         return self._id
@@ -45,22 +54,22 @@ class Unit:
         return self._caracteristics
 
 class Unit_allocator():
-    def __init__(self, strategies, board) -> None:
+    def __init__(self, strategies, simulation) -> None:
         self._strategies = strategies
-        self._board = board
+        self._simulation = simulation
     
     def allocate_units(self):
         pass
         
 class Random_allocator(Unit_allocator):
-    def __init__(self, strategies, board) -> None:
-        super().__init__(strategies, board)
+    def __init__(self, strategies, simulation) -> None:
+        super().__init__(strategies, simulation)
     
     def allocate_units(self):
         units = self._board.get_units()
         for unit in units:
-            pos_x = randint(0, self._board.get_height() - 1)
-            pos_y = randint(0, self._board.get_width() - 1)
+            pos_x = randint(0, self._simulation.get_board().get_height() - 1)
+            pos_y = randint(0, self._simulation.get_board().get_width() - 1)
             try:
                 if self._board.get_map()[pos_x][pos_y].set_unit(unit):
                     unit.set_pos((pos_x, pos_y))
@@ -72,16 +81,22 @@ class Random_allocator(Unit_allocator):
         return units
 
 class Unit_generator():
-    def __init__(self, id, strategy) -> None:
+    def __init__(self, id, strategy, team) -> None:
         self._strategy = strategy
         self._id = id
+        self._team = team
     
     def generate_unit(self):
         pass
         
 class Normal_generator(Unit_generator):
-    def __init__(self, id, strategy) -> None:
-        super().__init__(id, strategy)
+    def __init__(self, id, strategy, team) -> None:
+        super().__init__(id, strategy, team)
     
     def generate_unit(self):
-        return Unit(self._id, None, 10, 1, {}, self._strategy, "Hand")
+        hand = Hand()
+        name = "unit_" + str(self._id) + "_" + str(self._team)
+        unit = Unit(name, self._id, None, 10, 1, {}, self._strategy, hand)
+        unit.set_team(self._team)
+        
+        return unit

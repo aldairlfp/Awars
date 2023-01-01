@@ -1,10 +1,11 @@
-from board import Cell
+from simulation.board import Cell
+from simulation.weathers import *
 
 class Basic_map():
-    def __init__(self, board):
-        self._height = board.get_height()
-        self._width = board.get_width()
-        self._map = [[Cell((i, j), None, "sunny") for i in range(self._width)] for j in range(self._height)]
+    def __init__(self, height, width):
+        self._height = height
+        self._width = width
+        self._map = [[Cell((i, j), None, Sunny()) for i in range(self._width)] for j in range(self._height)]
     
     def generate_map(self):
         for i in range(self._height):

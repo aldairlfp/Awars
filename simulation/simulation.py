@@ -1,8 +1,8 @@
-from simulation.board import Board
+import simulation.board as board
 
 class Simulator():
     def __init__(self, mode, max_turn = 100) -> None:
-        self._board = Board()
+        self._board = board.Board()
         self._units = []
         self._turn = 0
         self._max_turn = max_turn
@@ -31,7 +31,7 @@ class Simulator():
     
     def init_board(self, height, width):
         if self._turn == 0:
-            self._board = Board(height, width)
+            self._board = self._mode.generate_board(height, width)
         else:
             raise Exception("Can't change board after the simulation begins")
     
@@ -44,8 +44,17 @@ class Simulator():
     def calculate_damage(self, basic, ini_pos, end_pos):
         return self._mode.calculate_offensive_power(basic, ini_pos, end_pos)
     
-    def set_unit(self, unit_generator):
+    def set_units(self, unit_generator):
         self._units.append(unit_generator(self._board))
+        
+    def execute(self):
+        for i in range(self._max_turn):
+            print("Turn: " + str(i))
+            for unit in self._units:
+                print(unit.get_name() + " is playing")
+                unit.play(self._board)
+                print(unit.get_name() + " played")
+                print("")
     
     def reset():
     #  TODO: make it work

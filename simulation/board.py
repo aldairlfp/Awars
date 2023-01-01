@@ -1,12 +1,11 @@
 class Board():
-    def __init__(self, height, width, map_initializer, units_allocator, map_type):
+    def __init__(self, height, width, map_initializer, units_allocator):
         self._height = height
         self._width = width
         self._map = []
         self._units = []
         self._units_allocator = units_allocator
         self._structures = []
-        self._map_type = map_type
         self._map_initializer = map_initializer
         
     def get_height(self):
@@ -31,7 +30,7 @@ class Board():
         return self._map_type
                 
     def create_map(self):
-        self._map = self._map_initializer(self)
+        self._map = self._map_initializer.generate_map()
         
     def allocate_units(self):
         self._units = self._units_allocator(self)
@@ -78,6 +77,7 @@ class Cell():
         self._weather = weather
         self._altitude = None
         self._terrain = None
+        self._unit = None
 
     def set_structure(self,structure):
         if self._structure == None: 
@@ -88,6 +88,12 @@ class Cell():
     def set_terrain(self, altitude, terrain):
         self._terrain = terrain
         self._altitude = altitude
+        
+    def set_unit(self, unit):
+        self._unit = unit
+    
+    def get_unit(self):
+        return self._unit
     
     def get_structure(self):
         return self._structure
@@ -100,3 +106,7 @@ class Cell():
     
     def get_weather(self):
         return self._weather
+        
+    def is_obstacle(self):
+    # TODO: add more obstacles
+        return False

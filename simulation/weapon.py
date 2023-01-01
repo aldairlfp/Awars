@@ -10,7 +10,7 @@ class Weapon:
     def range(self):
         return self._range
 
-class FireWeapon(Weapon):
+class Fire_weapon(Weapon):
     """Fire weapon to use for the units in the simulation"""
     def __init__(self, damage:int, range:int, ammo:int) -> None:
         super().__init__(damage, range)
@@ -24,3 +24,13 @@ class FireWeapon(Weapon):
 
     def reload(self):
         self._ammo = 10
+        
+class Melee_weapon(Weapon):
+    """Melee weapon to use for the units in the simulation"""
+    def __init__(self, damage:int, range:int) -> None:
+        super().__init__(damage, range)
+        
+        
+class Hand(Melee_weapon):
+    def __init__(self) -> None:
+        super().__init__(5, 0)

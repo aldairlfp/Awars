@@ -1,4 +1,4 @@
-class Action():
+class Action_executer():
     def __init__(self, producer, receiver, ini_pos, end_pos, action_type, simulator) -> None:
         self.producer = producer
         self.receiver = receiver
@@ -7,8 +7,8 @@ class Action():
         self.action_type = action_type
         self.simulator = simulator
     
-    def make_action(self, unit, board):
-        if self.action_type == "move":
+    def make_action(self, board):
+        if self.action_type == "movement":
             self.move(board)
         elif self.action_type == "attack":
             self.attack(board)
@@ -27,4 +27,6 @@ class Action():
     
     def calculate_damage(self, basic):
         return self.simulator.calculate_damage(basic, self.ini_pos, self.end_pos)
+        
+    
     
