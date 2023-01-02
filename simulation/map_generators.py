@@ -1,7 +1,7 @@
 from simulation.board import Cell
 from simulation.weathers import *
 
-class Basic_map():
+class Basic_generator():
     def __init__(self, height, width):
         self._height = height
         self._width = width

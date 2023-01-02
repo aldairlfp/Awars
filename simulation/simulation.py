@@ -1,4 +1,4 @@
-import simulation.map_types as map
+import simulation.map_generators as map
 
 class Simulator():
     def __init__(self, mode, max_turn = 100) -> None:
@@ -11,7 +11,7 @@ class Simulator():
     def board(self):
         return self._board
     
-    def board(self, height, width, board_gen = map.Basic_map()):
+    def board(self, height, width, board_gen = map.Basic_generator()):
         if self._turn == 0:
             self._board = self._mode.generate_board(height, width, board_gen)
         else:
