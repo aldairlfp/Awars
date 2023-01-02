@@ -14,16 +14,16 @@ class Action_executer():
             self.attack(board)
             
     def move(self, board):
-        board.get_cell(self.ini_pos).set_unit(None)
-        board.get_cell(self.end_pos).set_unit(self.producer)
-        self.producer.set_pos(self.end_pos)
+        board.cell(self.ini_pos).unit(None)
+        board.cell(self.end_pos).unit(self.producer)
+        self.producer.pos(self.end_pos)
         
     def attack(self, board):
-        receiver = board.get_cell(self.end_pos).get_unit()
-        receiver.set_hp(receiver.get_hp() - self.calculate_damage(self.producer.get_attack()))
-        if receiver.get_hp() <= 0:
-            board.get_cell(self.end_pos).set_unit(None)
-            board.get_units().remove(receiver)
+        receiver = board.cell(self.end_pos).unit()
+        receiver.hp(receiver.hp() - self.calculate_damage(self.producer.attack()))
+        if receiver.hp() <= 0:
+            board.cell(self.end_pos).unit(None)
+            board.units().remove(receiver)
     
     def calculate_damage(self, basic):
         return self.simulator.calculate_damage(basic, self.ini_pos, self.end_pos)

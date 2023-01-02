@@ -17,62 +17,62 @@ class Unit:
         self._hp = hp
         self._team = None
         
-    def get_team(self):
+    def team(self):
         return self._team
     
-    def set_team(self, team):
+    def team(self, team):
         self._team = team
         
-    def get_id(self):
+    def id(self):
         return self._id
     
-    def get_pos(self):
+    def pos(self):
         return self._pos
     
-    def set_pos(self, pos):
+    def pos(self, pos):
         self._pos = pos
     
-    def set_strategies(self, strategies):
+    def strategies(self, strategies):
         self._strategies = strategies
     
-    def get_weapon(self):
+    def weapon(self):
         return self._weapon
     
-    def get_hp(self):
+    def hp(self):
         return self._hp
     
-    def set_hp(self, hp):
+    def hp(self, hp):
         self._hp = hp
     
-    def get_vision_range(self):
+    def vision_range(self):
         return self._vision_range
     
-    def get_speed(self):
+    def speed(self):
         return self._speed
     
-    def get_caracteristics(self):
+    def caracteristics(self):
         return self._caracteristics
 
 class Unit_allocator():
-    def __init__(self, strategies, simulation) -> None:
-        self._strategies = strategies
-        self._simulation = simulation
+    def __init__(self, board, units) -> None:
+        self._board = board
+        self._units = units
     
     def allocate_units(self):
         pass
         
 class Random_allocator(Unit_allocator):
-    def __init__(self, strategies, simulation) -> None:
-        super().__init__(strategies, simulation)
+    def __init__(self, board, units) -> None:
+        super().__init__(board, units)
     
     def allocate_units(self):
-        units = self._board.get_units()
+        units = self._units
         for unit in units:
-            pos_x = randint(0, self._simulation.get_board().get_height() - 1)
-            pos_y = randint(0, self._simulation.get_board().get_width() - 1)
+            pos_x = randint(0, self._board.height() - 1)
+            pos_y = randint(0, self._board.width() - 1)
             try:
-                if self._board.get_map()[pos_x][pos_y].set_unit(unit):
-                    unit.set_pos((pos_x, pos_y))
+                if self._board.map()[pos_x][pos_y].unit(unit):
+                    unit.pos((pos_x, pos_y))
                 else:
                     raise IndexError("The cell is already occupied")
             except IndexError:
@@ -97,6 +97,6 @@ class Normal_generator(Unit_generator):
         hand = Hand()
         name = "unit_" + str(self._id) + "_" + str(self._team)
         unit = Unit(name, self._id, None, 10, 1, {}, self._strategy, hand)
-        unit.set_team(self._team)
+        unit.team(self._team)
         
         return unit

@@ -12,9 +12,10 @@ class Weapon:
 
 class Fire_weapon(Weapon):
     """Fire weapon to use for the units in the simulation"""
-    def __init__(self, damage:int, range:int, ammo:int) -> None:
+    def __init__(self, damage:int, range:int, ammo:int, charge:int) -> None:
         super().__init__(damage, range)
-        self._ammo = ammo       # The weapon's ammo
+        self._ammo = ammo
+        self._charger = ammo
 
     def ammo(self):
         return self._ammo
@@ -23,7 +24,7 @@ class Fire_weapon(Weapon):
         self._ammo -= 1
 
     def reload(self):
-        self._ammo = 10
+        self._ammo = self._charger
         
 class Melee_weapon(Weapon):
     """Melee weapon to use for the units in the simulation"""

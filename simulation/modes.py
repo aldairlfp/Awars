@@ -1,9 +1,9 @@
 class Mode():
-    def __init__(self, board_gen, map_generator) -> None:
-        self._board_gen = board_gen
+    def __init__(self) -> None:
+        pass
     
-    def generate_board(self, height, width):
-        return self._board_gen.generate_board(height, width)
+    def generate_board(self, height, width, board_gen):
+        return board_gen.generate_board(height, width)
     
     def action_validator(self, board, unit, action):
         pass
@@ -22,6 +22,9 @@ class Mode():
         
     def calculate_accuracy(self, basic, ini_pos, end_pos):
         pass
+        
+    def validate(self, item, pos):
+        pass
 
 class Normal_mode(Mode):
     def __init__(self) -> None:
@@ -30,8 +33,8 @@ class Normal_mode(Mode):
     def win_condition(self, board):
         reaminings = []
         for unit in board.get_units():
-            if unit.get_team() not in reaminings:
-                reaminings.append(unit.get_team())
+            if unit.team() not in reaminings:
+                reaminings.append(unit.team())
         
         if len(reaminings) == 1:
             return True, "Team " + str(reaminings[0]) + " won"
@@ -39,7 +42,7 @@ class Normal_mode(Mode):
             return False, "No winner yet"
     
     def action_validator(self, board, unit, action):
-        is_ally = unit.get_team() == action.receiver.get_team()
+        is_ally = unit.team() == action.receiver.team()
         end_pos = action.get_end_pos()
         
         if is_ally:
@@ -61,3 +64,6 @@ class Normal_mode(Mode):
     
     def calculate_accuracy(self, basic, ini_pos, end_pos):
         return basic
+        
+        
+    
