@@ -6,7 +6,9 @@ class Field:
         self._field = {}
         self._width = width
         self._height = height
-        self._obstacles = obstacles
+        if obstacles is not None:
+            for obstacle in obstacles:
+                self._field[obstacle.get_x(), obstacle.get_y()] = obstacle
 
     def get_width(self):
         return self._width
