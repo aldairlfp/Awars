@@ -1,14 +1,33 @@
 from utils.search import BFS
-
-def normal_attack(unit, board):
-    vision_camp = BFS(board, unit.pos(), unit.weapon().range())
-    attack_list = []
-        
-    for cell in vision_camp:
-        if cell.unit() != None:
-            attack_list.append(cell.unit().pos())
-                
-    return attack_list
+class Action():
+    def __init__(self, name, unit, board) -> None:
+        self._name = name
+        self._unit = unit
+        self._board = board
     
-def normal_move(board, unit):
-    return BFS(board, unit.pos(), unit.speed())
+    def generate(self):
+        pass
+        
+    def name(self):
+        return self._name
+
+class Attack(Action):
+    def __init__(self, unit, board) -> None:
+        super().__init__('attack', unit, board)
+    
+    def generate(self):
+        vision_camp = BFS(self._board, self._unit.pos(), self._unit.weapon().range())
+        attack_list = []
+        
+        for cell in vision_camp:
+            if cell.unit() != None:
+                attack_list.append(cell.unit().pos())
+                
+        return attack_list
+        
+class Move(Action):
+    def __init__(self, unit, board) -> None:
+        super().__init__('movement', unit, board)
+    
+    def generate(self):
+        return BFS(self._board, self._unit.pos(), self._unit.speed())
