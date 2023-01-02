@@ -1,4 +1,5 @@
 from simulation.map_generators import normal_map
+from simulation.action_exe import Action_executer
 
 class Mode():
     def __init__(self) -> None:
@@ -13,20 +14,6 @@ class Mode():
     def win_condition(self, board):
         pass
     
-    def calculate_offensive_power(self, basic, ini_pos, end_pos):
-        pass
-    
-    def calculate_defensive_power(self, basic, ini_pos, end_pos):
-        pass
-        
-    def calculate_movement_power(self, basic, ini_pos, end_pos):
-        pass
-        
-    def calculate_accuracy(self, basic, ini_pos, end_pos):
-        pass
-        
-    def validate(self, item, pos):
-        pass
 
 class Normal_mode(Mode):
     def __init__(self) -> None:
@@ -44,15 +31,17 @@ class Normal_mode(Mode):
             return False, "No winner yet"
     
     def action_validator(self, board, unit, action):
-        is_ally = unit.team() == action.receiver.team()
-        end_pos = action.end_pos()
+        receiver = board.cell(action[1]).unit()
+        end_pos = action[1]
+        ini_pos = unit.pos()
+        action_executer = Action_executer(unit, receiver, ini_pos, end_pos, action[0])
+        if not receiver == None and receiver.team() == unit.team():
+            return False, "Can't interact with allies"        
         
-        if is_ally:
-            return False, "Can't interact with allies"
-        elif end_pos[0] < 0 or end_pos[0] > board.height() - 1 or end_pos[1] < 0 or end_pos[1] > board.width() - 1:
+        if end_pos[0] < 0 or end_pos[0] > board.height() - 1 or end_pos[1] < 0 or end_pos[1] > board.width() - 1:
             return False, "Invalid position"
         else:
-            action.make_action(unit, board)
+            action_executer.make_action(unit, board)
             return True, "Action executed"
             
     def calculate_offensive_power(self, basic, ini_pos, end_pos):

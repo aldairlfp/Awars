@@ -1,5 +1,7 @@
 from random import randint
 from simulation.Weapon.weapon import Hand
+from algoritms.basic.mov_gen import Movement_generator
+from algoritms.basic.actions import Attack, Move
 
 class Unit:
     """The units are the agents to interact in the battle"""
@@ -52,6 +54,12 @@ class Unit:
     
     def caracteristics(self):
         return self._caracteristics
+        
+    def play(self, board):
+        actions = [Attack(self, board), Move(self, board)]
+        movs = Movement_generator(self, board, actions).generate_actions()
+        
+        return self._strategies[self._strategy].play(self, movs)
 
 
         

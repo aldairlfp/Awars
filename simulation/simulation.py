@@ -68,7 +68,8 @@ class Simulator():
             print("Turn: " + str(i))
             for unit in self._units:
                 print(unit.name() + " is playing ...")
-                unit.play(self._board)
+                action = unit.play(self._board)
+                self._mode.execute_action(self, unit, action)
                 print(unit.name() + " played")
                 print("")
     

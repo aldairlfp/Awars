@@ -21,7 +21,7 @@ class Attack(Action):
         
         for cell in vision_camp:
             if cell.unit() != None:
-                attack_list.append(cell.unit().pos())
+                attack_list.append(self._name, cell.unit().pos())
                 
         return attack_list
         
@@ -30,4 +30,6 @@ class Move(Action):
         super().__init__('movement', unit, board)
     
     def generate(self):
-        return BFS(self._board, self._unit.pos(), self._unit.speed())
+        movs = BFS(self._board, self._unit.pos(), self._unit.speed())
+        
+        return [self._name, mov for mov in movs]

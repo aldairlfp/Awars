@@ -8,6 +8,7 @@ class Movement_generator():
     def generate_actions(self):
         for action in self._actions_type:
             self._movement.append((action.generate(self._unit, self._board), action.name()))
+        return self._movement
     
 
     

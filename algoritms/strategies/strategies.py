@@ -6,17 +6,17 @@ class Strategy():
         self._movs = movs
         self._evaluator = evaluator
     
-    def gen_action(self):
+    def play(self):
         pass
     
-    def set_movs(self, movs):
+    def movs(self, movs):
         self._movs = movs
 
 class Random_strategy(Strategy):
     def __init__(self, movs):
         super().__init__(movs, None)
         
-    def gen_action(self):
+    def play(self):
         if self._movs is None:
             return None
             
