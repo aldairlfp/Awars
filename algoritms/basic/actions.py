@@ -20,8 +20,8 @@ class Attack(Action):
         attack_list = []
         
         for cell in vision_camp:
-            if cell.unit() != None:
-                attack_list.append(self._name, cell.unit().pos_s())
+            if self._board.cell(cell[0]).unit() != None:
+                attack_list.append((self._name, cell))
                 
         return attack_list
         

@@ -23,8 +23,8 @@ class Normal_mode(Mode):
     def win_condition(self, simulation):
         reaminings = []
         for unit in simulation.unit():
-            if unit.team() not in reaminings:
-                reaminings.append(unit.team())
+            if unit.team_s() not in reaminings:
+                reaminings.append(unit.team_s())
         
         if len(reaminings) == 1:
             return True, "Team " + str(reaminings[0]) + " won"
@@ -38,7 +38,7 @@ class Normal_mode(Mode):
         receiver = board.cell(end_pos).unit() if board.cell(end_pos).unit() != unit else None
         ini_pos = unit.pos_s()
         action_executer = Action_executer(unit, receiver, ini_pos, end_pos, action[0], self.calculate_offensive_power(unit.weapon().damage(), ini_pos, end_pos))
-        if not receiver == None and receiver.team() == unit.team():
+        if not receiver == None and receiver.team_s() == unit.team_s():
             return False, "Can't interact with allies"        
         
         if end_pos[0] < 0 or end_pos[0] > board.height() - 1 or end_pos[1] < 0 or end_pos[1] > board.width() - 1:

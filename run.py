@@ -6,14 +6,14 @@ from simulation.modes import Normal_mode
 
 
 if __name__ == "__main__":
-    sim = simulation.Simulator(Normal_mode(), 10)
+    sim = simulation.Simulator(Normal_mode(), 10000)
     strategies = {"random": Random_strategy()}
     units = []
     
     sim.units(normal_unit, 5, 'red', 'random')
     sim.units(normal_unit, 5, 'blue', 'random')
     
-    sim.board(60, 60)
+    sim.board(4, 3)
     
     sim.allocate_units(random_allocator, sim.unit())
     

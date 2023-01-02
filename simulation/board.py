@@ -13,6 +13,15 @@ class Board():
     
     def cell(self, pos):
         return self._map[pos[0]][pos[1]]
+        
+    def __str__(self) -> str:
+        board = ''
+        for row in self._map:
+            for cell in row:
+                board += str(cell)
+            board += '\n'
+        
+        return board
     
     
         
@@ -58,7 +67,7 @@ class Cell():
         self._altitude = altitude
         
     def units(self, unit):
-        if self._unit == None:
+        if self._unit == None or unit == None:
             self._unit = unit
             return True
         return False
@@ -78,3 +87,8 @@ class Cell():
     def is_obstacle(self):
     # TODO: add more obstacles
         return False
+        
+    def __str__(self) -> str:
+        if self._unit != None:
+            return ' U '
+        return ' . '

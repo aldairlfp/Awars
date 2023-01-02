@@ -1,5 +1,3 @@
-from random import randint
-from simulation.Weapon.weapon import Hand
 from algoritms.basic.mov_gen import Movement_generator
 from algoritms.basic.actions import Attack, Move
 
@@ -23,7 +21,7 @@ class Unit:
     def name(self):
         return self._name
     
-    def team(self):
+    def team_s(self):
         return self._team
     
     def team(self, team):
@@ -44,7 +42,7 @@ class Unit:
     def weapon(self):
         return self._weapon
     
-    def hp(self):
+    def hp_s(self):
         return self._hp
     
     def hp(self, hp):

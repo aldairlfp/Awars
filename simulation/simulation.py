@@ -61,15 +61,24 @@ class Simulator():
             raise IndexError("Invalid position")
         
     def execute(self):
-        for i in range(self._max_turn):
-            print("Turn: " + str(i))
+        winner = self.check_winner()
+        while  self._turn < self._max_turn and winner[0] == False:
+            print("Turn: " + str(self._turn))
             for unit in self._units:
+                if unit.hp_s() < 0:
+                    self._units.remove(unit)
+                print(self._board)
                 print(unit.name() + " is playing ...")
                 action = unit.play(self._board)
                 while ( not self._mode.action_validator(self._board, unit, action)):
                     unit.playlist().remove(action)
+                print(f"{str(unit.hp_s())} HP left")
                 print(unit.name() + " played")
                 print("")
+            self._turn += 1
+            winner = self.check_winner()
+            print("End of turn")
+            print(winner[1])
     
     def reset():
     #  TODO: make it work

@@ -20,9 +20,10 @@ class Action_executer():
         
     def attack(self, board):
         receiver = board.cell(self.end_pos).unit()
-        receiver.hp(receiver.hp() - self._damage)
-        if receiver.hp() <= 0:
+        receiver.hp(receiver.hp_s() - self._damage)
+        if receiver.hp_s() <= 0:
             board.cell(self.end_pos).units(None)
+            
         
     
     

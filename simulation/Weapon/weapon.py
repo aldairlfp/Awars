@@ -34,4 +34,4 @@ class Melee_weapon(Weapon):
         
 class Hand(Melee_weapon):
     def __init__(self) -> None:
-        super().__init__(5, 0)
+        super().__init__(5, 1)
