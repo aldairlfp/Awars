@@ -20,15 +20,15 @@ class Simulator():
     def units(self):
         return self._units
     
-    def turn(self):
-        return self._turn
-        
     def units(self, unit_generator, number, team):
         for i in range(number):
             name = "Unit_" + str(i) + "_team_" + str(team)
             unit = unit_generator.generate_unit(name, i, team)
             self._units.append(unit)
     
+    def turn(self):
+        return self._turn
+        
     def max_turn(self):
         return self._max_turn
         
@@ -42,7 +42,7 @@ class Simulator():
             raise Exception("Can't change mode after the simulation begins")
     
     def check_winner(self):
-        return self._mode.win_condition(self._board)
+        return self._mode.win_condition(self)
         
     def action_validator(self, unit, action):
         return self._mode.action_validator(unit, action)

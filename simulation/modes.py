@@ -30,9 +30,9 @@ class Normal_mode(Mode):
     def __init__(self) -> None:
         super().__init__()
     
-    def win_condition(self, board):
+    def win_condition(self, simulation):
         reaminings = []
-        for unit in board.get_units():
+        for unit in simulation.units():
             if unit.team() not in reaminings:
                 reaminings.append(unit.team())
         
@@ -43,11 +43,11 @@ class Normal_mode(Mode):
     
     def action_validator(self, board, unit, action):
         is_ally = unit.team() == action.receiver.team()
-        end_pos = action.get_end_pos()
+        end_pos = action.end_pos()
         
         if is_ally:
             return False, "Can't interact with allies"
-        elif end_pos[0] < 0 or end_pos[0] > board.get_height() - 1 or end_pos[1] < 0 or end_pos[1] > board.get_width() - 1:
+        elif end_pos[0] < 0 or end_pos[0] > board.height() - 1 or end_pos[1] < 0 or end_pos[1] > board.width() - 1:
             return False, "Invalid position"
         else:
             action.make_action(unit, board)
