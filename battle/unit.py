@@ -36,6 +36,10 @@ class Unit:
     def set_posy(self, posy):
         self._posy = posy
 
+    def step_foward(self):
+        """Move the unit one step forward"""
+        return self._posx + self.dir[0], self._posy + self.dir[1]
+
     def attack(self, unit):
         """Attack another unit"""
         if self._weapon is None:
