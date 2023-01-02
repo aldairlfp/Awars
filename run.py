@@ -1,6 +1,6 @@
 import simulation.simulation as simulation
 import simulation.board as board
-from simulation.unit import Normal_generator, Random_allocator
+from simulation.Units.unit import Normal_generator, Random_allocator
 from simulation.map_generators import Basic_generator
 from algoritms.strategies.strategies import Random_strategy
 from simulation.modes import Normal_mode

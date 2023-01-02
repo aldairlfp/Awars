@@ -1,11 +1,10 @@
 class Action_executer():
-    def __init__(self, producer, receiver, ini_pos, end_pos, action_type, simulator) -> None:
+    def __init__(self, producer, receiver, ini_pos, end_pos, action_type) -> None:
         self.producer = producer
         self.receiver = receiver
         self.ini_pos = ini_pos
         self.end_pos = end_pos
         self.action_type = action_type
-        self.simulator = simulator
     
     def make_action(self, board):
         if self.action_type == "movement":
@@ -25,8 +24,8 @@ class Action_executer():
             board.cell(self.end_pos).unit(None)
             board.units().remove(receiver)
     
-    def calculate_damage(self, basic):
-        return self.simulator.calculate_damage(basic, self.ini_pos, self.end_pos)
+    def calculate_damage(self, basic, damage_calculator):
+        return damage_calculator(basic, self.ini_pos, self.end_pos)
         
     
     

@@ -1,9 +1,11 @@
+from simulation.map_generators import normal_map
+
 class Mode():
     def __init__(self) -> None:
         pass
     
     def generate_board(self, height, width, board_gen):
-        return board_gen.generate_board(height, width)
+        return board_gen(height, width)
     
     def action_validator(self, board, unit, action):
         pass
@@ -64,6 +66,9 @@ class Normal_mode(Mode):
     
     def calculate_accuracy(self, basic, ini_pos, end_pos):
         return basic
+        
+    def generate_board(self, height, width, map_generator = normal_map):
+        return super().generate_board(height, width, map_generator)
         
         
     

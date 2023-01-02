@@ -11,9 +11,9 @@ class Simulator():
     def board(self):
         return self._board
     
-    def board(self, height, width, board_gen = map.Basic_generator()):
+    def board(self, height, width):
         if self._turn == 0:
-            self._board = self._mode.generate_board(height, width, board_gen)
+            self._board = self._mode.generate_board(height, width)
         else:
             raise Exception("Can't change board after the simulation begins")
             
@@ -55,7 +55,7 @@ class Simulator():
             names = [self._units[i].name() for i in range(len(self._units))]
             if unit not in names:
                 self._units.append(unit)
-        units_allocator.allocate(self._board, units)
+        units_allocator(self._board, units)
         
     def allocate_structure(self, structure, pos):
         try:
