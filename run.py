@@ -1,25 +1,23 @@
 import simulation.simulation as simulation
-import simulation.board as board
-from simulation.Units.unit import Normal_generator, Random_allocator
-from simulation.map_generators import Basic_generator
+from simulation.Units.unit_generator import normal_unit
+from simulation.Units.units_allocator import random_allocator
 from algoritms.strategies.strategies import Random_strategy
 from simulation.modes import Normal_mode
 
 
 if __name__ == "__main__":
     sim = simulation.Simulator(Normal_mode(), 10)
-    strategies = {"random": Random_strategy(None)}
+    strategies = {"random": Random_strategy()}
     units = []
     
-    for i in range(5):
-        gen = Normal_generator(i, "random", "blue")
-        unit = gen.generate_unit()
-        unit.strategies(strategies)
-        units.append(unit)
-        
-    for i in range(5):
-        gen = Normal_generator(i, "random", "red")
-        unit = gen.generate_unit()
-        unit.strategies(strategies)
-        units.append(unit)
-        
+    sim.units(normal_unit, 5, 'red', 'random')
+    sim.units(normal_unit, 5, 'blue', 'random')
+    
+    sim.board(60, 60)
+    
+    sim.allocate_units(random_allocator, sim.unit())
+    
+    for unit in sim.unit():
+        unit.strategy('random', Random_strategy())
+    
+    sim.execute()

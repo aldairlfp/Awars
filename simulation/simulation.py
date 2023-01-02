@@ -1,5 +1,3 @@
-import simulation.map_generators as map
-
 class Simulator():
     def __init__(self, mode, max_turn = 100) -> None:
         self._board = None
@@ -17,7 +15,7 @@ class Simulator():
         else:
             raise Exception("Can't change board after the simulation begins")
             
-    def units(self):
+    def unit(self):
         return self._units
     
     def units(self, unit_generator, number, team, strategy = 'random'):
@@ -50,9 +48,9 @@ class Simulator():
         return self._mode.calculate_offensive_power(basic, ini_pos, end_pos)
     
     def allocate_units(self, units_allocator, units):
+        names = [self._units[i].name() for i in range(len(self._units))]
         for unit in units:
-            names = [self._units[i].name() for i in range(len(self._units))]
-            if unit not in names:
+            if unit.name() not in names:
                 self._units.append(unit)
         units_allocator(self._board, units)
         
@@ -68,7 +66,7 @@ class Simulator():
             for unit in self._units:
                 print(unit.name() + " is playing ...")
                 action = unit.play(self._board)
-                while ( not self._mode.action_validator(self.board, unit, action)):
+                while ( not self._mode.action_validator(self._board, unit, action)):
                     unit.playlist().remove(action)
                 print(unit.name() + " played")
                 print("")

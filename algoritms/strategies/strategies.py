@@ -2,8 +2,7 @@ from random import *
 from algoritms.strategies.evaluators import normal_evaluator
 
 class Strategy():
-    def __init__(self, movs, evaluator):
-        self._movs = movs
+    def __init__(self, evaluator):
         self._evaluator = evaluator
     
     def play(self):
@@ -13,13 +12,13 @@ class Strategy():
         self._movs = movs
 
 class Random_strategy(Strategy):
-    def __init__(self, movs):
-        super().__init__(movs, None)
+    def __init__(self):
+        super().__init__(None)
         
-    def play(self):
-        if self._movs is None:
+    def play(self, movs):
+        if movs is None:
             return None
             
         # random sort moves
-        shuffle(self._movs)
-        return self._movs
+        shuffle(movs)
+        return movs

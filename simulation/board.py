@@ -1,17 +1,18 @@
 class Board():
-    def __init__(self, height, width):
-        self._height = height
-        self._width = width
-        self._map = []
+    def __init__(self, map):
+        self._map = map
         
     def height(self):
-        return self._height
+        return len(self._map)
     
     def width(self):
-        return self._width
+        return len(self._map[0])
     
     def map(self):
         return self._map
+    
+    def cell(self, pos):
+        return self._map[pos[0]][pos[1]]
     
     
         
@@ -56,8 +57,11 @@ class Cell():
         self._terrain = terrain
         self._altitude = altitude
         
-    def unit(self, unit):
-        self._unit = unit
+    def units(self, unit):
+        if self._unit == None:
+            self._unit = unit
+            return True
+        return False
     
     def unit(self):
         return self._unit

@@ -20,6 +20,9 @@ class Unit:
         self._team = None
         self._playlist = []
         
+    def name(self):
+        return self._name
+    
     def team(self):
         return self._team
     
@@ -29,14 +32,14 @@ class Unit:
     def id(self):
         return self._id
     
-    def pos(self):
+    def pos_s(self):
         return self._pos
     
     def pos(self, pos):
         self._pos = pos
     
-    def strategies(self, strategies):
-        self._strategies = strategies
+    def strategy(self, strategy, strategy_obj):
+        self._strategies[strategy] = strategy_obj
     
     def weapon(self):
         return self._weapon
@@ -60,7 +63,7 @@ class Unit:
         actions = [Attack(self, board), Move(self, board)]
         movs = Movement_generator(self, board, actions).generate_actions()
         
-        self._playlist = self._strategies[self._strategy].play(self, movs)
+        self._playlist = self._strategies[self._strategy].play(movs)
         self._playlist.append(('nothing', self._pos))
         return self._playlist[0]
         

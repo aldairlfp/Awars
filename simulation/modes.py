@@ -1,12 +1,13 @@
 from simulation.map_generators import normal_map
 from simulation.action_exe import Action_executer
+from simulation.board import Board
 
 class Mode():
     def __init__(self) -> None:
         pass
     
     def generate_board(self, height, width, board_gen):
-        return board_gen(height, width)
+        return  Board(board_gen(height, width))
     
     def action_validator(self, board, unit, action):
         pass
@@ -21,7 +22,7 @@ class Normal_mode(Mode):
     
     def win_condition(self, simulation):
         reaminings = []
-        for unit in simulation.units():
+        for unit in simulation.unit():
             if unit.team() not in reaminings:
                 reaminings.append(unit.team())
         
@@ -33,17 +34,17 @@ class Normal_mode(Mode):
     def action_validator(self, board, unit, action):
         if action[0] == "nothing":
             return True, "Action executed"
-        receiver = board.cell(action[1]).unit() if board.cell(action[1]).unit() != unit else None
-        end_pos = action[1]
-        ini_pos = unit.pos()
-        action_executer = Action_executer(unit, receiver, ini_pos, end_pos, action[0], self.calculate_offensive_power(unit.attack()))
+        end_pos = action[1][0]
+        receiver = board.cell(end_pos).unit() if board.cell(end_pos).unit() != unit else None
+        ini_pos = unit.pos_s()
+        action_executer = Action_executer(unit, receiver, ini_pos, end_pos, action[0], self.calculate_offensive_power(unit.weapon().damage(), ini_pos, end_pos))
         if not receiver == None and receiver.team() == unit.team():
             return False, "Can't interact with allies"        
         
         if end_pos[0] < 0 or end_pos[0] > board.height() - 1 or end_pos[1] < 0 or end_pos[1] > board.width() - 1:
             return False, "Invalid position"
         else:
-            action_executer.make_action(unit, board)
+            action_executer.make_action(board)
             return True, "Action executed"
             
     def calculate_offensive_power(self, basic, ini_pos, end_pos):
