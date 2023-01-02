@@ -24,7 +24,7 @@ class Battle:
         if (x, y) in self._field:
             return False
         else:
-            self._units[unit.get_posx(), unit.get_posy()] = None
+            del self._units[unit.get_posx(), unit.get_posy()]
             self._units[x, y] = unit
             return True
 
@@ -52,6 +52,19 @@ class Battle:
 
     def get_field_cells(self):
         return self._field.get_cells()
+
+    def step_foward(self):
+        all_steps = []
+        for pos in self._units:
+            if self._units[pos].get_alive():
+                x, y = self._units[pos].step_foward()
+                all_steps.append((pos, (x, y)))
+        return all_steps
+
+    def one_frame(self):
+        all_steps = self.step_foward()
+        for step in all_steps:
+            self.move_unit(self.get_unit(step[0][0], step[0][1]), step[1][0], step[1][1])
 
     def __str__(self):
         """Return a string representation of the battle."""
