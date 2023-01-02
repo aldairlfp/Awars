@@ -31,10 +31,12 @@ class Normal_mode(Mode):
             return False, "No winner yet"
     
     def action_validator(self, board, unit, action):
-        receiver = board.cell(action[1]).unit()
+        if action[0] == "nothing":
+            return True, "Action executed"
+        receiver = board.cell(action[1]).unit() if board.cell(action[1]).unit() != unit else None
         end_pos = action[1]
         ini_pos = unit.pos()
-        action_executer = Action_executer(unit, receiver, ini_pos, end_pos, action[0])
+        action_executer = Action_executer(unit, receiver, ini_pos, end_pos, action[0], self.calculate_offensive_power(unit.attack()))
         if not receiver == None and receiver.team() == unit.team():
             return False, "Can't interact with allies"        
         

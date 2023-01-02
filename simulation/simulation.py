@@ -20,10 +20,9 @@ class Simulator():
     def units(self):
         return self._units
     
-    def units(self, unit_generator, number, team):
+    def units(self, unit_generator, number, team, strategy = 'random'):
         for i in range(number):
-            name = "Unit_" + str(i) + "_team_" + str(team)
-            unit = unit_generator.generate_unit(name, i, team)
+            unit = unit_generator(i, team, strategy)
             self._units.append(unit)
     
     def turn(self):
@@ -69,7 +68,8 @@ class Simulator():
             for unit in self._units:
                 print(unit.name() + " is playing ...")
                 action = unit.play(self._board)
-                self._mode.execute_action(self, unit, action)
+                while ( not self._mode.action_validator(self.board, unit, action)):
+                    unit.playlist().remove(action)
                 print(unit.name() + " played")
                 print("")
     

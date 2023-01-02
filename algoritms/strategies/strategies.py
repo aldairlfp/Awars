@@ -1,5 +1,5 @@
-from random import choice
-from algoritms.strategies.evaluators import Evaluator
+from random import *
+from algoritms.strategies.evaluators import normal_evaluator
 
 class Strategy():
     def __init__(self, movs, evaluator):
@@ -20,4 +20,6 @@ class Random_strategy(Strategy):
         if self._movs is None:
             return None
             
-        return choice(self._movs)
+        # random sort moves
+        shuffle(self._movs)
+        return self._movs

@@ -18,6 +18,7 @@ class Unit:
         self._speed = speed
         self._hp = hp
         self._team = None
+        self._playlist = []
         
     def team(self):
         return self._team
@@ -59,7 +60,12 @@ class Unit:
         actions = [Attack(self, board), Move(self, board)]
         movs = Movement_generator(self, board, actions).generate_actions()
         
-        return self._strategies[self._strategy].play(self, movs)
+        self._playlist = self._strategies[self._strategy].play(self, movs)
+        self._playlist.append(('nothing', self._pos))
+        return self._playlist[0]
+        
+    def playlist(self):
+        return self._playlist
 
 
         
