@@ -65,8 +65,9 @@ class Simulator():
         while  self._turn < self._max_turn and winner[0] == False:
             print("Turn: " + str(self._turn))
             for unit in self._units:
-                if unit.hp_s() < 0:
+                if unit.hp_s() <= 0:
                     self._units.remove(unit)
+                    continue
                 print(self._board)
                 print(unit.name() + " is playing ...")
                 action = unit.play(self._board)

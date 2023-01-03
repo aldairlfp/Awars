@@ -21,20 +21,22 @@ class Normal_mode(Mode):
         super().__init__()
     
     def win_condition(self, simulation):
-        reaminings = []
+        reaminings = {}
         for unit in simulation.unit():
-            if unit.team_s() not in reaminings:
-                reaminings.append(unit.team_s())
+            if unit.team_s() not in reaminings.keys():
+                reaminings[unit.team_s()] = 1
+            else:
+                reaminings[unit.team_s()] += 1
         
         if len(reaminings) == 1:
-            return True, "Team " + str(reaminings[0]) + " won"
+            return True, "Team " + str(reaminings.keys()[0]) + " won"
         else:
-            return False, "No winner yet"
+            return False, "No winner yet " + "Teams: " + str(reaminings.keys()) + " Units: " + str(reaminings.values())
     
     def action_validator(self, board, unit, action):
         if action[0] == "nothing":
             return True, "Action executed"
-        end_pos = action[1][0]
+        end_pos = action[1]
         receiver = board.cell(end_pos).unit() if board.cell(end_pos).unit() != unit else None
         ini_pos = unit.pos_s()
         action_executer = Action_executer(unit, receiver, ini_pos, end_pos, action[0], self.calculate_offensive_power(unit.weapon().damage(), ini_pos, end_pos))
