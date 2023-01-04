@@ -12,21 +12,15 @@ if __name__ == "__main__":
     
     sim.board(10, 10)
     
-    sim.units(normal_unit, 5, 'red', 'random')
+    sim.units(normal_unit, 5, 'red', 'advanced')
     
-    sim.unit()[0].strategy('random', Random_strategy())
-    sim.unit()[1].strategy('random', Attacker_strategy(sim.unit()[1]))
-    
-    for unit in sim.unit()[2:5]:
-        unit.strategy('random', Normal_strategy(unit))
+    for unit in sim.unit()[:5]:
+        unit.strategy('advanced', Advanced_strategy(unit, sim.board_s()))
         
-    sim.units(normal_unit, 5, 'blue', 'random')
+    sim.units(normal_unit, 5, 'blue', 'advanced')
     
-    for unit in sim.unit()[5:7]:
-        unit.strategy('random', Greedy_strategy())
-    
-    for unit in sim.unit()[7:10]:
-        unit.strategy('random', Normal_strategy(unit))
+    for unit in sim.unit()[5:]:
+        unit.strategy('advanced', Advanced_strategy(unit, sim.board_s()))
     
     sim.allocate_units(random_allocator, sim.unit())
     

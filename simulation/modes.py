@@ -34,14 +34,18 @@ class Normal_mode(Mode):
             return False, "No winner yet " + "Teams: " + str(reaminings.keys()) + " Units: " + str(reaminings.values())
     
     def action_validator(self, board, unit, action):
-        if action[0] == "nothing":
+        if action[0] in "nothing":
             return True, "Action executed"
         end_pos = action[1]
         receiver = board.cell(end_pos).unit() if board.cell(end_pos).unit() != unit else None
         ini_pos = unit.pos_s()
         action_executer = Action_executer(unit, receiver, ini_pos, end_pos, action[0], self.calculate_offensive_power(unit.weapon().damage(), ini_pos, end_pos))
         if not receiver == None and receiver.team_s() == unit.team_s():
-            return False, "Can't interact with allies"        
+            return False, "Can't interact with allies"
+            
+        if action[0] in "movement":
+            if receiver != None:
+                return False, "Can't move to a cell with an unit"
         
         if end_pos[0] < 0 or end_pos[0] > board.height() - 1 or end_pos[1] < 0 or end_pos[1] > board.width() - 1:
             return False, "Invalid position"
