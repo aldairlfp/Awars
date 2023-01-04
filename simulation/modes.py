@@ -29,7 +29,7 @@ class Normal_mode(Mode):
                 reaminings[unit.team_s()] += 1
         
         if len(reaminings) == 1:
-            return True, "Team " + str(reaminings.keys()[0]) + " won"
+            return True, "Team " + str(list(reaminings.keys())[0]) + " won"
         else:
             return False, "No winner yet " + "Teams: " + str(reaminings.keys()) + " Units: " + str(reaminings.values())
     

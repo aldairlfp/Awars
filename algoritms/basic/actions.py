@@ -16,7 +16,7 @@ class Attack(Action):
         super().__init__('attack', unit, board)
     
     def generate(self):
-        vision_camp = BFS(self._board, self._unit.pos_s(), self._unit.weapon().range())
+        vision_camp = BFS(self._board, self._unit.pos_s(), min(self._unit.weapon().range(), self._unit.vision_range()))
         attack_list = []
         
         for cell in vision_camp:
@@ -30,6 +30,6 @@ class Move(Action):
         super().__init__('movement', unit, board)
     
     def generate(self):
-        movs = BFS(self._board, self._unit.pos_s(), self._unit.speed())
+        movs = BFS(self._board, self._unit.pos_s(), min(self._unit.speed(), self._unit.vision_range()))
         
         return [(self._name, mov) for mov in movs]

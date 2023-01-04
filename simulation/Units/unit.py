@@ -60,6 +60,8 @@ class Unit:
     def play(self, board):
         actions = [Attack(self, board), Move(self, board)]
         movs = Movement_generator(self, board, actions).generate_actions()
+        for strategy in self._strategies.keys():
+            self._strategies[strategy].board(board)
         
         self._playlist = self._strategies[self._strategy].play(movs)
         self._playlist.append(('nothing', self._pos))

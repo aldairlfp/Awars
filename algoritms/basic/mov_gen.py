@@ -1,3 +1,4 @@
+from random import shuffle
 class Movement_generator():
     def __init__(self, unit, board, actions_type) -> None:
         self._unit = unit
@@ -9,6 +10,7 @@ class Movement_generator():
         for action in self._actions_type:
             actions = action.generate()
             [self._movement.append(k) for k in actions]
+        shuffle(self._movement)
         return self._movement
     
 

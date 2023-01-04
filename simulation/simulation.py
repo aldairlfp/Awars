@@ -1,3 +1,5 @@
+from algoritms.utils.search import BFS
+
 class Simulator():
     def __init__(self, mode, max_turn = 100) -> None:
         self._board = None
@@ -6,7 +8,7 @@ class Simulator():
         self._max_turn = max_turn
         self._mode = mode
     
-    def board(self):
+    def board_s(self):
         return self._board
     
     def board(self, height, width):
