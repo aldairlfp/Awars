@@ -1,5 +1,5 @@
 from algoritms.basic.mov_gen import Movement_generator
-from algoritms.basic.actions import Attack, Move
+from algoritms.basic.actions import Attack, Move, Reload
 
 class Unit:
     """The units are the agents to interact in the battle"""

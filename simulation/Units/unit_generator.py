@@ -1,5 +1,5 @@
 from simulation.Units.unit import Unit
-from simulation.Weapon.weapon import Hand
+from simulation.equipment.weapon.weapons import *
 
 def normal_unit(id, team, strategy):
     hand = Hand()
@@ -9,8 +9,8 @@ def normal_unit(id, team, strategy):
         
     return unit
     
-def archer_unit(id, team, strategy):
-    hand = Hand()
+def archer_b_unit(id, team, strategy):
+    hand = Bow()
     name = "unit_" + str(id) + "_" + str(team) + "_" + strategy
     unit = Unit(name, id, None, 10, 1, {}, strategy, hand)
     unit.team(team)
