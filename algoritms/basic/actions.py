@@ -33,3 +33,13 @@ class Move(Action):
         movs = BFS(self._board, self._unit.pos_s(), min(self._unit.speed(), self._unit.vision_range()))
         
         return [(self._name, mov) for mov in movs]
+        
+class Reload(Action):
+    def __init__(self, unit, board) -> None:
+        super().__init__('reload', unit, board)
+    
+    def generate(self):
+        if self._unit.weapon().ammo() < self._unit.weapon().max_ammo():
+            return [(self._name, self._unit.pos_s())]
+        else:
+            return []
