@@ -14,7 +14,7 @@ class Strategy():
             return None
         
         # sort moves by evaluation
-        movs = sorted(movs, key = lambda x: self._evaluator(x[0]))
+        movs = sorted(movs, key = lambda x: self._evaluator(x[0]), reverse=True)
         
         return movs
     
@@ -35,7 +35,7 @@ class Random_strategy(Strategy):
             
         # random sort moves
         shuffle(movs)
-        return movs[-1:0:-1]
+        return movs
         
 class Greedy_strategy(Strategy):
     def __init__(self, evaluator = greedy_evaluator):
@@ -56,7 +56,7 @@ class Attacker_strategy(Strategy):
         
         # sort moves by evaluation
         shuffle(movs)
-        movs = sorted(movs, key = lambda x: self._evaluator(self._unit, x))
+        movs = sorted(movs, key = lambda x: self._evaluator(self._unit, x), reverse=True)
         
         return movs[-1:0:-1]
         
@@ -71,7 +71,7 @@ class Normal_strategy(Strategy):
         
         # sort moves by evaluation
         shuffle(movs)
-        movs = sorted(movs, key = lambda x: self._evaluator(self._unit, x))
+        movs = sorted(movs, key = lambda x: self._evaluator(self._unit, x), reverse=True)
         
         return movs[-1:0:-1]
 
@@ -88,9 +88,9 @@ class Advanced_strategy(Strategy):
         
         # sort moves by evaluation
         shuffle(movs)
-        movs = sorted(movs, key = lambda x: self._evaluator(self._unit, x, self._board, vision_range))
+        movs = sorted(movs, key = lambda x: self._evaluator(self._unit, x, self._board, vision_range, reverse=True))
         
-        return movs[-1:0:-1]
+        return movs
         
 class Hard_optimal_strategy(Strategy):
     def __init__(self, unit, evaluator = hard_evaluator):
@@ -102,10 +102,9 @@ class Hard_optimal_strategy(Strategy):
             
         # sort moves by evaluation
         shuffle(movs)
-        movs = [mov for mov in sorted(movs, key = lambda x: self._evaluator(self._unit, x, self._board))]
+        movs = sorted(movs, key = lambda x: self._evaluator(self._unit, x, self._board), reverse=True)
         
-        return movs[-1:0:-1]
-
+        return movs
 class Hard_fuzzy_strategy(Strategy):
     def __init__(self, unit, evaluator = hard_evaluator):
         super().__init__(unit, evaluator)
@@ -120,34 +119,34 @@ class Hard_fuzzy_strategy(Strategy):
         for mov in movs:
             result = self._evaluator(self._unit, mov, self._board)
             if result[0] > 0:
-                norm += result
+                norm += result[0]
                 choices.append(result)
             
         if norm == 0:
             return None
             
-        choices = sorted(choices, key = lambda x: x[0])
+        choices = sorted(choices, key = lambda x: x[0], reverse=True)
         
         count = 0
         for mov in choices:
-            mov[0] = mov[0] + count
+            mov[0] += count
             count = mov[0]
             
         movs = []
-        count = 0
             
         while len(choices) > 0:
             rand = randint(0, norm)
-            for mov in choices:
-                count += mov[0]
-                if rand < mov[0]:
-                    count -= mov[0]
+            count = 0
+            for i, mov in enumerate(choices): 
+                if rand <= mov[0]:
                     movs.append(mov[1])
                     decrement = mov[0] - count
                     choices.remove(mov)
-                    for mov in choices:
-                        mov[0] -= decrement
+                    for j in range(i, len(choices)):
+                        choices[j][0] -= decrement
                     norm -= decrement
                     break
+                else:
+                    count = mov[0]
                     
         return movs

@@ -235,13 +235,13 @@ def hard_evaluator(unit, action, board):
                 
             if board.cell(destiny).altitude() > board.cell(enemy.pos_s()).altitude():
                 if board.cell(origin).altitude() <= board.cell(enemy.pos_s()).altitude():
-                    count += 2
+                    count += 3
                 elif board.cell(origin).altitude() < board.cell(origin).altitude():
                     count -= 2 
             elif board.cell(destiny).altitude() < board.cell(origin).altitude():
                 count -= 2
             elif board.cell(destiny).altitude() > board.cell(origin).altitude():
-                count += 2
+                count += 3
             
             if enemy.weapon().range() <= octal_distance(origin, enemy.pos_s()):
                 count += 1
@@ -257,7 +257,7 @@ def hard_evaluator(unit, action, board):
                     if enemy.weapon().range() <= octal_distance(destiny, enemy.pos_s()):
                         count -= 3
                     else:
-                        count += 3
+                        count += 4
                     
                     if enemy.weapon().range() <= octal_distance(origin, enemy.pos_s()):
                         count += 3
@@ -289,7 +289,7 @@ def hard_evaluator(unit, action, board):
                     if enemy.weapon().range() <= octal_distance(destiny, enemy.pos_s()):
                         count -= 3
                     else:
-                        count += 3
+                        count += 4
                     
                     if enemy.weapon().range() <= octal_distance(origin, enemy.pos_s()):
                         count += 3
@@ -319,15 +319,15 @@ def hard_evaluator(unit, action, board):
                 for ally in allies:
                     if octal_distance(ally.pos_s(), enemy.pos_s()) <= octal_distance(origin, enemy.pos_s()):
                         if ally.weapon() is Range_weapon:
-                            count += 1
-                        else:
                             count += 2
+                        else:
+                            count += 3
                     
                     if enemy.weapon().range() > octal_distance(ally.pos_s(), enemy.pos_s()):
                         count += 1
                         
                 if board.cell(origin).altitude() > board.cell(enemy.pos_s()).altitude():
-                    count += 2
+                    count += 3
                 elif board.cell(origin).altitude() < board.cell(enemy.pos_s()).altitude():
                     count -= 2
                 
@@ -335,7 +335,7 @@ def hard_evaluator(unit, action, board):
             if damage >= unit.hp_s():
                 count -= 5
             
-    return count, action
+    return [count, action]
                     
                 
         
