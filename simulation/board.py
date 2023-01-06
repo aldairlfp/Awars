@@ -90,5 +90,5 @@ class Cell():
         
     def __str__(self) -> str:
         if self._unit != None:
-            return ' U '
+            return f' {self._unit.team_s()[0]} '
         return ' . '
