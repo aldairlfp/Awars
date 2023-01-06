@@ -18,7 +18,7 @@ if __name__ == "__main__":
     
     
     for unit in sim.unit()[:20]:
-        unit.strategy('hard', Hard_optimal_strategy(unit))
+        unit.strategy('hard', Hard_fuzzy_strategy(unit))
         
     sim.units(archer_b_unit, 5, 'blue', 'hard')
     sim.units(archer_c_unit, 5, 'blue', 'hard')
@@ -26,7 +26,7 @@ if __name__ == "__main__":
     sim.units(spearman_unit, 5, 'blue', 'hard')
     
     for unit in sim.unit()[20:]:
-        unit.strategy('hard', Hard_optimal_strategy(unit))
+        unit.strategy('hard', Hard_fuzzy_strategy(unit))
     
     sim.allocate_units(random_allocator, sim.unit())
     
