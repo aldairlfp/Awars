@@ -116,14 +116,18 @@ class Hard_mode(Normal_mode):
         if action[0] in "nothing":
             return True, "Action executed"
             
-        action_executer = None
+        end_pos = action[1]
+        receiver = board.cell(end_pos).unit() if board.cell(end_pos).unit() != unit else None
+        ini_pos = unit.pos_s()    
+        
+        action_executer = Action_executer(unit, receiver, ini_pos, end_pos, action[0], self.calculate_offensive_power(unit.weapon().damage(), ini_pos, end_pos))
         
         offensive_power = self.calculate_offensive_power(unit.weapon().damage(), board.cell(unit.pos_s()), board.cell(action[1]))
         defensive_power = self.calculate_defensive_power(unit.weapon().damage(), board.cell(action[1]))
         movement_power = self.calculate_movement_power(board.cell(unit.pos_s()))
         accuracy = self.calculate_accuracy(board(unit.pos_s()), board(action[1]))
         
-        shoot = rd.random() < accuracy
+        hit = rd.random() < accuracy
         
         
         if action[0] in "movement":

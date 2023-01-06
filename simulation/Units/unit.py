@@ -1,5 +1,6 @@
-from algoritms.basic.mov_gen import Movement_generator
-from algoritms.basic.actions import Attack, Move, Reload
+from algoritms.basic.mov_gen import *
+from algoritms.basic.actions import *
+from simulation.equipment.weapon.weapons import *
 
 class Unit:
     """The units are the agents to interact in the battle"""
@@ -69,6 +70,52 @@ class Unit:
         
     def playlist(self):
         return self._playlist
+        
+        
+class Armored(Unit):
+    def __init__(self, name, id, pos, vision_range, speed, caracteristics, strategy, weapon, equipment, hp = 100):
+        super().__init__(name, id, pos, vision_range, speed, caracteristics, strategy, weapon, hp)
+        self._equipment = equipment
+        self._defense_value = self._defense()
+        self._weight_value = self._weight()
+        
+    def _defense(self):
+        defense = 0
+        for item in self._equipment:
+            defense += item.defense()
+        
+        
+            
+    def _weight(self):
+        weight = 0
+        for item in self._equipment:
+            weight += item.weight()
+            
+        return weight
+        
+    def defense(self):
+        return self._defense_value
+    
+    def weight(self):
+        return self._weight_value
+        
+    def play(self, board):
+        actions = [Attack(self, board), Move(self, board)]
+        
+        if self._weapon is Range_weapon:
+            actions.append(Reload(self, board))
+        
+        movs = Movement_generator(self, board, actions).generate_actions()
+        
+        for strategy in self._strategies.keys():
+            self._strategies[strategy].board(board)
+        
+        self._playlist = self._strategies[self._strategy].play(movs)
+        self._playlist.append(('nothing', self._pos))
+        return self._playlist[0]
+        
+    
+            
 
 
         

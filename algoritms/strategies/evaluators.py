@@ -1,4 +1,5 @@
 from algoritms.utils.search import octal_distance, BFS
+from simulation.equipment.weapon.weapons import *
 
 def normal_evaluator(unit, action, **kwargs):
     greedy = greedy_evaluator(action, **kwargs)
@@ -78,7 +79,222 @@ def advanced_evaluator(unit, action, board, vision_range = None):
                     
                     
                 
+def hard_evaluator(unit, action, board):
+    vision_range = BFS(board, unit.pos_s(), unit.vision_range())
+    
+    enemies = []
+    allies = []
+    
+    destiny = action[1]
+    origin = unit.pos_s()
+    
+    count = 0
+    
+    for pos in vision_range:
+        if board.cell(pos).unit() is not None:
+            if board.cell(pos).unit().team_s() not in unit.team_s():
+                enemies.append(board.cell(pos).unit())
+            else:
+                allies.append(board.cell(pos).unit())
+                
+    if action[0] in "attack":
+        count += len(allies)
         
+        target = board.cell(destiny).unit()
         
+        if target.weapon() is Range_weapon:
+            if unit.weapon() is Range_weapon:
+                if unit.weapon().range() > octal_distance(origin, destiny):
+                    count -= 1
+                else:
+                    count += 1
+                    
+                for enemy in enemies:
+                    if enemy.weapon().range() <= octal_distance(origin, enemy.pos_s()):
+                        if enemy.weapon() is Range_weapon:
+                            count -= 1
+                        else:
+                            count -= 2
+                    
+                    else:
+                        count += 1
+            
+            elif unit.weapon() is Melee_weapon:
+                count += 5
+                
+                for enemy in enemies:
+                    if enemy.weapon().range() <= octal_distance(origin, enemy.pos_s()):
+                        if enemy.weapon() is Range_weapon:
+                            count -= 1
+                        else:
+                            count -= 2
+                            
+                    else:
+                        count += 1
+                
+        elif target.weapon() is Melee_weapon:
+            if unit.weapon() is Range_weapon:
+                count += 5
+                
+                for enemy in enemies:
+                    if enemy.weapon().range() <= octal_distance(origin, enemy.pos_s()):
+                        if enemy.weapon() is Range_weapon:
+                            count -= 1
+                        else:
+                            count -= 2
+                            
+                    else:
+                        count += 1
+            
+            elif unit.weapon() is Melee_weapon:
+                count += 1
+                
+                for enemy in enemies:
+                    if enemy.weapon().range() <= octal_distance(origin, enemy.pos_s()):
+                        if enemy.weapon() is Range_weapon:
+                            count -= 1
+                        else:
+                            count -= 2
+                            
+                    else:
+                        count += 1
+        
+        if enemy.hp_s() < unit.weapon().damage():
+            count += 5
+        
+        damage = 0
+        
+        for enemy in enemies:
+            if enemy.weapon().range() <= octal_distance(origin, enemy.pos_s()):
+                damage += enemy.weapon().damage() - unit.armor()
+            if board.cell(origin).altitude() > board.cell(enemy.pos_s()).altitude():
+                count += 2
+            elif board.cell(origin).altitude() < board.cell(enemy.pos_s()).altitude():
+                count -= 2
+            
+        if damage > unit.hp_s():
+            count -= 5
+            
+        for ally in allies:
+            if ally.weapon().range() <= octal_distance(ally.pos_s(), enemy.pos_s()):
+                count += 2
+                
+        if board.cell(origin).altitude() > board.cell(destiny).altitude():
+            count += 2
+        elif board.cell(origin).altitude() < board.cell(destiny).altitude():
+            count -= 2
+        
+    if action[0] in 'movement':
+        for enemy in enemies:
+            if enemy.weapon().range() <= octal_distance(destiny, enemy.pos_s()):
+                count -= 1
+            else:
+                count += 1
+                
+            if board.cell(destiny).altitude() > board.cell(enemy.pos_s()).altitude():
+                if board.cell(origin).altitude() <= board.cell(enemy.pos_s()).altitude():
+                    count += 2
+                elif board.cell(origin).altitude() < board.cell(origin).altitude():
+                    count -= 2 
+            elif board.cell(destiny).altitude() < board.cell(origin).altitude():
+                count -= 2
+            elif board.cell(destiny).altitude() > board.cell(origin).altitude():
+                count += 2
+            
+            if enemy.weapon().range() <= octal_distance(origin, enemy.pos_s()):
+                count += 1
+            
+            if unit.weapon().range() <= octal_distance(destiny, enemy.pos_s()):
+                count += 1
+            
+            if unit.weapon().range() <= octal_distance(origin, enemy.pos_s()):
+                count -= 1
+        
+            if enemy.weapon() is Melee_weapon:
+                if unit.weapon() is Range_weapon:
+                    if enemy.weapon().range() <= octal_distance(destiny, enemy.pos_s()):
+                        count -= 3
+                    else:
+                        count += 3
+                    
+                    if enemy.weapon().range() <= octal_distance(origin, enemy.pos_s()):
+                        count += 3
+                        
+                elif unit.weapon() is Melee_weapon:
+                    if octal_distance(destiny, enemy.pos_s()) <= unit.weapon().range():
+                        if unit.weapon().range() <= octal_distance(origin, enemy.pos_s()):
+                            count += 1
+                    elif unit.weapon().range() > octal_distance(origin, enemy.pos_s()):
+                        count -= 1
+                
+            elif enemy.weapon() is Range_weapon():
+                if unit.weapon() is Range_weapon:
+                    if enemy.weapon().range() <= octal_distance(destiny, enemy.pos_s()):
+                        count -= 1
+                    else:
+                        count += 1
+                    
+                    if enemy.weapon().range() <= octal_distance(origin, enemy.pos_s()):
+                        count += 1
+                    
+                    if unit.weapon().range() >= octal_distance(destiny, enemy.pos_s()):
+                        if unit.weapon().range() < octal_distance(origin, enemy.pos_s()):
+                            count += 1
+                    elif unit.weapon().range() <= octal_distance(origin, enemy.pos_s()):
+                        count -= 1
+                    
+                if unit.weapon() is Melee_weapon:
+                    if enemy.weapon().range() <= octal_distance(destiny, enemy.pos_s()):
+                        count -= 3
+                    else:
+                        count += 3
+                    
+                    if enemy.weapon().range() <= octal_distance(origin, enemy.pos_s()):
+                        count += 3
+                        
+            for ally in allies:
+                if octal_distance(destiny, enemy.pos_s()) < octal_distance(origin, enemy.pos_s()): 
+                    if ally.weapon().range() <= octal_distance(ally.pos_s(), enemy.pos_s()):
+                        count += 2
+                elif octal_distance(destiny, enemy.pos_s()) > octal_distance(origin, enemy.pos_s()):
+                    if ally.weapon().range() <= octal_distance(ally.pos_s(), enemy.pos_s()):
+                        count -= 1
+    
+    if action[0] in 'reload':
+        if unit.weapon().ammo() == 0:
+            count += 5
+            
+            damage = 0
+            
+            for enemy in enemies:
+                if enemy.weapon().range() <= octal_distance(origin, enemy.pos_s()):
+                    damage += abs(enemy.weapon().damage() - unit.armor())
+                    if enemy.weapon() is Range_weapon:
+                        count -= 1
+                    else:
+                        count -= 2
+            
+                for ally in allies:
+                    if octal_distance(ally.pos_s(), enemy.pos_s()) <= octal_distance(origin, enemy.pos_s()):
+                        if ally.weapon() is Range_weapon:
+                            count += 1
+                        else:
+                            count += 2
+                    
+                    if enemy.weapon().range() > octal_distance(ally.pos_s(), enemy.pos_s()):
+                        count += 1
+                        
+                if board.cell(origin).altitude() > board.cell(enemy.pos_s()).altitude():
+                    count += 2
+                elif board.cell(origin).altitude() < board.cell(enemy.pos_s()).altitude():
+                    count -= 2
+                
+                
+            if damage >= unit.hp_s():
+                count -= 5
+            
+    return count, action
+                    
+                
         
     
