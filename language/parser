@@ -1,4 +1,7 @@
 import lexer
+import ply.yacc as yacc
+
+
 
 data = '''
 s=1;
