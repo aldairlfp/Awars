@@ -1,0 +1,23 @@
+import lexer
+
+data = '''
+s=1;
+func asd (int a){
+    int b = 5;
+    return b;
+}
+'''
+
+data1 = '''
+soldier a = 5;
+soldier b = 6;
+'''
+
+lexer = lexer.aw_lexer()
+lexer.input(data1)
+
+while True:
+    tok = lexer.token()
+    if not tok:
+        break
+    print(tok.type, tok.value, tok.lineno, tok.lexpos)

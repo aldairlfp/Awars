@@ -51,7 +51,6 @@ tokens = [
              'COMMENT',
              'STRING_LITERAL',
              'CHAR_LITERAL',
-             'FLOAT_LITERAL',
          ] + list(reserved.values())
 
 
@@ -80,7 +79,6 @@ def aw_lexer():
     t_NOT = r'!'
     t_STRING_LITERAL = r'\".*\"'
     t_CHAR_LITERAL = r'\'.\''
-    t_FLOAT_LITERAL = r'\d+\.\d+'
 
     def t_ID(t):
         r'[a-zA-Z_][a-zA-Z_0-9]*'
@@ -125,26 +123,3 @@ def aw_lexer():
         return None
 
     return lex.lex()
-
-
-data = '''
-s=1;
-func asd (int a){
-    int b = 5;
-    return b;
-}
-'''
-
-data1 = '''
-soldier a = 5;
-soldier b = 6;
-'''
-
-lexer = aw_lexer()
-lexer.input(data1)
-
-while True:
-    tok = lexer.token()
-    if not tok:
-        break
-    print(tok.type, tok.value, tok.lineno, tok.lexpos)
