@@ -76,9 +76,7 @@ def advanced_evaluator(unit, action, board, vision_range = None):
             count += 1
             
     return count
-                    
-                    
-                
+                                 
 def hard_evaluator(unit, action, board):
     vision_range = BFS(board, unit.pos_s(), unit.vision_range())
     
