@@ -98,16 +98,16 @@ def hard_evaluator(unit, action, board):
                 allies.append(board.cell(pos).unit())
                 
     if action[0] in "attack":
-        count += len(allies)
+        count += len(allies)*10
         
         target = board.cell(destiny).unit()
         
         if target.weapon() is Range_weapon:
             if unit.weapon() is Range_weapon:
                 if unit.weapon().range() > octal_distance(origin, destiny):
-                    count -= 1
+                    count += 40
                 else:
-                    count += 1
+                    count += 50
                     
                 for enemy in enemies:
                     if enemy.weapon().range() <= octal_distance(origin, enemy.pos_s()):
@@ -117,10 +117,20 @@ def hard_evaluator(unit, action, board):
                             count -= 2
                     
                     else:
-                        count += 1
-            
+                        count += 60
+                        
+                    for ally in allies:
+                        if ally.weapon().range() <= octal_distance(destiny, ally.pos_s()):
+                            if ally.weapon() is Range_weapon:
+                                count += 5
+                            else:
+                                count += 7
+                        
+                        if octal_distance(ally.pos_s(), enemy.pos_s()) < octal_distance(origin, enemy.pos_s()):
+                            count += 10
+    
             elif unit.weapon() is Melee_weapon:
-                count += 5
+                count += 150
                 
                 for enemy in enemies:
                     if enemy.weapon().range() <= octal_distance(origin, enemy.pos_s()):
@@ -129,12 +139,22 @@ def hard_evaluator(unit, action, board):
                         else:
                             count -= 2
                             
+                    for ally in allies:
+                        if ally.weapon().range() <= octal_distance(destiny, ally.pos_s()):
+                            if ally.weapon() is Range_weapon:
+                                count += 15
+                            else:
+                                count += 20
+                        
+                        if octal_distance(ally.pos_s(), enemy.pos_s()) < octal_distance(origin, enemy.pos_s()):
+                            count += 10
+                            
                     else:
-                        count += 1
+                        count += 50
                 
         elif target.weapon() is Melee_weapon:
             if unit.weapon() is Range_weapon:
-                count += 5
+                count += 25
                 
                 for enemy in enemies:
                     if enemy.weapon().range() <= octal_distance(origin, enemy.pos_s()):
@@ -144,10 +164,20 @@ def hard_evaluator(unit, action, board):
                             count -= 2
                             
                     else:
-                        count += 1
-            
+                        count += 20
+                        
+                    for ally in allies:
+                        if ally.weapon().range() <= octal_distance(destiny, ally.pos_s()):
+                            if ally.weapon() is Range_weapon:
+                                count += 15
+                            else:
+                                count += 20
+                        
+                        if octal_distance(ally.pos_s(), enemy.pos_s()) < octal_distance(origin, enemy.pos_s()):
+                            count += 10
+                            
             elif unit.weapon() is Melee_weapon:
-                count += 1
+                count += 2
                 
                 for enemy in enemies:
                     if enemy.weapon().range() <= octal_distance(origin, enemy.pos_s()):
@@ -155,20 +185,32 @@ def hard_evaluator(unit, action, board):
                             count -= 1
                         else:
                             count -= 2
-                            
                     else:
-                        count += 1
+                        count += 40
+                        
+                    for ally in allies:
+                        if ally.weapon().range() <= octal_distance(destiny, ally.pos_s()):
+                            if ally.weapon() is Range_weapon:
+                                count += 5
+                            else:
+                                count += 7
+                        
+                        if octal_distance(ally.pos_s(), enemy.pos_s()) < octal_distance(origin, enemy.pos_s()):
+                            count += 100
+                            
+                        
+        enemy = board.cell(destiny).unit()
         
         if enemy.hp_s() < unit.weapon().damage():
-            count += 5
+            count += 200
         
         damage = 0
         
         for enemy in enemies:
             if enemy.weapon().range() <= octal_distance(origin, enemy.pos_s()):
-                damage += enemy.weapon().damage() - unit.armor()
+                damage += enemy.weapon().damage() - unit.defense()
             if board.cell(origin).altitude() > board.cell(enemy.pos_s()).altitude():
-                count += 2
+                count += 8
             elif board.cell(origin).altitude() < board.cell(enemy.pos_s()).altitude():
                 count -= 2
             
@@ -177,10 +219,10 @@ def hard_evaluator(unit, action, board):
             
         for ally in allies:
             if ally.weapon().range() <= octal_distance(ally.pos_s(), enemy.pos_s()):
-                count += 2
+                count += 150
                 
         if board.cell(origin).altitude() > board.cell(destiny).altitude():
-            count += 2
+            count += 100
         elif board.cell(origin).altitude() < board.cell(destiny).altitude():
             count -= 2
         
@@ -227,7 +269,7 @@ def hard_evaluator(unit, action, board):
                     elif unit.weapon().range() > octal_distance(origin, enemy.pos_s()):
                         count -= 1
                 
-            elif enemy.weapon() is Range_weapon():
+            elif enemy.weapon() is Range_weapon:
                 if unit.weapon() is Range_weapon:
                     if enemy.weapon().range() <= octal_distance(destiny, enemy.pos_s()):
                         count -= 1
@@ -268,7 +310,7 @@ def hard_evaluator(unit, action, board):
             
             for enemy in enemies:
                 if enemy.weapon().range() <= octal_distance(origin, enemy.pos_s()):
-                    damage += abs(enemy.weapon().damage() - unit.armor())
+                    damage += abs(enemy.weapon().damage() - unit.defense())
                     if enemy.weapon() is Range_weapon:
                         count -= 1
                     else:

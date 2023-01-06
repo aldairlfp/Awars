@@ -102,7 +102,7 @@ class Hard_optimal_strategy(Strategy):
             
         # sort moves by evaluation
         shuffle(movs)
-        movs = [mov[1] for mov in sorted(movs, key = lambda x: self._evaluator(self._unit, x, self._board))]
+        movs = [mov for mov in sorted(movs, key = lambda x: self._evaluator(self._unit, x, self._board))]
         
         return movs[-1:0:-1]
 

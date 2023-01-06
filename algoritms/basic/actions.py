@@ -42,4 +42,4 @@ class Reload(Action):
         if self._unit.weapon().ammo() < self._unit.weapon().max_ammo():
             return [(self._name, self._unit.pos_s())]
         else:
-            return []
+            return [('nothing',  self._unit.pos_s())]

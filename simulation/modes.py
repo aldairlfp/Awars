@@ -1,7 +1,6 @@
 from simulation.map_generators import normal_map
-from simulation.action_exe import Action_executer
+from simulation.action_exe import Action_executer, Advanced_executer
 from simulation.board import Board
-import random as rd
 from algoritms.utils.search import octal_distance
 
 class Mode():
@@ -104,9 +103,9 @@ class Hard_mode(Normal_mode):
         return basic
         
     
-    def calculate_accuracy(ini_pos, end_pos):
-        origin_accuracy = ini_pos.weather().accuracy()
-        destiny_accuracy = end_pos.weather().accuracy()
+    def calculate_accuracy(self, ini_pos, end_pos):
+        origin_accuracy = ini_pos.weather()['accuracy']
+        destiny_accuracy = end_pos.weather()['accuracy']
         
         accuracy = 1 *  origin_accuracy * destiny_accuracy
         
@@ -119,16 +118,13 @@ class Hard_mode(Normal_mode):
         end_pos = action[1]
         receiver = board.cell(end_pos).unit() if board.cell(end_pos).unit() != unit else None
         ini_pos = unit.pos_s()    
+        offensive_power = self.calculate_offensive_power(board.cell(unit.pos_s()), board.cell(action[1]))
+        defensive_power = self.calculate_defensive_power(board.cell(action[1]))
+        accuracy = self.calculate_accuracy(board.cell(unit.pos_s()), board.cell(action[1]))
         
-        action_executer = Action_executer(unit, receiver, ini_pos, end_pos, action[0], self.calculate_offensive_power(unit.weapon().damage(), ini_pos, end_pos))
+        action_executer = Advanced_executer(unit, receiver, ini_pos, end_pos, action[0], offensive_power, accuracy, defensive_power)
         
-        offensive_power = self.calculate_offensive_power(unit.weapon().damage(), board.cell(unit.pos_s()), board.cell(action[1]))
-        defensive_power = self.calculate_defensive_power(unit.weapon().damage(), board.cell(action[1]))
         movement_power = self.calculate_movement_power(board.cell(unit.pos_s()))
-        accuracy = self.calculate_accuracy(board(unit.pos_s()), board(action[1]))
-        
-        hit = rd.random() < accuracy
-        
         
         if action[0] in "movement":
             if board.cell(action[1]).unit() != None: 
@@ -137,5 +133,9 @@ class Hard_mode(Normal_mode):
                 return False, "Can't move that far"
             else:    
                 action_executer.make_action(board)
+                return True, "Action executed"
+        else:
+            action_executer.make_action(board)
+            return True, "Action executed"
                 
         

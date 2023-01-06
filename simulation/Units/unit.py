@@ -84,6 +84,8 @@ class Armored(Unit):
         for item in self._equipment:
             defense += item.defense()
         
+        return defense
+        
         
             
     def _weight(self):

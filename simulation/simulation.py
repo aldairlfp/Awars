@@ -65,7 +65,7 @@ class Simulator():
     def execute(self):
         winner = self.check_winner()
         while  self._turn < self._max_turn and winner[0] == False:
-            print("Turn: " + str(self._turn))
+            print("Turn: " + str(self._turn + 1))
             for unit in self._units:
                 if unit.hp_s() <= 0:
                     self._units.remove(unit)
@@ -73,8 +73,11 @@ class Simulator():
                 print(self._board)
                 print(unit.name() + " is playing ...")
                 action = unit.play(self._board)
-                while ( not self._mode.action_validator(self._board, unit, action)):
+                while (not self._mode.action_validator(self._board, unit, action)):
                     unit.playlist().remove(action)
+                    action = unit.playlist()[0]
+                
+                print("Action: " + str(action[0]))
                 print(f"{str(unit.hp_s())} HP left")
                 print(unit.name() + " played")
                 print("")
