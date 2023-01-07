@@ -25,8 +25,7 @@ class Action_executer():
         receiver.hp(receiver.hp_s() - self._damage)
         if receiver.hp_s() <= 0:
             board.cell(self.end_pos).units(None)
-            
-        
+                
 class Advanced_executer(Action_executer):
     def __init__(self, producer, receiver, ini_pos, end_pos, action_type, damage, accuracy, defense) -> None:
         super().__init__(producer, receiver, ini_pos, end_pos, action_type, damage)
@@ -55,7 +54,3 @@ class Advanced_executer(Action_executer):
             if receiver.hp_s() <= 0:
                 board.cell(self.end_pos).units(None)
         
-            
-        
-    
-    

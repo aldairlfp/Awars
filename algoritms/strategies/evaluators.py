@@ -335,6 +335,3 @@ def hard_evaluator(unit, action, board):
             
     return [count, action]
                     
-                
-        
-    

@@ -1,6 +1,6 @@
-from simulation.map_generators import normal_map
-from simulation.action_exe import Action_executer, Advanced_executer
-from simulation.board import Board
+from simulation.board.maps_gen.map_generators import normal_map
+from simulation.executers.action_exe import Action_executer, Advanced_executer
+from simulation.board.board import Board
 from algoritms.utils.search import octal_distance
 
 class Mode():
@@ -16,7 +16,6 @@ class Mode():
     def win_condition(self, board):
         pass
     
-
 class Normal_mode(Mode):
     def __init__(self) -> None:
         super().__init__()
@@ -138,4 +137,3 @@ class Hard_mode(Normal_mode):
             action_executer.make_action(board)
             return True, "Action executed"
                 
-        

@@ -22,8 +22,6 @@ class Board():
             board += '\n'
         
         return board
-    
-    
         
 class Structure():
     def __init__(self, name, hp, attack, defense, cost):

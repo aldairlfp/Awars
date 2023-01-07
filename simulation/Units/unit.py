@@ -1,5 +1,5 @@
-from algoritms.basic.mov_gen import *
-from algoritms.basic.actions import *
+from simulation.action.actions import *
+from simulation.action.mov_gen import *
 from simulation.equipment.weapon.weapons import *
 
 class Unit:
@@ -70,8 +70,7 @@ class Unit:
         
     def playlist(self):
         return self._playlist
-        
-        
+            
 class Armored(Unit):
     def __init__(self, name, id, pos, vision_range, speed, caracteristics, strategy, weapon, equipment, hp = 100):
         super().__init__(name, id, pos, vision_range, speed, caracteristics, strategy, weapon, hp)
@@ -115,9 +114,28 @@ class Armored(Unit):
         self._playlist = self._strategies[self._strategy].play(movs)
         self._playlist.append(('nothing', self._pos))
         return self._playlist[0]
+         
+class Chess_unit(Unit):
+    def __init__(self, name, id, strategy, pieces = None):
+        super().__init__(name, id, None, 8, None, None, strategy, None, 1)
+        self._pieces = pieces
         
-    
+    def pieces(self):
+        return self._pieces
+        
+    def play(self, board):
+        movs = []
+        for piece in self._pieces:
+            new_movs = piece.play(board)
+            if new_movs != None:
+                movs.extend(new_movs)
+        
+        for strategy in self._strategies.keys():
+            self._strategies[strategy].board(board)
             
-
-
+        movs = self._strategies[self._strategy].play(movs)
+        
+        self._playlist = movs
+        self._playlist.append(('surrender', None))
+        return self._playlist[0]    
         

@@ -17,7 +17,11 @@ def BFS(board, pos, steps):
 def in_board(board, pos):
     return pos[0][0] >= 0 and pos[0][0] < board.height() and pos[0][1] >= 0 and pos[0][1] < board.width()
 
+def chess_in_board(board, pos):
+    return pos[0] >= 0 and pos[0] < board.height() and pos[1] >= 0 and pos[1] < board.width()
+
 def octal_distance(pos_1, pos_2):
     diagonal = min(abs(pos_1[0] - pos_2[0]), abs(pos_1[1] - pos_2[1]))
     
     return abs(pos_1[0] - pos_2[0]) + abs(pos_1[1] - pos_2[1]) - diagonal
+    

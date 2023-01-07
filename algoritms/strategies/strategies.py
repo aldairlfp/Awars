@@ -24,7 +24,6 @@ class Strategy():
     def board(self, board):
         self._board = board  
     
-
 class Random_strategy(Strategy):
     def __init__(self):
         super().__init__(None, None)
@@ -40,8 +39,7 @@ class Random_strategy(Strategy):
 class Greedy_strategy(Strategy):
     def __init__(self, evaluator = greedy_evaluator):
         super().__init__(None, evaluator)
-
-        
+   
 class Runner_strategy(Strategy):
     def __init__(self, evaluator = runner_evaluator):
         super().__init__(None, evaluator)
@@ -59,8 +57,7 @@ class Attacker_strategy(Strategy):
         movs = sorted(movs, key = lambda x: self._evaluator(self._unit, x), reverse=True)
         
         return movs[-1:0:-1]
-        
-        
+           
 class Normal_strategy(Strategy):
     def __init__(self, unit, evaluator = normal_evaluator):
         super().__init__(unit, evaluator)
@@ -105,6 +102,7 @@ class Hard_optimal_strategy(Strategy):
         movs = sorted(movs, key = lambda x: self._evaluator(self._unit, x, self._board), reverse=True)
         
         return movs
+
 class Hard_fuzzy_strategy(Strategy):
     def __init__(self, unit, evaluator = hard_evaluator):
         super().__init__(unit, evaluator)
