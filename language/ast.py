@@ -34,3 +34,26 @@ class BinaryNode(ExpressionNode):
     def __init__(self, left, right):
         self.left = left
         self.right = right
+
+class ConstantNumNode(AtomicNode):
+    pass
+
+class VariableNode(AtomicNode):
+    pass
+
+class CallNode(AtomicNode):
+    def __init__(self, id, args):
+        AtomicNode.__init__(self, id)
+        self.args = args
+
+class PlusNode(BinaryNode):
+    pass
+
+class MinusNode(BinaryNode):
+    pass
+
+class StarNode(BinaryNode):
+    pass
+
+class DivNode(BinaryNode):
+    pass
