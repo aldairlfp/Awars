@@ -52,6 +52,40 @@ class VariableNode(AtomicNode):
     pass
 
 
+class IfNode(StatementNode):
+    def __init__(self, condition, then, else_):
+        self.condition = condition
+        self.then = then
+        self.else_ = else_
+
+
+class WhileNode(StatementNode):
+    def __init__(self, condition, body):
+        self.condition = condition
+        self.body = body
+
+
+class ForNode(StatementNode):
+    def __init__(self, id, start, end, body):
+        self.id = id
+        self.start = start
+        self.end = end
+        self.body = body
+
+
+class ReturnNode(StatementNode):
+    def __init__(self, expression):
+        self.expression = expression
+
+
+class BreakNode(StatementNode):
+    pass
+
+
+class ContinueNode(StatementNode):
+    pass
+
+
 class CallNode(AtomicNode):
     def __init__(self, id, args):
         AtomicNode.__init__(self, id)
