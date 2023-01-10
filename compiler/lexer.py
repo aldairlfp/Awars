@@ -32,7 +32,6 @@ tokens = [
              'RPAREN',
              'NUMBER',
              'ID',
-             'FUNCTION',
              'ASSIGN',
              'SEMI',
              'COMMA',
@@ -52,7 +51,7 @@ tokens = [
              'COMMENT',
              'STRING_LITERAL',
              'CHAR_LITERAL',
-             'NEWLINE',
+             'newline',
          ] + list(reserved.values())
 
 
@@ -81,7 +80,6 @@ def aw_lexer():
     t_NOT = r'!'
     t_STRING_LITERAL = r'\".*\"'
     t_CHAR_LITERAL = r'\'.\''
-    t_NEWLINE = r'\n'
 
     def t_ID(t):
         r'[a-zA-Z_][a-zA-Z_0-9]*'
@@ -100,6 +98,7 @@ def aw_lexer():
     def t_newline(t):
         r'\n+'
         t.lexer.lineno += len(t.value)
+        return t
 
     def find_column(input, token):
         """
