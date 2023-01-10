@@ -3,6 +3,7 @@ import ply.lex as lex
 literals = ['+', '-', '*', '/', '(', ')', '=', ';', ',', '{', '}', '[', ']', '<', '>', '&', '|', '!']
 
 reserved = {
+    'func': 'FUNCTION',
     'if': 'IF',
     'else': 'ELSE',
     'while': 'WHILE',
@@ -25,7 +26,7 @@ reserved = {
 tokens = [
              'PLUS',
              'MINUS',
-             'TIMES',
+             'STAR',
              'DIVIDE',
              'LPAREN',
              'RPAREN',
@@ -51,13 +52,14 @@ tokens = [
              'COMMENT',
              'STRING_LITERAL',
              'CHAR_LITERAL',
+             'NEWLINE',
          ] + list(reserved.values())
 
 
 def aw_lexer():
     t_PLUS = r'\+'
     t_MINUS = r'-'
-    t_TIMES = r'\*'
+    t_STAR = r'\*'
     t_DIVIDE = r'/'
     t_LPAREN = r'\('
     t_RPAREN = r'\)'
@@ -79,15 +81,11 @@ def aw_lexer():
     t_NOT = r'!'
     t_STRING_LITERAL = r'\".*\"'
     t_CHAR_LITERAL = r'\'.\''
+    t_NEWLINE = r'\n'
 
     def t_ID(t):
         r'[a-zA-Z_][a-zA-Z_0-9]*'
         t.type = reserved.get(t.value, 'ID')
-        return t
-
-    def t_FUNCTION(t):
-        r'[a-zA-Z_][a-zA-Z_0-9]*\('
-        t.type = reserved.get(t.value, 'FUNCTION')
         return t
 
     def t_NUMBER(t):
