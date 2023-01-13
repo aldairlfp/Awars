@@ -1,6 +1,6 @@
 import compiler.cmp.visitor as visitor
 from compiler.ast import (ProgramNode, PrintNode, VarDeclarationNode, FunctionDeclarationNode, BinaryNode, AtomicNode,
-                          CallNode, IfNode)
+                          CallNode, IfNode, ReturnNode, WhileNode, VariableNode)
 
 
 class FormatVisitor(object):
@@ -52,8 +52,21 @@ class FormatVisitor(object):
 
     @visitor.when(IfNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__IfNode: if <expr> then <statement_list> else <statement_list>'
+        ans = '\t' * tabs + f'\\__IfNode: if <expr> <statement_list> else <statement_list>'
         condition = self.visit(node.condition, tabs + 1)
         then = '\n'.join(self.visit(child, tabs + 1) for child in node.then)
         # else_ = self.visit(node.else_, tabs + 1)
         return f'{ans}\n{condition}\n{then}'
+
+    @visitor.when(ReturnNode)
+    def visit(self, node, tabs=0):
+        ans = '\t' * tabs + f'\\__ReturnNode: return <expr>'
+        expr = self.visit(node.expression, tabs + 1)
+        return f'{ans}\n{expr}'
+
+    @visitor.when(WhileNode)
+    def visit(self, node, tabs=0):
+        ans = '\t' * tabs + f'\\__WhileNode: while <expr> <statement_list>'
+        condition = self.visit(node.condition, tabs + 1)
+        body = '\n'.join(self.visit(child, tabs + 1) for child in node.body)
+        return f'{ans}\n{condition}\n{body}'
