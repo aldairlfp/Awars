@@ -1,5 +1,6 @@
 import itertools as itl
 
+
 class VariableInfo:
     def __init__(self, name):
         self.name = name
@@ -9,6 +10,7 @@ class FunctionInfo:
     def __init__(self, name, params):
         self.name = name
         self.params = params
+
 
 class Scope:
     def __init__(self, parent=None):
@@ -36,11 +38,17 @@ class Scope:
         for var in self.local_vars:
             if var.name == vname:
                 return True
+        for var in range(self.var_index_at_parent):
+            if self.parent.local_vars[var].name == vname:
+                return True
         return False
 
     def is_func_defined(self, fname, n):
         for func in self.local_funcs:
             if func.name == fname and len(func.params) == n:
+                return True
+        for func in range(self.func_index_at_parent):
+            if self.parent.local_funcs[func].name == fname and len(self.parent.local_funcs[func].params) == n:
                 return True
         return False
 
