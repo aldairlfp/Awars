@@ -1,7 +1,7 @@
 import ply.yacc as yacc
 from lexer import tokens
 from compiler.ast import (ProgramNode, PrintNode, StatementNode, VarDeclarationNode, FunctionDeclarationNode, PlusNode,
-                          MinusNode, StarNode, DivNode, ConstantNumNode, IfNode)
+                          MinusNode, StarNode, DivNode, ConstantNumNode, IfNode, WhileNode)
 
 
 def aw_parser():
@@ -34,6 +34,7 @@ def aw_parser():
                      | function
                      | expression
                      | if_statement
+                     | while_statement
                      '''
         p[0] = p[1]
 
@@ -60,6 +61,10 @@ def aw_parser():
     def p_if_statement(p):
         'if_statement : IF LPAREN expression RPAREN LBRACE maybe_newline statement_list RBRACE'
         p[0] = IfNode(p[3], p[7], [])
+
+    def p_while_statement(p):
+        'while_statement : WHILE LPAREN expression RPAREN LBRACE maybe_newline statement_list RBRACE'
+        p[0] = WhileNode(p[3], p[7])
 
     def p_expression(p):
         '''expression : expression PLUS term
