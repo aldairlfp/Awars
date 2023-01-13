@@ -59,7 +59,13 @@ class Scope:
         return self.get_local_function_info(fname, n) is not None
 
     def get_local_variable_info(self, vname):
-        return next((var for var in self.local_vars if var.name == vname), None)
+        for var in self.local_vars:
+            if var.name == vname:
+                return var
+        return None
 
     def get_local_function_info(self, fname, n):
-        return next((func for func in self.local_funcs if func.name == fname and len(func.params) == n), None)
+        for func in self.local_funcs:
+            if func.name == fname and len(func.params) == n:
+                return func
+        return None
