@@ -119,4 +119,4 @@ def aw_lexer():
     def t_eof(t):
         return None
 
-    return lex.lex()
+    return lex.lex(debug=True)
