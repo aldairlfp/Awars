@@ -1,6 +1,6 @@
 import compiler.cmp.visitor as visitor
 from compiler.ast import (ProgramNode, PrintNode, VarDeclarationNode, FunctionDeclarationNode, BinaryNode, AtomicNode,
-                          CallNode, IfNode, ReturnNode, WhileNode, VariableNode)
+                          CallNode, IfNode, ReturnNode, WhileNode, VariableNode, ConstantNumNode)
 
 
 class FormatVisitor(object):
@@ -70,3 +70,78 @@ class FormatVisitor(object):
         condition = self.visit(node.condition, tabs + 1)
         body = '\n'.join(self.visit(child, tabs + 1) for child in node.body)
         return f'{ans}\n{condition}\n{body}'
+
+
+class SemanticCheckerVisitor(object):
+    def __init__(self):
+        self.errors = []
+
+    @visitor.on('node')
+    def visit(self, node, scope):
+        pass
+
+    @visitor.when(ProgramNode)
+    def visit(self, node, scope=None):
+        for child in node.statements:
+            self.visit(child, scope)
+        return self.errors
+
+    @visitor.when(VarDeclarationNode)
+    def visit(self, node, scope):
+        if scope.is_var_defined(node.id):
+            self.errors.append(f'Variable {node.id} already declared')
+        else:
+            scope.define_variable(node.id)
+            self.visit(node.expression, scope)
+
+    @visitor.when(FunctionDeclarationNode)
+    def visit(self, node, scope):
+        if scope.is_func_defined(node.id):
+            self.errors.append(f'Function {node.id} already declared')
+        else:
+            scope.define_function(node.id, node.params)
+            self.visit(node.body, scope)
+
+    @visitor.when(PrintNode)
+    def visit(self, node, scope):
+        self.visit(node.expression, scope)
+
+    @visitor.when(ConstantNumNode)
+    def visit(self, node, scope):
+        pass
+
+    @visitor.when(VariableNode)
+    def visit(self, node, scope):
+        if not scope.is_var_defined(node.lex):
+            self.errors.append(f'Variable {node.lex} not declared')
+
+    @visitor.when(CallNode)
+    def visit(self, node, scope):
+        if not scope.is_func_defined(node.lex):
+            self.errors.append(f'Function {node.lex} not declared')
+        else:
+            for arg in node.args:
+                self.visit(arg, scope)
+
+    @visitor.when(BinaryNode)
+    def visit(self, node, scope):
+        self.visit(node.left, scope)
+        self.visit(node.right, scope)
+
+    @visitor.when(IfNode)
+    def visit(self, node, scope):
+        self.visit(node.condition, scope)
+        for child in node.then:
+            self.visit(child, scope)
+        for child in node.else_:
+            self.visit(child, scope)
+
+    @visitor.when(ReturnNode)
+    def visit(self, node, scope):
+        self.visit(node.expression, scope)
+
+    @visitor.when(WhileNode)
+    def visit(self, node, scope):
+        self.visit(node.condition, scope)
+        for child in node.body:
+            self.visit(child, scope)
