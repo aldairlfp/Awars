@@ -1,43 +1,41 @@
 import ply.yacc as yacc
 from lexer import tokens
 from compiler.ast import (ProgramNode, PrintNode, StatementNode, VarDeclarationNode, FunctionDeclarationNode, PlusNode,
-    MinusNode, StarNode, DivNode, ConstantNumNode)
+                          MinusNode, StarNode, DivNode, ConstantNumNode, IfNode)
 
 
 def aw_parser():
     def p_program(p):
-        'program : function'
-        p[0] = p[1]
+        'program : maybe_newline statement_list'
+        p[0] = ProgramNode(p[2])
 
     def p_epsilon(p):
         'epsilon :'
         pass
 
+    def p_maybe_newline(p):
+        "maybe_newline : newline"
+        p[0] = p[1]
+
+    def p_maybe_epsilon(p):
+        "maybe_newline : epsilon"
+        pass
+
     def p_statement_list(p):
-        '''statement_list : statement SEMI statement_list
-                           | statement'''
-        if len(p) == 2:
-            p[0] = [p[1]]
-        else:
-            p[0] = [p[1]] + p[3]
+        'statement_list : statement newline statement_list'
+        p[0] = [p[1], *p[3]]
+
+    def p_statement_list_epsilon(p):
+        'statement_list : epsilon'
+        p[0] = []
 
     def p_statement(p):
         '''statement : assignment
                      | function
-                     | expression'''
+                     | expression
+                     | if_statement
+                     '''
         p[0] = p[1]
-
-    def p_statement_epsilon(p):
-        'statement : epsilon'
-        p[0] = []
-
-    def p_semi(p):
-        'semi : SEMI'
-        pass
-
-    def p_newline(p):
-        'newline : NEWLINE'
-        pass
 
     def p_assignment(p):
         'assignment : NUMBERTYPE ID ASSIGN expression'
@@ -53,11 +51,15 @@ def aw_parser():
         if len(p) == 2:
             p[0] = [p[1]]
         else:
-            p[0] = [p[1]] + p[3]
+            p[0] = [p[1], *p[3]]
 
     def p_param(p):
-        'param : NUMBER ID'
-        p[0] = p[1]
+        'param : NUMBERTYPE ID'
+        p[0] = p[2]
+
+    def p_if_statement(p):
+        'if_statement : IF LPAREN expression RPAREN LBRACE maybe_newline statement_list RBRACE'
+        p[0] = IfNode(p[3], p[7], [])
 
     def p_expression(p):
         '''expression : expression PLUS term
