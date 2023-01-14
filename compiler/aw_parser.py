@@ -47,8 +47,16 @@ def aw_parser():
         p[0] = VarDeclarationNode(p[2], p[4])
 
     def p_reassignment(p):
-        'reassignment : ID ASSIGN expression'
-        p[0] = VarDeclarationNode(p[1], p[3], True)
+        '''reassignment : ID ASSIGN expression
+                       | ID INC
+                       | ID DEC
+                       '''
+        if p[2] == '=':
+            p[0] = VarDeclarationNode(p[1], p[3], True)
+        elif p[2] == '++':
+            p[0] = VarDeclarationNode(p[1], PlusNode(VariableNode(p[1]), ConstantNumNode(1)), True)
+        elif p[2] == '--':
+            p[0] = VarDeclarationNode(p[1], MinusNode(VariableNode(p[1]), ConstantNumNode(1)), True)
 
     def p_print_statement(p):
         'print_statement : PRINT LPAREN expression RPAREN'

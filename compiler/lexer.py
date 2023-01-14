@@ -49,6 +49,8 @@ tokens = [
              'AND',
              'OR',
              'NOT',
+             'INC',
+             'DEC',
              'COMMENT',
              'STRING_LITERAL',
              'CHAR_LITERAL',
@@ -79,6 +81,8 @@ def aw_lexer():
     t_AND = r'&&'
     t_OR = r'\|\|'
     t_NOT = r'!'
+    t_INC = r'\+\+'
+    t_DEC = r'--'
     t_STRING_LITERAL = r'\".*\"'
     t_CHAR_LITERAL = r'\'.\''
 
