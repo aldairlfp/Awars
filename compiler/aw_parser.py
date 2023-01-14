@@ -1,6 +1,6 @@
 import ply.yacc as yacc
 from lexer import tokens
-from ast import (ProgramNode, PrintNode, StatementNode, VarDeclarationNode, FunctionDeclarationNode, PlusNode,
+from aw_ast import (ProgramNode, PrintNode, StatementNode, VarDeclarationNode, FunctionDeclarationNode, PlusNode,
                           MinusNode, StarNode, DivNode, ConstantNumNode, IfNode, WhileNode)
 
 
