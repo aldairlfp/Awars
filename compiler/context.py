@@ -1,6 +1,3 @@
-import itertools as itl
-
-
 class VariableInfo:
     def __init__(self, name, value):
         self.name = name

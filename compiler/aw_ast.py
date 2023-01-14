@@ -100,13 +100,16 @@ class PlusNode(BinaryNode):
     def operate(self, lvalue, rvalue):
         return lvalue + rvalue
 
+
 class MinusNode(BinaryNode):
     def operate(self, lvalue, rvalue):
         return lvalue - rvalue
 
+
 class StarNode(BinaryNode):
     def operate(self, lvalue, rvalue):
         return lvalue * rvalue
+
 
 class DivNode(BinaryNode):
     def operate(self, lvalue, rvalue):

@@ -1,7 +1,7 @@
 import cmp.visitor as visitor
 from context import Scope
 from aw_ast import (ProgramNode, PrintNode, VarDeclarationNode, FunctionDeclarationNode, BinaryNode, AtomicNode,
-                          CallNode, IfNode, ReturnNode, WhileNode, VariableNode, ConstantNumNode)
+                    CallNode, IfNode, ReturnNode, WhileNode, VariableNode, ConstantNumNode)
 
 
 class FormatVisitor(object):
@@ -152,6 +152,7 @@ class SemanticCheckerVisitor(object):
         child_scope = scope.create_child_scope()
         for child in node.body:
             self.visit(child, child_scope)
+
 
 class EvaluatorVisitor(object):
     def __init__(self):
