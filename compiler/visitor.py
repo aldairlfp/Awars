@@ -79,10 +79,12 @@ class FormatVisitor(object):
 
     @visitor.when(ForNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__ForNode: for {node.id} in <expr> <statement_list>'
-        expr = self.visit(node.expression, tabs + 1)
+        ans = '\t' * tabs + f'\\__ForNode: for(start; condition; increment) <statement_list>'
+        start = self.visit(node.start, tabs + 1)
+        condition = self.visit(node.condition, tabs + 1)
+        increment = self.visit(node.increment, tabs + 1)
         body = '\n'.join(self.visit(child, tabs + 1) for child in node.body)
-        return f'{ans}\n{expr}\n{body}'
+        return f'{ans}\n{start}\n{condition}\n{increment}\n{body}'
 
 
 class SemanticCheckerVisitor(object):
@@ -156,6 +158,15 @@ class SemanticCheckerVisitor(object):
     @visitor.when(WhileNode)
     def visit(self, node, scope):
         self.visit(node.condition, scope)
+        child_scope = scope.create_child_scope()
+        for child in node.body:
+            self.visit(child, child_scope)
+
+    @visitor.when(ForNode)
+    def visit(self, node, scope):
+        self.visit(node.start, scope)
+        self.visit(node.condition, scope)
+        self.visit(node.increment, scope)
         child_scope = scope.create_child_scope()
         for child in node.body:
             self.visit(child, child_scope)
