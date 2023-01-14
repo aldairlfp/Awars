@@ -3,7 +3,7 @@ from lexer import tokens
 from aw_ast import (ProgramNode, PrintNode, VarDeclarationNode, FunctionDeclarationNode, PlusNode,
                           MinusNode, StarNode, DivNode, ConstantNumNode, VariableNode, IfNode, WhileNode,
                           ForNode, EqualsNode, NotEqualsNode, LessThanNode, GreaterThanNode, LessThanEqualsNode, 
-                          GreaterThanEqualsNode)
+                          GreaterThanEqualsNode, BreakNode, ContinueNode)
 
 
 def aw_parser():
@@ -39,6 +39,8 @@ def aw_parser():
                      | if_statement
                      | while_statement
                      | for_statement
+                     | break_statement
+                     | continue_statement
                      '''
         p[0] = p[1]
 
@@ -118,6 +120,14 @@ def aw_parser():
             p[0] = LessThanEqualsNode(p[1], p[3])
         elif p[2] == '>=':
             p[0] = GreaterThanEqualsNode(p[1], p[3])
+
+    def p_break_statement(p):
+        'break_statement : BREAK'
+        p[0] = BreakNode()
+
+    def p_continue_statement(p):
+        'continue_statement : CONTINUE'
+        p[0] = ContinueNode()
 
     def p_expression(p):
         '''expression : expression PLUS term

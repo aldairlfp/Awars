@@ -1,8 +1,8 @@
 import cmp.visitor as visitor
 from context import Scope
 from aw_ast import (ProgramNode, PrintNode, VarDeclarationNode, FunctionDeclarationNode, BinaryNode, AtomicNode,
-                    CallNode, IfNode, ReturnNode, WhileNode, ForNode, VariableNode, ConstantNumNode)
-
+                    CallNode, IfNode, ReturnNode, WhileNode, ForNode, VariableNode, ConstantNumNode, BreakNode, ContinueNode)
+from utils import BreakException, ContinueException
 
 class FormatVisitor(object):
     @visitor.on('node')
@@ -248,10 +248,23 @@ class EvaluatorVisitor(object):
         child_scope = scope.create_child_scope()
         self.visit(node.start, child_scope)
         while self.visit(node.condition, child_scope):
-            for child in node.body:
-                self.visit(child, child_scope)
+            try:
+                for child in node.body:
+                    self.visit(child, child_scope)
+            except ContinueException:
+                continue
+            except BreakException:
+                break
             self.visit(node.increment, child_scope)
 
     @visitor.when(ReturnNode)
     def visit(self, node, scope):
         return self.visit(node.expression, scope)
+
+    @visitor.when(BreakNode)
+    def visit(self, node, scope):
+        raise BreakException()
+
+    @visitor.when(ContinueNode)
+    def visit(self, node, scope):
+        raise ContinueException()
