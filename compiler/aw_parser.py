@@ -1,7 +1,7 @@
 import ply.yacc as yacc
 from lexer import tokens
 from aw_ast import (ProgramNode, PrintNode, StatementNode, VarDeclarationNode, FunctionDeclarationNode, PlusNode,
-                          MinusNode, StarNode, DivNode, ConstantNumNode, IfNode, WhileNode)
+                          MinusNode, StarNode, DivNode, ConstantNumNode, VariableNode, IfNode, WhileNode)
 
 
 def aw_parser():
@@ -59,8 +59,16 @@ def aw_parser():
         p[0] = p[2]
 
     def p_if_statement(p):
-        'if_statement : IF LPAREN expression RPAREN LBRACE newline_or_empty statement_list RBRACE'
-        p[0] = IfNode(p[3], p[7], [])
+        'if_statement : IF LPAREN expression RPAREN LBRACE newline_or_empty statement_list RBRACE else_statement'
+        p[0] = IfNode(p[3], p[7], p[9])
+
+    def p_else_statement(p):
+        'else_statement : ELSE LBRACE newline_or_empty statement_list RBRACE'
+        p[0] = p[4]
+
+    def p_else_statement_epsilon(p):
+        'else_statement : epsilon'
+        pass
 
     def p_while_statement(p):
         'while_statement : WHILE LPAREN expression RPAREN LBRACE newline_or_empty statement_list RBRACE'
@@ -92,9 +100,13 @@ def aw_parser():
 
     def p_factor(p):
         '''factor : NUMBER
-                  | LPAREN expression RPAREN'''
+                  | LPAREN expression RPAREN
+                  | ID'''
         if len(p) == 2:
-            p[0] = ConstantNumNode(p[1])
+            if isinstance(p[1], float):
+                p[0] = ConstantNumNode(p[1])
+            else:
+                p[0] = VariableNode(p[1])
         else:
             p[0] = p[2]
 
