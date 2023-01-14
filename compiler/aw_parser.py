@@ -6,23 +6,23 @@ from aw_ast import (ProgramNode, PrintNode, StatementNode, VarDeclarationNode, F
 
 def aw_parser():
     def p_program(p):
-        'program : maybe_newline statement_list'
+        'program : newline_or_empty statement_list'
         p[0] = ProgramNode(p[2])
 
     def p_epsilon(p):
         'epsilon :'
         pass
 
-    def p_maybe_newline(p):
-        "maybe_newline : newline"
+    def p_newline_or_empty(p):
+        "newline_or_empty : newline newline_or_empty"
         p[0] = p[1]
 
     def p_maybe_epsilon(p):
-        "maybe_newline : epsilon"
+        "newline_or_empty : epsilon"
         pass
 
     def p_statement_list(p):
-        'statement_list : statement newline maybe_newline statement_list'
+        'statement_list : statement newline newline_or_empty statement_list'
         p[0] = [p[1], *p[4]]
 
     def p_statement_list_epsilon(p):
@@ -59,11 +59,11 @@ def aw_parser():
         p[0] = p[2]
 
     def p_if_statement(p):
-        'if_statement : IF LPAREN expression RPAREN LBRACE maybe_newline statement_list RBRACE'
+        'if_statement : IF LPAREN expression RPAREN LBRACE newline_or_empty statement_list RBRACE'
         p[0] = IfNode(p[3], p[7], [])
 
     def p_while_statement(p):
-        'while_statement : WHILE LPAREN expression RPAREN LBRACE maybe_newline statement_list RBRACE'
+        'while_statement : WHILE LPAREN expression RPAREN LBRACE newline_or_empty statement_list RBRACE'
         p[0] = WhileNode(p[3], p[7])
 
     def p_expression(p):
