@@ -16,9 +16,10 @@ class ExpressionNode(Node):
 
 
 class VarDeclarationNode(StatementNode):
-    def __init__(self, id, expression):
+    def __init__(self, id, expression, reassignament=False):
         self.id = id
         self.expression = expression
+        self.reassignament = reassignament
 
 
 class FunctionDeclarationNode(StatementNode):

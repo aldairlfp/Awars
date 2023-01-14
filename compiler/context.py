@@ -27,7 +27,14 @@ class Scope:
         self.children.append(child_scope)
         return child_scope
 
-    def define_variable(self, vname, value):
+    def define_variable(self, vname, value, reassign=False):
+        if reassign:
+            if self.is_local_var(vname):
+                self.get_local_variable_info(vname).value = value
+                return
+            elif self.parent is not None:
+                self.parent.define_variable(vname, value, reassign)
+                return
         self.local_vars.append(VariableInfo(vname, value))
         return
 

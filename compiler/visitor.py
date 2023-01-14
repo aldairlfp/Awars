@@ -173,7 +173,7 @@ class EvaluatorVisitor(object):
     @visitor.when(VarDeclarationNode)
     def visit(self, node, scope):
         result = self.visit(node.expression, scope)
-        scope.define_variable(node.id, result)
+        scope.define_variable(node.id, result, node.reassignament)
 
     @visitor.when(FunctionDeclarationNode)
     def visit(self, node, scope):
@@ -209,7 +209,7 @@ class EvaluatorVisitor(object):
 
     @visitor.when(IfNode)
     def visit(self, node, scope):
-        if self.visit(node.condition, scope) == 0:
+        if self.visit(node.condition, scope) != 0:
             child_scope = scope.create_child_scope()
             for child in node.then:
                 self.visit(child, child_scope)
@@ -219,7 +219,7 @@ class EvaluatorVisitor(object):
 
     @visitor.when(WhileNode)
     def visit(self, node, scope):
-        while self.visit(node.condition, scope) == 0:
+        while self.visit(node.condition, scope) != 0:
             child_scope = scope.create_child_scope()
             for child in node.body:
                 self.visit(child, child_scope)
