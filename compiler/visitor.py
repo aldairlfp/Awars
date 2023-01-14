@@ -56,8 +56,13 @@ class FormatVisitor(object):
         ans = '\t' * tabs + f'\\__IfNode: if <expr> <statement_list> else <statement_list>'
         condition = self.visit(node.condition, tabs + 1)
         then = '\n'.join(self.visit(child, tabs + 1) for child in node.then)
-        # else_ = self.visit(node.else_, tabs + 1)
-        return f'{ans}\n{condition}\n{then}'
+        if node.else_ is None:
+            else_ = '\t' * (tabs + 1) + '\\__else: None'
+        else:
+            else_ans = '\t' * tabs + '\\__else: <statement_list>'
+            else_ = '\n'.join(self.visit(child, tabs + 1) for child in node.else_)
+            else_ = f'{else_ans}\n{else_}'
+        return f'{ans}\n{condition}\n{then}\n{else_}'
 
     @visitor.when(ReturnNode)
     def visit(self, node, tabs=0):
@@ -94,16 +99,16 @@ class SemanticCheckerVisitor(object):
         if scope.is_var_defined(node.id):
             self.errors.append(f'Variable {node.id} already declared')
         else:
-            scope.define_variable(node.id)
             self.visit(node.expression, scope)
+            scope.define_variable(node.id)
 
     @visitor.when(FunctionDeclarationNode)
     def visit(self, node, scope):
         if scope.is_func_defined(node.id):
             self.errors.append(f'Function {node.id} already declared')
         else:
-            scope.define_function(node.id, node.params)
             self.visit(node.body, scope)
+            scope.define_function(node.id, node.params)
 
     @visitor.when(PrintNode)
     def visit(self, node, scope):
@@ -137,12 +142,9 @@ class SemanticCheckerVisitor(object):
         child_scope = scope.create_child_scope()
         for child in node.then:
             self.visit(child, child_scope)
-        for child in node.else_:
-            self.visit(child, scope)
-
-    @visitor.when(ReturnNode)
-    def visit(self, node, scope):
-        self.visit(node.expression, scope)
+        if node.else_ is not None:
+            for child in node.else_:
+                self.visit(child, scope)
 
     @visitor.when(WhileNode)
     def visit(self, node, scope):
