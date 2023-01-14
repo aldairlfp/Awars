@@ -1,5 +1,6 @@
-import compiler.cmp.visitor as visitor
-from compiler.ast import (ProgramNode, PrintNode, VarDeclarationNode, FunctionDeclarationNode, BinaryNode, AtomicNode,
+import cmp.visitor as visitor
+from context import Scope
+from ast import (ProgramNode, PrintNode, VarDeclarationNode, FunctionDeclarationNode, BinaryNode, AtomicNode,
                           CallNode, IfNode, ReturnNode, WhileNode, VariableNode, ConstantNumNode)
 
 
@@ -82,8 +83,10 @@ class SemanticCheckerVisitor(object):
 
     @visitor.when(ProgramNode)
     def visit(self, node, scope=None):
+        if scope is None:
+            scope = Scope()
         for child in node.statements:
-            self.visit(child, scope)
+            self.visit(child, scope.create_child_scope())
         return self.errors
 
     @visitor.when(VarDeclarationNode)
@@ -132,7 +135,7 @@ class SemanticCheckerVisitor(object):
     def visit(self, node, scope):
         self.visit(node.condition, scope)
         for child in node.then:
-            self.visit(child, scope)
+            self.visit(child, scope.create_child_scope())
         for child in node.else_:
             self.visit(child, scope)
 
