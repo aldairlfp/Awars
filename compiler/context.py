@@ -2,8 +2,9 @@ import itertools as itl
 
 
 class VariableInfo:
-    def __init__(self, name):
+    def __init__(self, name, value):
         self.name = name
+        self.value = value
 
 
 class FunctionInfo:
@@ -26,8 +27,8 @@ class Scope:
         self.children.append(child_scope)
         return child_scope
 
-    def define_variable(self, vname):
-        self.local_vars.append(VariableInfo(vname))
+    def define_variable(self, vname, value):
+        self.local_vars.append(VariableInfo(vname, value))
         return
 
     def define_function(self, fname, params):
@@ -63,6 +64,14 @@ class Scope:
             if var.name == vname:
                 return var
         return None
+
+    def get_variable(self, vname):
+        if self.is_local_var(vname):
+            return self.get_local_variable_info(vname)
+        elif self.parent is not None:
+            return self.parent.get_variable(vname)
+        else:
+            return None
 
     def get_local_function_info(self, fname, n):
         for func in self.local_funcs:

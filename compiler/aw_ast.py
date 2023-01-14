@@ -43,6 +43,9 @@ class BinaryNode(ExpressionNode):
         self.left = left
         self.right = right
 
+    def operate(self, lvalue, rvalue):
+        raise NotImplementedError()
+
 
 class ConstantNumNode(AtomicNode):
     pass
@@ -93,16 +96,17 @@ class CallNode(AtomicNode):
 
 
 class PlusNode(BinaryNode):
-    pass
-
+    def operate(self, lvalue, rvalue):
+        return lvalue + rvalue
 
 class MinusNode(BinaryNode):
-    pass
-
+    def operate(self, lvalue, rvalue):
+        return lvalue - rvalue
 
 class StarNode(BinaryNode):
-    pass
-
+    def operate(self, lvalue, rvalue):
+        return lvalue * rvalue
 
 class DivNode(BinaryNode):
-    pass
+    def operate(self, lvalue, rvalue):
+        return lvalue / rvalue

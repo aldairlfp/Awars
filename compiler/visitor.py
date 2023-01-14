@@ -152,3 +152,78 @@ class SemanticCheckerVisitor(object):
         child_scope = scope.create_child_scope()
         for child in node.body:
             self.visit(child, child_scope)
+
+class EvaluatorVisitor(object):
+    def __init__(self):
+        self.errors = []
+        self.functions = {}
+
+    @visitor.on('node')
+    def visit(self, node, scope):
+        pass
+
+    @visitor.when(ProgramNode)
+    def visit(self, node, scope=None):
+        if scope is None:
+            scope = Scope()
+        for child in node.statements:
+            self.visit(child, scope)
+        return self.errors
+
+    @visitor.when(VarDeclarationNode)
+    def visit(self, node, scope):
+        result = self.visit(node.expression, scope)
+        scope.define_variable(node.id, result)
+
+    @visitor.when(FunctionDeclarationNode)
+    def visit(self, node, scope):
+        scope.define_function(node.id, node.params)
+        self.functions[node.id] = node
+
+    @visitor.when(PrintNode)
+    def visit(self, node, scope):
+        print(self.visit(node.expression, scope))
+
+    @visitor.when(ConstantNumNode)
+    def visit(self, node, scope):
+        return node.lex
+
+    @visitor.when(VariableNode)
+    def visit(self, node, scope):
+        return scope.get_variable(node.lex).value
+
+    @visitor.when(CallNode)
+    def visit(self, node, scope):
+        func = self.functions[node.lex]
+        child_scope = scope.create_child_scope()
+        for param, arg in zip(func.params, node.args):
+            child_scope.define_variable(param, self.visit(arg, scope))
+        for child in func.body:
+            self.visit(child, child_scope)
+
+    @visitor.when(BinaryNode)
+    def visit(self, node, scope):
+        left = self.visit(node.left, scope)
+        right = self.visit(node.right, scope)
+        return node.operate(left, right)
+
+    @visitor.when(IfNode)
+    def visit(self, node, scope):
+        if self.visit(node.condition, scope) == 0:
+            child_scope = scope.create_child_scope()
+            for child in node.then:
+                self.visit(child, child_scope)
+        elif node.else_ is not None:
+            for child in node.else_:
+                self.visit(child, scope)
+
+    @visitor.when(WhileNode)
+    def visit(self, node, scope):
+        while self.visit(node.condition, scope) == 0:
+            child_scope = scope.create_child_scope()
+            for child in node.body:
+                self.visit(child, child_scope)
+
+    @visitor.when(ReturnNode)
+    def visit(self, node, scope):
+        return self.visit(node.expression, scope)

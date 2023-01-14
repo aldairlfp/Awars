@@ -31,8 +31,8 @@ def aw_parser():
 
     def p_statement(p):
         '''statement : assignment
+                     | print_statement
                      | function
-                     | expression
                      | if_statement
                      | while_statement
                      '''
@@ -41,6 +41,10 @@ def aw_parser():
     def p_assignment(p):
         'assignment : NUMBERTYPE ID ASSIGN expression'
         p[0] = VarDeclarationNode(p[2], p[4])
+
+    def p_print_statement(p):
+        'print_statement : PRINT LPAREN expression RPAREN'
+        p[0] = PrintNode(p[3])
 
     def p_function(p):
         'function : FUNCTION ID LPAREN params RPAREN LBRACE statement_list RBRACE'
