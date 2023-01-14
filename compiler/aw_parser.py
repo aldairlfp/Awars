@@ -22,8 +22,8 @@ def aw_parser():
         pass
 
     def p_statement_list(p):
-        'statement_list : statement newline statement_list'
-        p[0] = [p[1], *p[3]]
+        'statement_list : statement newline maybe_newline statement_list'
+        p[0] = [p[1], *p[4]]
 
     def p_statement_list_epsilon(p):
         'statement_list : epsilon'

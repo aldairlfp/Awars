@@ -86,7 +86,7 @@ class SemanticCheckerVisitor(object):
         if scope is None:
             scope = Scope()
         for child in node.statements:
-            self.visit(child, scope.create_child_scope())
+            self.visit(child, scope)
         return self.errors
 
     @visitor.when(VarDeclarationNode)

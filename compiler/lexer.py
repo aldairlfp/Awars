@@ -97,7 +97,7 @@ def aw_lexer():
 
     def t_newline(t):
         r'\n+'
-        t.lexer.lineno += 1
+        t.lexer.lineno += len(t.value)
         return t
 
     def find_column(input, token):
