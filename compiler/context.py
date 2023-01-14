@@ -41,7 +41,7 @@ class Scope:
         for var in range(self.var_index_at_parent):
             if self.parent.local_vars[var].name == vname:
                 return True
-        return False
+        return self.parent.is_var_defined(vname) if self.parent is not None else False
 
     def is_func_defined(self, fname, n):
         for func in self.local_funcs:
@@ -50,7 +50,7 @@ class Scope:
         for func in range(self.func_index_at_parent):
             if self.parent.local_funcs[func].name == fname and len(self.parent.local_funcs[func].params) == n:
                 return True
-        return False
+        return self.parent.is_func_defined(fname, n) if self.parent is not None else False
 
     def is_local_var(self, vname):
         return self.get_local_variable_info(vname) is not None
