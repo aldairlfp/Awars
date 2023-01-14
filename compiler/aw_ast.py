@@ -70,10 +70,10 @@ class WhileNode(StatementNode):
 
 
 class ForNode(StatementNode):
-    def __init__(self, id, start, end, body):
-        self.id = id
+    def __init__(self, start, condition, increment, body):
         self.start = start
-        self.end = end
+        self.condition = condition
+        self.increment = increment
         self.body = body
 
 
@@ -114,3 +114,35 @@ class StarNode(BinaryNode):
 class DivNode(BinaryNode):
     def operate(self, lvalue, rvalue):
         return lvalue / rvalue
+
+class EqualsNode(BinaryNode):
+    def operate(self, lvalue, rvalue):
+        return lvalue == rvalue
+
+class NotEqualsNode(BinaryNode):
+    def operate(self, lvalue, rvalue):
+        return lvalue != rvalue
+
+class LessThanNode(BinaryNode):
+    def operate(self, lvalue, rvalue):
+        return lvalue < rvalue
+
+class LessThanEqualsNode(BinaryNode):
+    def operate(self, lvalue, rvalue):
+        return lvalue <= rvalue
+
+class GreaterThanNode(BinaryNode):
+    def operate(self, lvalue, rvalue):
+        return lvalue > rvalue
+
+class GreaterThanEqualsNode(BinaryNode):
+    def operate(self, lvalue, rvalue):
+        return lvalue >= rvalue
+
+class AndNode(BinaryNode):
+    def operate(self, lvalue, rvalue):
+        return lvalue and rvalue
+
+class OrNode(BinaryNode):
+    def operate(self, lvalue, rvalue):
+        return lvalue or rvalue

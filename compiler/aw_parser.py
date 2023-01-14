@@ -1,7 +1,9 @@
 import ply.yacc as yacc
 from lexer import tokens
-from aw_ast import (ProgramNode, PrintNode, StatementNode, VarDeclarationNode, FunctionDeclarationNode, PlusNode,
-                          MinusNode, StarNode, DivNode, ConstantNumNode, VariableNode, IfNode, WhileNode)
+from aw_ast import (ProgramNode, PrintNode, VarDeclarationNode, FunctionDeclarationNode, PlusNode,
+                          MinusNode, StarNode, DivNode, ConstantNumNode, VariableNode, IfNode, WhileNode,
+                          ForNode, EqualsNode, NotEqualsNode, LessThanNode, GreaterThanNode, LessThanEqualsNode, 
+                          GreaterThanEqualsNode)
 
 
 def aw_parser():
@@ -36,6 +38,7 @@ def aw_parser():
                      | function
                      | if_statement
                      | while_statement
+                     | for_statement
                      '''
         p[0] = p[1]
 
@@ -68,7 +71,7 @@ def aw_parser():
         p[0] = p[2]
 
     def p_if_statement(p):
-        'if_statement : IF LPAREN expression RPAREN LBRACE newline_or_empty statement_list RBRACE else_statement'
+        'if_statement : IF LPAREN condition RPAREN LBRACE newline_or_empty statement_list RBRACE else_statement'
         p[0] = IfNode(p[3], p[7], p[9])
 
     def p_else_statement(p):
@@ -80,8 +83,33 @@ def aw_parser():
         pass
 
     def p_while_statement(p):
-        'while_statement : WHILE LPAREN expression RPAREN LBRACE newline_or_empty statement_list RBRACE'
+        'while_statement : WHILE LPAREN condition RPAREN LBRACE newline_or_empty statement_list RBRACE'
         p[0] = WhileNode(p[3], p[7])
+
+    def p_for_statement(p):
+        'for_statement : FOR LPAREN assignment SEMI condition SEMI reassignment RPAREN LBRACE newline_or_empty statement_list RBRACE'
+        p[0] = ForNode(p[3], p[5], p[7], p[11])
+
+    def p_condition(p):
+        '''condition : expression EQ expression
+                     | expression NEQ expression
+                     | expression LT expression
+                     | expression GT expression
+                     | expression LTE expression
+                     | expression GTE expression
+                     '''
+        if p[2] == '==':
+            p[0] = EqualsNode(p[1], p[3])
+        elif p[2] == '!=':
+            p[0] = NotEqualsNode(p[1], p[3])
+        elif p[2] == '<':
+            p[0] = LessThanNode(p[1], p[3])
+        elif p[2] == '>':
+            p[0] = GreaterThanNode(p[1], p[3])
+        elif p[2] == '<=':
+            p[0] = LessThanEqualsNode(p[1], p[3])
+        elif p[2] == '>=':
+            p[0] = GreaterThanEqualsNode(p[1], p[3])
 
     def p_expression(p):
         '''expression : expression PLUS term

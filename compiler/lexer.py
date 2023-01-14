@@ -6,6 +6,7 @@ reserved = {
     'func': 'FUNCTION',
     'if': 'IF',
     'else': 'ELSE',
+    'for': 'FOR',
     'while': 'WHILE',
     'number': 'NUMBERTYPE',
     'string': 'STRING',
