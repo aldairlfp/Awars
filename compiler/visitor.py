@@ -96,11 +96,11 @@ class SemanticCheckerVisitor(object):
 
     @visitor.when(VarDeclarationNode)
     def visit(self, node, scope):
-        if scope.is_var_defined(node.id):
+        if scope.is_var_defined(node.id) and node.reassignament is False:
             self.errors.append(f'Variable {node.id} already declared')
         else:
-            self.visit(node.expression, scope)
-            scope.define_variable(node.id)
+            result = self.visit(node.expression, scope)
+            scope.define_variable(node.id, result)
 
     @visitor.when(FunctionDeclarationNode)
     def visit(self, node, scope):
