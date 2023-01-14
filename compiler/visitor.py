@@ -147,5 +147,6 @@ class SemanticCheckerVisitor(object):
     @visitor.when(WhileNode)
     def visit(self, node, scope):
         self.visit(node.condition, scope)
+        child_scope = scope.create_child_scope()
         for child in node.body:
-            self.visit(child, scope)
+            self.visit(child, child_scope)
