@@ -86,6 +86,14 @@ class FormatVisitor(object):
         body = '\n'.join(self.visit(child, tabs + 1) for child in node.body)
         return f'{ans}\n{start}\n{condition}\n{increment}\n{body}'
 
+    @visitor.when(BreakNode)
+    def visit(self, node, tabs=0):
+        return '\t' * tabs + f'\\__BreakNode'
+
+    @visitor.when(ContinueNode)
+    def visit(self, node, tabs=0):
+        return '\t' * tabs + f'\\__ContinueNode'
+
 
 class SemanticCheckerVisitor(object):
     def __init__(self):
