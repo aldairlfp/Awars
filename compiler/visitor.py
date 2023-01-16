@@ -246,10 +246,15 @@ class EvaluatorVisitor(object):
 
     @visitor.when(WhileNode)
     def visit(self, node, scope):
+        child_scope = scope.create_child_scope()
         while self.visit(node.condition, scope):
-            child_scope = scope.create_child_scope()
-            for child in node.body:
-                self.visit(child, child_scope)
+            try:
+                for child in node.body:
+                    self.visit(child, child_scope)
+            except ContinueException:
+                continue
+            except BreakException:
+                break
 
     @visitor.when(ForNode)
     def visit(self, node, scope):
@@ -276,3 +281,6 @@ class EvaluatorVisitor(object):
     @visitor.when(ContinueNode)
     def visit(self, node, scope):
         raise ContinueException()
+
+# TODO: Merge SemanticAnalyzerVisitor and EvaluatorVisitor
+# TODO: Fix break and continue in SemanticAnalyzerVisitor
