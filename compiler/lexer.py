@@ -9,18 +9,12 @@ reserved = {
     'for': 'FOR',
     'while': 'WHILE',
     'number': 'NUMBERTYPE',
-    'string': 'STRING',
+    'string': 'STRINGTYPE',
     'return': 'RETURN',
-    'void': 'VOID',
     'break': 'BREAK',
     'continue': 'CONTINUE',
-    'switch': 'SWITCH',
-    'case': 'CASE',
     'soldier': 'SOLDIER',
     'field': 'FIELD',
-    'enemy': 'ENEMY',
-    'obstacle': 'OBSTACLE',
-    'default': 'DEFAULT',
     'print': 'PRINT',
 }
 
@@ -53,7 +47,6 @@ tokens = [
              'DEC',
              'COMMENT',
              'STRING_LITERAL',
-             'CHAR_LITERAL',
              'newline',
          ] + list(reserved.values())
 
@@ -84,7 +77,6 @@ def aw_lexer():
     t_INC = r'\+\+'
     t_DEC = r'--'
     t_STRING_LITERAL = r'\".*\"'
-    t_CHAR_LITERAL = r'\'.\''
 
     def t_ID(t):
         r'[a-zA-Z_][a-zA-Z_0-9]*'
