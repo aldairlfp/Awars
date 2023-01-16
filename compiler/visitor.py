@@ -108,7 +108,12 @@ class SemanticCheckerVisitor(object):
         if scope is None:
             scope = Scope()
         for child in node.statements:
-            self.visit(child, scope)
+            try:
+                self.visit(child, scope)
+            except ContinueException:
+                self.errors.append('Continue outside loop')
+            except BreakException:
+                self.errors.append('Break outside loop')
         return self.errors
 
     @visitor.when(VarDeclarationNode)
@@ -158,10 +163,19 @@ class SemanticCheckerVisitor(object):
         self.visit(node.condition, scope)
         child_scope = scope.create_child_scope()
         for child in node.then:
-            self.visit(child, child_scope)
+            try:
+                self.visit(child, child_scope)
+            except ContinueException:
+                self.errors.append('Continue outside loop')
+            except BreakException:
+                self.errors.append('Break outside loop')
         if node.else_ is not None:
-            for child in node.else_:
-                self.visit(child, scope)
+            try:
+                self.visit(child, child_scope)
+            except ContinueException:
+                self.errors.append('Continue outside loop')
+            except BreakException:
+                self.errors.append('Break outside loop')
 
     @visitor.when(WhileNode)
     def visit(self, node, scope):
@@ -178,6 +192,14 @@ class SemanticCheckerVisitor(object):
         child_scope = scope.create_child_scope()
         for child in node.body:
             self.visit(child, child_scope)
+
+    @visitor.when(BreakNode)
+    def visit(self, node, scope):
+        raise BreakException()
+
+    @visitor.when(ContinueNode)
+    def visit(self, node, scope):
+        raise ContinueException()
 
 
 class EvaluatorVisitor(object):
@@ -282,5 +304,4 @@ class EvaluatorVisitor(object):
     def visit(self, node, scope):
         raise ContinueException()
 
-# TODO: Merge SemanticAnalyzerVisitor and EvaluatorVisitor
 # TODO: Fix break and continue in SemanticAnalyzerVisitor
