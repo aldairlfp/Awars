@@ -163,26 +163,21 @@ class SemanticCheckerVisitor(object):
         self.visit(node.condition, scope)
         child_scope = scope.create_child_scope()
         for child in node.then:
-            try:
-                self.visit(child, child_scope)
-            except ContinueException:
-                self.errors.append('Continue outside loop')
-            except BreakException:
-                self.errors.append('Break outside loop')
+            self.visit(child, child_scope)
         if node.else_ is not None:
-            try:
-                self.visit(child, child_scope)
-            except ContinueException:
-                self.errors.append('Continue outside loop')
-            except BreakException:
-                self.errors.append('Break outside loop')
+            self.visit(child, child_scope)
 
     @visitor.when(WhileNode)
     def visit(self, node, scope):
         self.visit(node.condition, scope)
         child_scope = scope.create_child_scope()
         for child in node.body:
-            self.visit(child, child_scope)
+            try:
+                self.visit(child, child_scope)
+            except ContinueException:
+                pass
+            except BreakException:
+                pass
 
     @visitor.when(ForNode)
     def visit(self, node, scope):
@@ -191,7 +186,12 @@ class SemanticCheckerVisitor(object):
         self.visit(node.increment, scope)
         child_scope = scope.create_child_scope()
         for child in node.body:
-            self.visit(child, child_scope)
+            try:
+                self.visit(child, child_scope)
+            except ContinueException:
+                pass
+            except BreakException:
+                pass
 
     @visitor.when(BreakNode)
     def visit(self, node, scope):
@@ -290,7 +290,8 @@ class EvaluatorVisitor(object):
                 continue
             except BreakException:
                 break
-            self.visit(node.increment, child_scope)
+            finally:
+                self.visit(node.increment, child_scope)
 
     @visitor.when(ReturnNode)
     def visit(self, node, scope):
@@ -303,5 +304,3 @@ class EvaluatorVisitor(object):
     @visitor.when(ContinueNode)
     def visit(self, node, scope):
         raise ContinueException()
-
-# TODO: Fix break and continue in SemanticAnalyzerVisitor
