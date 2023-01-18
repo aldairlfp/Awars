@@ -1,7 +1,7 @@
 import ply.yacc as yacc
 from lexer import tokens
 from aw_ast import (ProgramNode, PrintNode, VarDeclarationNode, FunctionDeclarationNode, PlusNode,
-                          MinusNode, StarNode, DivNode, ConstantNumNode, VariableNode, IfNode, WhileNode,
+                          MinusNode, StarNode, DivNode, ConstantNumNode, ConstantStringNode, VariableNode, IfNode, WhileNode,
                           ForNode, EqualsNode, NotEqualsNode, LessThanNode, GreaterThanNode, LessThanEqualsNode, 
                           GreaterThanEqualsNode, BreakNode, ContinueNode)
 
@@ -45,7 +45,7 @@ def aw_parser():
         p[0] = p[1]
 
     def p_assignment(p):
-        'assignment : NUMBERTYPE ID ASSIGN expression'
+        'assignment : VAR ID ASSIGN expression'
         p[0] = VarDeclarationNode(p[2], p[4])
 
     def p_reassignment(p):
@@ -77,7 +77,7 @@ def aw_parser():
             p[0] = [p[1], *p[3]]
 
     def p_param(p):
-        'param : NUMBERTYPE ID'
+        'param : VAR ID'
         p[0] = p[2]
 
     def p_if_statement(p):
@@ -155,11 +155,14 @@ def aw_parser():
 
     def p_factor(p):
         '''factor : NUMBER
+                  | STRING
                   | LPAREN expression RPAREN
                   | ID'''
         if len(p) == 2:
             if isinstance(p[1], float):
                 p[0] = ConstantNumNode(p[1])
+            elif isinstance(p[1], str) and p[1][0] == '"' and p[1][-1] == '"':
+                p[0] = ConstantStringNode(p[1][1:-1])
             else:
                 p[0] = VariableNode(p[1])
         else:

@@ -1,8 +1,8 @@
 import cmp.visitor as visitor
 from context import Scope
 from aw_ast import (ProgramNode, PrintNode, VarDeclarationNode, FunctionDeclarationNode, BinaryNode, AtomicNode,
-                    CallNode, IfNode, ReturnNode, WhileNode, ForNode, VariableNode, ConstantNumNode, BreakNode, ContinueNode)
-from utils import BreakException, ContinueException
+                    CallNode, IfNode, ReturnNode, WhileNode, ForNode, VariableNode, ConstantNumNode, ConstantStringNode, BreakNode, ContinueNode)
+from utils import BreakException, ContinueException, FloatStringException
 
 class FormatVisitor(object):
     @visitor.on('node')
@@ -215,8 +215,11 @@ class EvaluatorVisitor(object):
     def visit(self, node, scope=None):
         if scope is None:
             scope = Scope()
-        for child in node.statements:
-            self.visit(child, scope)
+        try:
+            for child in node.statements:
+                self.visit(child, scope)
+        except FloatStringException():
+            pass
         return self.errors
 
     @visitor.when(VarDeclarationNode)
@@ -237,6 +240,10 @@ class EvaluatorVisitor(object):
     def visit(self, node, scope):
         return node.lex
 
+    @visitor.when(ConstantStringNode)
+    def visit(self, node, scope):
+        return node.lex
+
     @visitor.when(VariableNode)
     def visit(self, node, scope):
         return scope.get_variable(node.lex).value
@@ -254,7 +261,12 @@ class EvaluatorVisitor(object):
     def visit(self, node, scope):
         left = self.visit(node.left, scope)
         right = self.visit(node.right, scope)
-        return node.operate(left, right)
+        if isinstance(left, str) and isinstance(right, float) or \
+                isinstance(left, float) and isinstance(right, str):
+            self.errors.append('Cannot operate between string and number')
+            raise FloatStringException()
+        else:
+            return node.operate(left, right)
 
     @visitor.when(IfNode)
     def visit(self, node, scope):

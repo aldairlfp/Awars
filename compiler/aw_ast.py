@@ -52,6 +52,10 @@ class ConstantNumNode(AtomicNode):
     pass
 
 
+class ConstantStringNode(AtomicNode):
+    pass
+
+
 class VariableNode(AtomicNode):
     pass
 
@@ -115,33 +119,41 @@ class DivNode(BinaryNode):
     def operate(self, lvalue, rvalue):
         return lvalue / rvalue
 
+
 class EqualsNode(BinaryNode):
     def operate(self, lvalue, rvalue):
         return lvalue == rvalue
+
 
 class NotEqualsNode(BinaryNode):
     def operate(self, lvalue, rvalue):
         return lvalue != rvalue
 
+
 class LessThanNode(BinaryNode):
     def operate(self, lvalue, rvalue):
         return lvalue < rvalue
+
 
 class LessThanEqualsNode(BinaryNode):
     def operate(self, lvalue, rvalue):
         return lvalue <= rvalue
 
+
 class GreaterThanNode(BinaryNode):
     def operate(self, lvalue, rvalue):
         return lvalue > rvalue
+
 
 class GreaterThanEqualsNode(BinaryNode):
     def operate(self, lvalue, rvalue):
         return lvalue >= rvalue
 
+
 class AndNode(BinaryNode):
     def operate(self, lvalue, rvalue):
         return lvalue and rvalue
+
 
 class OrNode(BinaryNode):
     def operate(self, lvalue, rvalue):

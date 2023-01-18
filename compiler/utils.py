@@ -3,3 +3,6 @@ class BreakException(Exception):
 
 class ContinueException(Exception):
     pass
+
+class FloatStringException(Exception):
+    pass

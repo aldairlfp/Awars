@@ -1,6 +1,7 @@
 import ply.lex as lex
 
-literals = ['+', '-', '*', '/', '(', ')', '=', ';', ',', '{', '}', '[', ']', '<', '>', '&', '|', '!']
+literals = ['+', '-', '*', '/',
+            '(', ')', '=', ';', ',', '{', '}', '[', ']', '<', '>', '&', '|', '!']
 
 reserved = {
     'func': 'FUNCTION',
@@ -8,8 +9,7 @@ reserved = {
     'else': 'ELSE',
     'for': 'FOR',
     'while': 'WHILE',
-    'number': 'NUMBERTYPE',
-    'string': 'STRINGTYPE',
+    'var': 'VAR',
     'return': 'RETURN',
     'break': 'BREAK',
     'continue': 'CONTINUE',
@@ -19,36 +19,36 @@ reserved = {
 }
 
 tokens = [
-             'PLUS',
-             'MINUS',
-             'STAR',
-             'DIVIDE',
-             'LPAREN',
-             'RPAREN',
-             'NUMBER',
-             'ID',
-             'ASSIGN',
-             'SEMI',
-             'COMMA',
-             'LBRACE',
-             'RBRACE',
-             'LBRACKET',
-             'RBRACKET',
-             'LT',
-             'GT',
-             'LTE',
-             'GTE',
-             'EQ',
-             'NEQ',
-             'AND',
-             'OR',
-             'NOT',
-             'INC',
-             'DEC',
-             'COMMENT',
-             'STRING_LITERAL',
-             'newline',
-         ] + list(reserved.values())
+    'PLUS',
+    'MINUS',
+    'STAR',
+    'DIVIDE',
+    'LPAREN',
+    'RPAREN',
+    'NUMBER',
+    'ID',
+    'ASSIGN',
+    'SEMI',
+    'COMMA',
+    'LBRACE',
+    'RBRACE',
+    'LBRACKET',
+    'RBRACKET',
+    'LT',
+    'GT',
+    'LTE',
+    'GTE',
+    'EQ',
+    'NEQ',
+    'AND',
+    'OR',
+    'NOT',
+    'INC',
+    'DEC',
+    'COMMENT',
+    'STRING',
+    'newline',
+] + list(reserved.values())
 
 
 def aw_lexer():
@@ -76,7 +76,6 @@ def aw_lexer():
     t_NOT = r'!'
     t_INC = r'\+\+'
     t_DEC = r'--'
-    t_STRING_LITERAL = r'\".*\"'
 
     def t_ID(t):
         r'[a-zA-Z_][a-zA-Z_0-9]*'
@@ -86,6 +85,10 @@ def aw_lexer():
     def t_NUMBER(t):
         r'\d+'
         t.value = float(t.value)
+        return t
+
+    def t_STRING(t):
+        r'\"[^\"]*\"'
         return t
 
     def t_COMMENT(t):
