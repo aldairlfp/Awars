@@ -126,11 +126,13 @@ class SemanticCheckerVisitor(object):
 
     @visitor.when(FunctionDeclarationNode)
     def visit(self, node, scope):
-        if scope.is_func_defined(node.id, node.params):
+        if scope.is_func_defined(node.id, len(node.params)):
             self.errors.append(f'Function {node.id} already declared')
         else:
             scope.define_function(node.id, node.params)
             child_scope = scope.create_child_scope()
+            for param in node.params:
+                child_scope.define_variable(param, None)
             for statement in node.body:
                 self.visit(statement, child_scope)
 
@@ -149,11 +151,8 @@ class SemanticCheckerVisitor(object):
 
     @visitor.when(CallNode)
     def visit(self, node, scope):
-        if not scope.is_func_defined(node.lex):
+        if not scope.is_func_defined(node.lex, len(node.args)):
             self.errors.append(f'Function {node.lex} not declared')
-        else:
-            for arg in node.args:
-                self.visit(arg, scope)
 
     @visitor.when(BinaryNode)
     def visit(self, node, scope):
@@ -231,8 +230,9 @@ class EvaluatorVisitor(object):
 
     @visitor.when(FunctionDeclarationNode)
     def visit(self, node, scope):
-        scope.define_function(node.id, node.params)
-        self.functions[node.id] = node
+        child_scope = scope.create_child_scope()
+        child_scope.define_function(node.id, node.params)
+        self.functions[node.id] = (node, child_scope)
 
     @visitor.when(PrintNode)
     def visit(self, node, scope):
@@ -252,12 +252,13 @@ class EvaluatorVisitor(object):
 
     @visitor.when(CallNode)
     def visit(self, node, scope):
-        func = self.functions[node.lex]
-        child_scope = scope.create_child_scope()
-        for param, arg in zip(func.params, node.args):
-            child_scope.define_variable(param, self.visit(arg, scope))
-        for child in func.body:
-            self.visit(child, child_scope)
+        func, func_scope = self.functions[node.lex]
+        for i, param in enumerate(func.params):
+            arg = self.visit(node.args[i], scope)
+            func_scope.define_variable(param, arg, True)
+        for body in func.body:
+            self.visit(body, func_scope)
+        
 
     @visitor.when(BinaryNode)
     def visit(self, node, scope):

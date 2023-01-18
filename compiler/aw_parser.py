@@ -1,7 +1,7 @@
 import ply.yacc as yacc
 from lexer import tokens
 from aw_ast import (ProgramNode, PrintNode, VarDeclarationNode, FunctionDeclarationNode, PlusNode,
-                          MinusNode, StarNode, DivNode, ConstantNumNode, ConstantStringNode, VariableNode, IfNode, WhileNode,
+                          MinusNode, StarNode, DivNode, ConstantNumNode, ConstantStringNode, CallNode, VariableNode, IfNode, WhileNode,
                           ForNode, EqualsNode, NotEqualsNode, LessThanNode, GreaterThanNode, LessThanEqualsNode, 
                           GreaterThanEqualsNode, BreakNode, ContinueNode)
 
@@ -36,6 +36,7 @@ def aw_parser():
                      | reassignment
                      | print_statement
                      | function_statement
+                     | expression
                      | if_statement
                      | while_statement
                      | for_statement
@@ -157,6 +158,7 @@ def aw_parser():
         '''factor : NUMBER
                   | STRING
                   | LPAREN expression RPAREN
+                  | ID LPAREN args RPAREN
                   | ID'''
         if len(p) == 2:
             if isinstance(p[1], float):
@@ -164,9 +166,24 @@ def aw_parser():
             elif isinstance(p[1], str) and p[1][0] == '"' and p[1][-1] == '"':
                 p[0] = ConstantStringNode(p[1][1:-1])
             else:
+                print(p[1])
                 p[0] = VariableNode(p[1])
+        elif p[2] == '(':
+            p[0] = CallNode(p[1], p[3])
         else:
             p[0] = p[2]
+
+    def p_args(p):
+        '''args : arg COMMA args
+                | arg'''
+        if len(p) == 2:
+            p[0] = [p[1]]
+        else:
+            p[0] = [p[1], *p[3]]
+
+    def p_arg(p):
+        'arg : expression'
+        p[0] = p[1]
 
     def p_error(p):
         print("Syntax error in input!")

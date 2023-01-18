@@ -40,8 +40,6 @@ class Scope:
     def define_function(self, fname, params):
         if not self.is_func_defined(fname, len(params)):
             self.local_funcs.append(FunctionInfo(fname, params))
-            for param in params:
-                self.define_variable(param, None)
         return
 
     def is_var_defined(self, vname):
