@@ -35,7 +35,7 @@ def aw_parser():
         '''statement : assignment
                      | reassignment
                      | print_statement
-                     | function
+                     | function_statement
                      | if_statement
                      | while_statement
                      | for_statement
@@ -64,9 +64,9 @@ def aw_parser():
         'print_statement : PRINT LPAREN expression RPAREN'
         p[0] = PrintNode(p[3])
 
-    def p_function(p):
-        'function : FUNCTION ID LPAREN params RPAREN LBRACE statement_list RBRACE'
-        p[0] = FunctionDeclarationNode(p[2], p[4], p[7])
+    def p_function_statement(p):
+        'function_statement : FUNCTION ID LPAREN params RPAREN LBRACE newline newline_or_empty statement_list RBRACE'
+        p[0] = FunctionDeclarationNode(p[2], p[4], p[9])
 
     def p_params(p):
         '''params : param COMMA params
@@ -77,8 +77,8 @@ def aw_parser():
             p[0] = [p[1], *p[3]]
 
     def p_param(p):
-        'param : VAR ID'
-        p[0] = p[2]
+        'param : ID'
+        p[0] = p[1]
 
     def p_if_statement(p):
         'if_statement : IF LPAREN condition RPAREN LBRACE newline_or_empty statement_list RBRACE else_statement'

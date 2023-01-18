@@ -6,3 +6,6 @@ class ContinueException(Exception):
 
 class FloatStringException(Exception):
     pass
+
+class InvalidArgumentsException(Exception):
+    pass

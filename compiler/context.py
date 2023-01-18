@@ -16,8 +16,10 @@ class Scope:
         self.local_funcs = []
         self.parent = parent
         self.children = []
-        self.var_index_at_parent = 0 if parent is None else len(parent.local_vars)
-        self.func_index_at_parent = 0 if parent is None else len(parent.local_funcs)
+        self.var_index_at_parent = 0 if parent is None else len(
+            parent.local_vars)
+        self.func_index_at_parent = 0 if parent is None else len(
+            parent.local_funcs)
 
     def create_child_scope(self):
         child_scope = Scope(self)
@@ -36,7 +38,10 @@ class Scope:
         return
 
     def define_function(self, fname, params):
-        self.local_funcs.append(FunctionInfo(fname, params))
+        if not self.is_func_defined(fname, len(params)):
+            self.local_funcs.append(FunctionInfo(fname, params))
+            for param in params:
+                self.define_variable(param, None)
         return
 
     def is_var_defined(self, vname):

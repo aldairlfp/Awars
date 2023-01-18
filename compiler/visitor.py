@@ -31,7 +31,7 @@ class FormatVisitor(object):
     def visit(self, node, tabs=0):
         params = ', '.join(node.params)
         ans = '\t' * tabs + f'\\__FuncDeclarationNode: func {node.id}({params}) <statement_list>'
-        body = self.visit(node.body, tabs + 1)
+        body = '\n'.join(self.visit(child, tabs + 1) for child in node.body)
         return f'{ans}\n{body}'
 
     @visitor.when(BinaryNode)
@@ -126,11 +126,13 @@ class SemanticCheckerVisitor(object):
 
     @visitor.when(FunctionDeclarationNode)
     def visit(self, node, scope):
-        if scope.is_func_defined(node.id):
+        if scope.is_func_defined(node.id, node.params):
             self.errors.append(f'Function {node.id} already declared')
         else:
-            self.visit(node.body, scope)
             scope.define_function(node.id, node.params)
+            child_scope = scope.create_child_scope()
+            for statement in node.body:
+                self.visit(statement, child_scope)
 
     @visitor.when(PrintNode)
     def visit(self, node, scope):
