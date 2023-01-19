@@ -13,9 +13,8 @@ reserved = {
     'return': 'RETURN',
     'break': 'BREAK',
     'continue': 'CONTINUE',
-    'soldier': 'SOLDIER',
-    'field': 'FIELD',
     'print': 'PRINT',
+    'field': 'FIELD',
 }
 
 tokens = [

@@ -1,9 +1,9 @@
 import ply.yacc as yacc
 from lexer import tokens
 from aw_ast import (ProgramNode, PrintNode, VarDeclarationNode, FunctionDeclarationNode, PlusNode,
-                          MinusNode, StarNode, DivNode, ReturnNode, ConstantNumNode, ConstantStringNode, CallNode, VariableNode, IfNode, WhileNode,
-                          ForNode, EqualsNode, NotEqualsNode, LessThanNode, GreaterThanNode, LessThanEqualsNode, 
-                          GreaterThanEqualsNode, BreakNode, ContinueNode)
+                    MinusNode, StarNode, DivNode, ReturnNode, ConstantNumNode, ConstantStringNode, CallNode, VariableNode, IfNode, WhileNode,
+                    ForNode, EqualsNode, NotEqualsNode, LessThanNode, GreaterThanNode, LessThanEqualsNode,
+                    GreaterThanEqualsNode, BreakNode, ContinueNode)
 
 
 def aw_parser():
@@ -58,9 +58,11 @@ def aw_parser():
         if p[2] == '=':
             p[0] = VarDeclarationNode(p[1], p[3], True)
         elif p[2] == '++':
-            p[0] = VarDeclarationNode(p[1], PlusNode(VariableNode(p[1]), ConstantNumNode(1)), True)
+            p[0] = VarDeclarationNode(p[1], PlusNode(
+                VariableNode(p[1]), ConstantNumNode(1)), True)
         elif p[2] == '--':
-            p[0] = VarDeclarationNode(p[1], MinusNode(VariableNode(p[1]), ConstantNumNode(1)), True)
+            p[0] = VarDeclarationNode(p[1], MinusNode(
+                VariableNode(p[1]), ConstantNumNode(1)), True)
 
     def p_print_statement(p):
         'print_statement : PRINT LPAREN expression RPAREN'

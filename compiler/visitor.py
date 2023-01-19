@@ -5,6 +5,7 @@ from aw_ast import (ProgramNode, PrintNode, VarDeclarationNode, FunctionDeclarat
 from utils import BreakException, ContinueException, FloatStringException, ReturnException
 import copy
 
+
 class FormatVisitor(object):
     @visitor.on('node')
     def visit(self, node, tabs):
@@ -13,7 +14,8 @@ class FormatVisitor(object):
     @visitor.when(ProgramNode)
     def visit(self, node, tabs=0):
         ans = '\t' * tabs + f'\\__ProgramNode [<stat>; ... <stat>;]'
-        statements = '\n'.join(self.visit(child, tabs + 1) for child in node.statements)
+        statements = '\n'.join(self.visit(child, tabs + 1)
+                               for child in node.statements)
         return f'{ans}\n{statements}'
 
     @visitor.when(PrintNode)
@@ -31,7 +33,8 @@ class FormatVisitor(object):
     @visitor.when(FunctionDeclarationNode)
     def visit(self, node, tabs=0):
         params = ', '.join(node.params)
-        ans = '\t' * tabs + f'\\__FuncDeclarationNode: func {node.id}({params}) <statement_list>'
+        ans = '\t' * tabs + \
+            f'\\__FuncDeclarationNode: func {node.id}({params}) <statement_list>'
         body = '\n'.join(self.visit(child, tabs + 1) for child in node.body)
         return f'{ans}\n{body}'
 
@@ -61,7 +64,8 @@ class FormatVisitor(object):
             else_ = '\t' * (tabs + 1) + '\\__else: None'
         else:
             else_ans = '\t' * tabs + '\\__else: <statement_list>'
-            else_ = '\n'.join(self.visit(child, tabs + 1) for child in node.else_)
+            else_ = '\n'.join(self.visit(child, tabs + 1)
+                              for child in node.else_)
             else_ = f'{else_ans}\n{else_}'
         return f'{ans}\n{condition}\n{then}\n{else_}'
 
@@ -80,7 +84,8 @@ class FormatVisitor(object):
 
     @visitor.when(ForNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__ForNode: for(start; condition; increment) <statement_list>'
+        ans = '\t' * tabs + \
+            f'\\__ForNode: for(start; condition; increment) <statement_list>'
         start = self.visit(node.start, tabs + 1)
         condition = self.visit(node.condition, tabs + 1)
         increment = self.visit(node.increment, tabs + 1)
