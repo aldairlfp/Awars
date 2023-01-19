@@ -166,7 +166,6 @@ def aw_parser():
             elif isinstance(p[1], str) and p[1][0] == '"' and p[1][-1] == '"':
                 p[0] = ConstantStringNode(p[1][1:-1])
             else:
-                print(p[1])
                 p[0] = VariableNode(p[1])
         elif p[2] == '(':
             p[0] = CallNode(p[1], p[3])

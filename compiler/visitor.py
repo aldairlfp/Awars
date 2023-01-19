@@ -3,6 +3,7 @@ from context import Scope
 from aw_ast import (ProgramNode, PrintNode, VarDeclarationNode, FunctionDeclarationNode, BinaryNode, AtomicNode,
                     CallNode, IfNode, ReturnNode, WhileNode, ForNode, VariableNode, ConstantNumNode, ConstantStringNode, BreakNode, ContinueNode)
 from utils import BreakException, ContinueException, FloatStringException
+import copy
 
 class FormatVisitor(object):
     @visitor.on('node')
@@ -232,6 +233,8 @@ class EvaluatorVisitor(object):
     def visit(self, node, scope):
         child_scope = scope.create_child_scope()
         child_scope.define_function(node.id, node.params)
+        for param in node.params:
+            child_scope.define_variable(param, None)
         self.functions[node.id] = (node, child_scope)
 
     @visitor.when(PrintNode)
@@ -253,12 +256,14 @@ class EvaluatorVisitor(object):
     @visitor.when(CallNode)
     def visit(self, node, scope):
         func, func_scope = self.functions[node.lex]
+        func_scope_c = copy.deepcopy(func_scope)
         for i, param in enumerate(func.params):
             arg = self.visit(node.args[i], scope)
-            func_scope.define_variable(param, arg, True)
+            func_scope_c.redefine_call_arg(param, arg)
         for body in func.body:
-            self.visit(body, func_scope)
-        
+            self.visit(body, func_scope_c)
+            scope.local_vars = func_scope_c.parent.local_vars
+            scope.local_funcs = func_scope_c.parent.local_funcs
 
     @visitor.when(BinaryNode)
     def visit(self, node, scope):

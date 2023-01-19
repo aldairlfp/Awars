@@ -34,8 +34,13 @@ class Scope:
             elif self.parent is not None:
                 self.parent.define_variable(vname, value, reassign)
                 return
-        self.local_vars.append(VariableInfo(vname, value))
-        return
+        else:
+            self.local_vars.append(VariableInfo(vname, value))
+            return
+
+    def redefine_call_arg(self, vname, value):
+        if self.is_local_var(vname):
+            self.get_local_variable_info(vname).value = value
 
     def define_function(self, fname, params):
         if not self.is_func_defined(fname, len(params)):
