@@ -75,8 +75,7 @@ def aw_parser():
     def p_type_unit(p):
         '''type_unit : NORMAL_UNIT
                      | ARCHER_B_UNIT'''
-        if p[1] == 'normal_unit':
-            p[0] = NormalUnit
+        p[0] = units_generator[p[1]]
 
     def p_behavior(p):
         'behavior : HARD_BEHAVIOUR'
@@ -137,11 +136,11 @@ def aw_parser():
         p[0] = p[1]
 
     def p_if_statement(p):
-        'if_statement : IF LPAREN condition RPAREN LBRACE newline_or_empty statement_list RBRACE else_statement'
+        'if_statement : IF LPAREN condition RPAREN LBRACE newline_or_empty all_statements_list RBRACE else_statement'
         p[0] = IfNode(p[3], p[7], p[9])
 
     def p_else_statement(p):
-        'else_statement : ELSE LBRACE newline_or_empty statement_list RBRACE'
+        'else_statement : ELSE LBRACE newline_or_empty all_statements_list RBRACE'
         p[0] = p[4]
 
     def p_else_statement_epsilon(p):
@@ -149,11 +148,11 @@ def aw_parser():
         pass
 
     def p_while_statement(p):
-        'while_statement : WHILE LPAREN condition RPAREN LBRACE newline_or_empty statement_list RBRACE'
+        'while_statement : WHILE LPAREN condition RPAREN LBRACE newline_or_empty all_statements_list RBRACE'
         p[0] = WhileNode(p[3], p[7])
 
     def p_for_statement(p):
-        'for_statement : FOR LPAREN assignment SEMI condition SEMI reassignment RPAREN LBRACE newline_or_empty statement_list RBRACE'
+        'for_statement : FOR LPAREN assignment SEMI condition SEMI reassignment RPAREN LBRACE newline_or_empty all_statements_list RBRACE'
         p[0] = ForNode(p[3], p[5], p[7], p[11])
 
     def p_condition(p):
