@@ -23,7 +23,7 @@ reserved = {
     'archer_c': 'ARCHER_C_UNIT',
     'swordman': 'SWORDMAN_UNIT',
     'spearman': 'SPEARMAN_UNIT',
-    'hard_behaviour': 'HARD_BEHAVIOUR',
+    'hard': 'HARD_BEHAVIOUR',
     'random_strategy': 'RANDOM_STRATEGY',
     'greedy_strategy': 'GREEDY_STRATEGY',
     'runner_strategy': 'RUNNER_STRATEGY',

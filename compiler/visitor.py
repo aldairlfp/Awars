@@ -1,8 +1,8 @@
 import compiler.cmp.visitor as visitor
 from compiler.context import Scope
-from compiler.aw_ast import (ProgramNode, PrintNode, VarDeclarationNode, FunctionDeclarationNode, BinaryNode, AtomicNode,
-                    CallNode, IfNode, ReturnNode, WhileNode, ForNode, VariableNode, ConstantNumNode, ConstantStringNode, BreakNode, ContinueNode)
+from compiler.aw_ast import *
 from compiler.utils import BreakException, ContinueException, FloatStringException, ReturnException
+from simulation.simulation import Simulator
 import copy
 
 
@@ -213,6 +213,8 @@ class EvaluatorVisitor(object):
     def __init__(self):
         self.errors = []
         self.functions = {}
+        self.simulator = None
+        self.units = None
 
     @visitor.on('node')
     def visit(self, node, scope):
@@ -331,3 +333,15 @@ class EvaluatorVisitor(object):
     @visitor.when(ContinueNode)
     def visit(self, node, scope):
         raise ContinueException()
+
+    @visitor.when(SimulatorNode)
+    def visit(self, node, scope):
+        self.simulator = Simulator(node.mode(), node.max_turns)
+        self.simulator.board(19, 19)
+
+    @visitor.when(UnitNode)
+    def visit(self, node, scope):
+        self.units = [] if self.units is None else self.units
+        if self.simulator is not None:
+            self.simulator.units(node.unit, int(node.number), node.team, node.behavior)
+            

@@ -2,6 +2,7 @@ import compiler.ply.yacc as yacc
 from compiler.lexer import tokens
 from compiler.aw_ast import *
 from simulation.Units.unit_generator import *
+from simulation.modes.modes import Normal_mode, Hard_mode
 
 units_generator = {
     'normal': normal_unit,
@@ -9,6 +10,11 @@ units_generator = {
     'archer_c': archer_c_unit,
     'swordman': swordman_unit,
     'spearman': spearman_unit,
+}
+
+modes_generator = {
+    'normal_mode': Normal_mode,
+    'hard_mode': Hard_mode,
 }
 
 
@@ -62,7 +68,7 @@ def aw_parser():
 
     def p_simulator_statement(p):
         'simulator_statement : SIMULATOR LPAREN simulator_mode COMMA NUMBER RPAREN'
-        p[0] = SimulatorNode(p[3], p[5])
+        p[0] = SimulatorNode(modes_generator[p[3]], p[5])
 
     def p_simulator_mode(p):
         'simulator_mode : HARD_MODE'
@@ -70,7 +76,7 @@ def aw_parser():
 
     def p_unit_statement(p):
         'unit_statement : UNIT LPAREN type_unit COMMA NUMBER COMMA STRING COMMA behavior RPAREN'
-        p[0] = UnitNode(p[3], p[5], p[7], p[9])
+        p[0] = UnitNode(p[3], p[5], p[7][1:-1], p[9])
 
     def p_type_unit(p):
         '''type_unit : NORMAL_UNIT
