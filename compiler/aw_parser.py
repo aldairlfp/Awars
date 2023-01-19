@@ -63,7 +63,8 @@ def aw_parser():
 
     def p_simulation_statement(p):
         '''simulation_statement : simulator_statement
-                                | unit_statement'''
+                                | unit_statement
+                                | field_statement'''
         p[0] = p[1]
 
     def p_simulator_statement(p):
@@ -86,6 +87,10 @@ def aw_parser():
     def p_behavior(p):
         'behavior : HARD_BEHAVIOUR'
         p[0] = p[1]
+
+    def p_field_statement(p):
+        'field_statement : FIELD LPAREN NUMBER COMMA NUMBER RPAREN'
+        p[0] = p[3], p[5]
 
     def p_statement(p):
         '''statement : assignment

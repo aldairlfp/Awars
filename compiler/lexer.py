@@ -15,6 +15,7 @@ reserved = {
     'continue': 'CONTINUE',
     'print': 'PRINT',
     'simulator': 'SIMULATOR',
+    'field': 'FIELD',
     'hard_mode': 'HARD_MODE',
     'units': 'UNITS',
     'unit': 'UNIT',
