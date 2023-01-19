@@ -25,7 +25,7 @@ class VarDeclarationNode(StatementNode):
 class FunctionDeclarationNode(StatementNode):
     def __init__(self, id, params, body):
         self.id = id
-        self.params = params
+        self.params = params if params[0] is not None else []
         self.body = body
 
 

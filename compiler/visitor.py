@@ -2,7 +2,7 @@ import cmp.visitor as visitor
 from context import Scope
 from aw_ast import (ProgramNode, PrintNode, VarDeclarationNode, FunctionDeclarationNode, BinaryNode, AtomicNode,
                     CallNode, IfNode, ReturnNode, WhileNode, ForNode, VariableNode, ConstantNumNode, ConstantStringNode, BreakNode, ContinueNode)
-from utils import BreakException, ContinueException, FloatStringException
+from utils import BreakException, ContinueException, FloatStringException, ReturnException
 import copy
 
 class FormatVisitor(object):
@@ -261,9 +261,10 @@ class EvaluatorVisitor(object):
             arg = self.visit(node.args[i], scope)
             func_scope_c.redefine_call_arg(param, arg)
         for body in func.body:
-            self.visit(body, func_scope_c)
-            scope.local_vars = func_scope_c.parent.local_vars
-            scope.local_funcs = func_scope_c.parent.local_funcs
+            try:
+                self.visit(body, func_scope_c)
+            except ReturnException as e:
+                return e.value
 
     @visitor.when(BinaryNode)
     def visit(self, node, scope):
@@ -315,7 +316,8 @@ class EvaluatorVisitor(object):
 
     @visitor.when(ReturnNode)
     def visit(self, node, scope):
-        return self.visit(node.expression, scope)
+        value = self.visit(node.expression, scope)
+        raise ReturnException(value)
 
     @visitor.when(BreakNode)
     def visit(self, node, scope):

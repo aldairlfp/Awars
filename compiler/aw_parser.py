@@ -1,7 +1,7 @@
 import ply.yacc as yacc
 from lexer import tokens
 from aw_ast import (ProgramNode, PrintNode, VarDeclarationNode, FunctionDeclarationNode, PlusNode,
-                          MinusNode, StarNode, DivNode, ConstantNumNode, ConstantStringNode, CallNode, VariableNode, IfNode, WhileNode,
+                          MinusNode, StarNode, DivNode, ReturnNode, ConstantNumNode, ConstantStringNode, CallNode, VariableNode, IfNode, WhileNode,
                           ForNode, EqualsNode, NotEqualsNode, LessThanNode, GreaterThanNode, LessThanEqualsNode, 
                           GreaterThanEqualsNode, BreakNode, ContinueNode)
 
@@ -42,6 +42,7 @@ def aw_parser():
                      | for_statement
                      | break_statement
                      | continue_statement
+                     | return_statement
                      '''
         p[0] = p[1]
 
@@ -71,7 +72,8 @@ def aw_parser():
 
     def p_params(p):
         '''params : param COMMA params
-                  | param'''
+                  | param
+                  | epsilon'''
         if len(p) == 2:
             p[0] = [p[1]]
         else:
@@ -130,6 +132,10 @@ def aw_parser():
         'continue_statement : CONTINUE'
         p[0] = ContinueNode()
 
+    def p_return_statement(p):
+        'return_statement : RETURN expression'
+        p[0] = ReturnNode(p[2])
+
     def p_expression(p):
         '''expression : expression PLUS term
                       | expression MINUS term
@@ -159,6 +165,7 @@ def aw_parser():
                   | STRING
                   | LPAREN expression RPAREN
                   | ID LPAREN args RPAREN
+                  | ID LPAREN RPAREN
                   | ID'''
         if len(p) == 2:
             if isinstance(p[1], float):
@@ -168,7 +175,10 @@ def aw_parser():
             else:
                 p[0] = VariableNode(p[1])
         elif p[2] == '(':
-            p[0] = CallNode(p[1], p[3])
+            if len(p) == 5:
+                p[0] = CallNode(p[1], p[3])
+            else:
+                p[0] = CallNode(p[1], [])
         else:
             p[0] = p[2]
 
