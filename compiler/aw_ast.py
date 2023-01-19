@@ -166,7 +166,7 @@ class SimulatorNode(Node):
         self.mode = mode
         self.max_turns = max_turns
 
-class UnitDeclaration(Node):
+class UnitNode(Node):
     def __init__(self, unit, number, team, behavior):
         self.unit = unit
         self.number = number

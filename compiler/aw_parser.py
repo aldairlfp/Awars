@@ -5,8 +5,8 @@ from aw_ast import *
 
 def aw_parser():
     def p_program(p):
-        '''program : newline_or_empty simulator_block newline_or_empty units_block newline_or_empty statement_list'''
-        p[0] = ProgramNode(p[2], p[4], p[6])
+        '''program : newline_or_empty all_statements_list'''
+        p[0] = ProgramNode([], [], p[2])
 
     def p_epsilon(p):
         'epsilon :'
@@ -16,37 +16,52 @@ def aw_parser():
         "newline_or_empty : newline newline_or_empty"
         p[0] = p[1]
 
-    def p_maybe_epsilon(p):
+    def p_newline_or_empty_epsilon(p):
         "newline_or_empty : epsilon"
         pass
 
-    def p_simulator_block(p):
-        'simulator_block : SIMULATOR LBRACE newline_or_empty props_list newline_or_empty RBRACE'
-        p[0] = [*p[4]]
+    def p_all_statements_list(p):
+        '''all_statements_list : statement newline newline_or_empty all_statements_list
+                            |    simulation_statement newline newline_or_empty all_statements_list
+                                '''
+        p[0] = [p[1], *p[4]]
 
-    def p_props_list(p):
-        'props_list : simulator_mode newline_or_empty NUMBER'
-        p[0] = [p[1], p[3]]
+    def p_all_statements_list_epsilon(p):
+        'all_statements_list : epsilon'
+        p[0] = []
+
+    def p_statement_list(p):
+        'statement_list : statement newline newline_or_empty statement_list'
+        p[0] = [p[1], *p[4]]
+
+    def p_statement_list_epsilon(p):
+        'statement_list : epsilon'
+        p[0] = []
+
+    def p_simulation_statement_list(p):
+        'simulation_statement_list : simulation_statement newline newline_or_empty simulation_statement_list'
+        p[0] = [p[1], *p[4]]
+
+    def p_simulation_statement_list_epsilon(p):
+        'simulation_statement_list : epsilon'
+        p[0] = []
+
+    def p_simulation_statement(p):
+        '''simulation_statement : simulator_statement
+                                | unit_statement'''
+        p[0] = p[1]
+
+    def p_simulator_statement(p):
+        'simulator_statement : SIMULATOR LPAREN simulator_mode COMMA NUMBER RPAREN'
+        p[0] = SimulatorNode(p[3], p[5])
 
     def p_simulator_mode(p):
         'simulator_mode : HARD_MODE'
         p[0] = p[1]
 
-    def p_units_block(p):
-        'units_block : UNITS LBRACE newline_or_empty units_list RBRACE'
-        p[0] = [p[1], *p[4]]
-
-    def p_units_list(p):
-        'units_list : unit newline newline_or_empty units_list'
-        p[0] = [p[1], *p[4]]
-
-    def p_units_list_epsilon(p):
-        'units_list : epsilon'
-        p[0] = []
-
-    def p_unit(p):
-        'unit : type_unit NUMBER STRING behavior'
-        p[0] = UnitDeclaration(p[1], p[2], p[3], p[4])
+    def p_unit_statement(p):
+        'unit_statement : type_unit NUMBER STRING behavior'
+        p[0] = UnitNode(p[1], p[2], p[3], p[4])
 
     def p_type_unit(p):
         '''type_unit : NORMAL_UNIT
@@ -56,14 +71,6 @@ def aw_parser():
     def p_behavior(p):
         'behavior : HARD_BEHAVIOUR'
         p[0] = p[1]
-
-    def p_statement_list(p):
-        'statement_list : statement newline newline_or_empty statement_list'
-        p[0] = [p[1], *p[4]]
-
-    def p_statement_list_epsilon(p):
-        'statement_list : epsilon'
-        p[0] = []
 
     def p_statement(p):
         '''statement : assignment
