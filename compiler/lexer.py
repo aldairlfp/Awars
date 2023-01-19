@@ -14,7 +14,21 @@ reserved = {
     'break': 'BREAK',
     'continue': 'CONTINUE',
     'print': 'PRINT',
-    'field': 'FIELD',
+    'units': 'UNITS',
+    'normal_unit': 'NORMAL_UNIT',
+    'archer_b_unit': 'ARCHER_B_UNIT',
+    'archer_c_unit': 'ARCHER_C_UNIT',
+    'swordman_unit': 'SWORDMAN_UNIT',
+    'spearman_unit': 'SPEARMAN_UNIT',
+    'hard_behaviour': 'HARD_BEHAVIOUR',
+    'random_strategy': 'RANDOM_STRATEGY',
+    'greedy_strategy': 'GREEDY_STRATEGY',
+    'runner_strategy': 'RUNNER_STRATEGY',
+    'attacker_strategy': 'ATTACKER_STRATEGY',
+    'normal_strategy': 'NORMAL_STRATEGY',
+    'advanced_strategy': 'ADVANCED_STRATEGY',
+    'hard_optimal_strategy': 'HARD_OPTIMAL_STRATEGY',
+    'hard_fuzzy_strategy': 'HARD_FUZZY_STRATEGY',
 }
 
 tokens = [

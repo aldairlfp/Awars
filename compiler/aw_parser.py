@@ -1,15 +1,12 @@
 import ply.yacc as yacc
 from lexer import tokens
-from aw_ast import (ProgramNode, PrintNode, VarDeclarationNode, FunctionDeclarationNode, PlusNode,
-                    MinusNode, StarNode, DivNode, ReturnNode, ConstantNumNode, ConstantStringNode, CallNode, VariableNode, IfNode, WhileNode,
-                    ForNode, EqualsNode, NotEqualsNode, LessThanNode, GreaterThanNode, LessThanEqualsNode,
-                    GreaterThanEqualsNode, BreakNode, ContinueNode)
+from aw_ast import *
 
 
 def aw_parser():
     def p_program(p):
-        'program : newline_or_empty statement_list'
-        p[0] = ProgramNode(p[2])
+        'program : newline_or_empty units_block newline_or_empty statement_list'
+        p[0] = ProgramNode(p[2], p[4])
 
     def p_epsilon(p):
         'epsilon :'
@@ -22,6 +19,31 @@ def aw_parser():
     def p_maybe_epsilon(p):
         "newline_or_empty : epsilon"
         pass
+
+    def p_units_block(p):
+        'units_block : UNITS LBRACE newline_or_empty units_list RBRACE'
+        p[0] = [p[1], *p[4]]
+
+    def p_units_list(p):
+        'units_list : unit newline newline_or_empty units_list'
+        p[0] = [p[1], *p[4]]
+
+    def p_units_list_epsilon(p):
+        'units_list : epsilon'
+        p[0] = []
+
+    def p_unit(p):
+        'unit : type_unit NUMBER STRING behavior'
+        p[0] = UnitDeclaration(p[1], p[2], p[3], p[4])
+
+    def p_type_unit(p):
+        '''type_unit : NORMAL_UNIT
+                     | ARCHER_B_UNIT'''
+        p[0] = p[1]
+
+    def p_behavior(p):
+        'behavior : HARD_BEHAVIOUR'
+        p[0] = p[1]
 
     def p_statement_list(p):
         'statement_list : statement newline newline_or_empty statement_list'

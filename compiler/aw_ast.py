@@ -3,7 +3,8 @@ class Node:
 
 
 class ProgramNode(Node):
-    def __init__(self, statements):
+    def __init__(self, units, statements):
+        self.units = units
         self.statements = statements
 
 
@@ -158,3 +159,10 @@ class AndNode(BinaryNode):
 class OrNode(BinaryNode):
     def operate(self, lvalue, rvalue):
         return lvalue or rvalue
+
+class UnitDeclaration(Node):
+    def __init__(self, unit, number, team, behavior):
+        self.unit = unit
+        self.number = number
+        self.team = team
+        self.behavior = behavior
