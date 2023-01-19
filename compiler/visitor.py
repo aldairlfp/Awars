@@ -1,8 +1,8 @@
-import cmp.visitor as visitor
-from context import Scope
-from aw_ast import (ProgramNode, PrintNode, VarDeclarationNode, FunctionDeclarationNode, BinaryNode, AtomicNode,
+import compiler.cmp.visitor as visitor
+from compiler.context import Scope
+from compiler.aw_ast import (ProgramNode, PrintNode, VarDeclarationNode, FunctionDeclarationNode, BinaryNode, AtomicNode,
                     CallNode, IfNode, ReturnNode, WhileNode, ForNode, VariableNode, ConstantNumNode, ConstantStringNode, BreakNode, ContinueNode)
-from utils import BreakException, ContinueException, FloatStringException, ReturnException
+from compiler.utils import BreakException, ContinueException, FloatStringException, ReturnException
 import copy
 
 

@@ -1,4 +1,4 @@
-import ply.lex as lex
+import compiler.ply.lex as lex
 
 literals = ['+', '-', '*', '/',
             '(', ')', '=', ';', ',', '{', '}', '[', ']', '<', '>', '&', '|', '!']
@@ -17,11 +17,12 @@ reserved = {
     'simulator': 'SIMULATOR',
     'hard_mode': 'HARD_MODE',
     'units': 'UNITS',
-    'normal_unit': 'NORMAL_UNIT',
-    'archer_b_unit': 'ARCHER_B_UNIT',
-    'archer_c_unit': 'ARCHER_C_UNIT',
-    'swordman_unit': 'SWORDMAN_UNIT',
-    'spearman_unit': 'SPEARMAN_UNIT',
+    'unit': 'UNIT',
+    'normal': 'NORMAL_UNIT',
+    'archer_b': 'ARCHER_B_UNIT',
+    'archer_c': 'ARCHER_C_UNIT',
+    'swordman': 'SWORDMAN_UNIT',
+    'spearman': 'SPEARMAN_UNIT',
     'hard_behaviour': 'HARD_BEHAVIOUR',
     'random_strategy': 'RANDOM_STRATEGY',
     'greedy_strategy': 'GREEDY_STRATEGY',

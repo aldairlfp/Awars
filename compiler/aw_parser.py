@@ -1,6 +1,15 @@
-import ply.yacc as yacc
-from lexer import tokens
-from aw_ast import *
+import compiler.ply.yacc as yacc
+from compiler.lexer import tokens
+from compiler.aw_ast import *
+from simulation.Units.unit_generator import *
+
+units_generator = {
+    'normal': normal_unit,
+    'archer_b': archer_b_unit,
+    'archer_c': archer_c_unit,
+    'swordman': swordman_unit,
+    'spearman': spearman_unit,
+}
 
 
 def aw_parser():
@@ -60,13 +69,14 @@ def aw_parser():
         p[0] = p[1]
 
     def p_unit_statement(p):
-        'unit_statement : type_unit LPAREN NUMBER COMMA STRING COMMA behavior RPAREN'
-        p[0] = p[1], p[3], p[5], p[7]
+        'unit_statement : UNIT LPAREN type_unit COMMA NUMBER COMMA STRING COMMA behavior RPAREN'
+        p[0] = UnitNode(p[3], p[5], p[7], p[9])
 
     def p_type_unit(p):
         '''type_unit : NORMAL_UNIT
                      | ARCHER_B_UNIT'''
-        p[0] = p[1]
+        if p[1] == 'normal_unit':
+            p[0] = NormalUnit
 
     def p_behavior(p):
         'behavior : HARD_BEHAVIOUR'
