@@ -60,8 +60,8 @@ def aw_parser():
         p[0] = p[1]
 
     def p_unit_statement(p):
-        'unit_statement : type_unit NUMBER STRING behavior'
-        p[0] = UnitNode(p[1], p[2], p[3], p[4])
+        'unit_statement : type_unit LPAREN NUMBER COMMA STRING COMMA behavior RPAREN'
+        p[0] = p[1], p[3], p[5], p[7]
 
     def p_type_unit(p):
         '''type_unit : NORMAL_UNIT
