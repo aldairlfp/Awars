@@ -14,6 +14,8 @@ reserved = {
     'break': 'BREAK',
     'continue': 'CONTINUE',
     'print': 'PRINT',
+    'simulator': 'SIMULATOR',
+    'hard_mode': 'HARD_MODE',
     'units': 'UNITS',
     'normal_unit': 'NORMAL_UNIT',
     'archer_b_unit': 'ARCHER_B_UNIT',

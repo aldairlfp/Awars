@@ -5,8 +5,8 @@ from aw_ast import *
 
 def aw_parser():
     def p_program(p):
-        'program : newline_or_empty units_block newline_or_empty statement_list'
-        p[0] = ProgramNode(p[2], p[4])
+        '''program : newline_or_empty simulator_block newline_or_empty units_block newline_or_empty statement_list'''
+        p[0] = ProgramNode(p[2], p[4], p[6])
 
     def p_epsilon(p):
         'epsilon :'
@@ -19,6 +19,18 @@ def aw_parser():
     def p_maybe_epsilon(p):
         "newline_or_empty : epsilon"
         pass
+
+    def p_simulator_block(p):
+        'simulator_block : SIMULATOR LBRACE newline_or_empty props_list newline_or_empty RBRACE'
+        p[0] = [*p[4]]
+
+    def p_props_list(p):
+        'props_list : simulator_mode newline_or_empty NUMBER'
+        p[0] = [p[1], p[3]]
+
+    def p_simulator_mode(p):
+        'simulator_mode : HARD_MODE'
+        p[0] = p[1]
 
     def p_units_block(p):
         'units_block : UNITS LBRACE newline_or_empty units_list RBRACE'

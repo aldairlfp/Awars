@@ -3,7 +3,8 @@ class Node:
 
 
 class ProgramNode(Node):
-    def __init__(self, units, statements):
+    def __init__(self, simulator, units, statements):
+        self.simulator = simulator
         self.units = units
         self.statements = statements
 
@@ -159,6 +160,11 @@ class AndNode(BinaryNode):
 class OrNode(BinaryNode):
     def operate(self, lvalue, rvalue):
         return lvalue or rvalue
+
+class SimulatorNode(Node):
+    def __init__(self, mode, max_turns):
+        self.mode = mode
+        self.max_turns = max_turns
 
 class UnitDeclaration(Node):
     def __init__(self, unit, number, team, behavior):
