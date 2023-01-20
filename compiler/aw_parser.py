@@ -216,11 +216,8 @@ def aw_parser():
         '''condition : condition_c AND condition_c
                      | condition_c OR condition_c
                      | condition_c
-                     | NOT condition_c
                        '''
-        if len(p) == 3:
-            p[0] = NotNode(p[2])
-        elif len(p) == 4:
+        if len(p) == 4:
             if p[2] == '&&':
                 p[0] = AndNode(p[1], p[3])
             else:

@@ -58,7 +58,6 @@ tokens = [
     'NEQ',
     'AND',
     'OR',
-    'NOT',
     'INC',
     'DEC',
     'COMMENT',
@@ -88,7 +87,6 @@ def aw_lexer():
     t_NEQ = r'!='
     t_AND = r'&&'
     t_OR = r'\|\|'
-    t_NOT = r'!'
     t_INC = r'\+\+'
     t_DEC = r'--'
     t_SIM_PROPERTY = r'->'
