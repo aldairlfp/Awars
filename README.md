@@ -86,22 +86,22 @@ Para este caso en particular se utiliza el DSL para facilitarle al usuario la cr
 
 ### Statement
 
-La sintaxis esta formada principalmente de dos tipos de statements: los statements usuales de los lenguajes de proposito general y los statements que tienen que ver con la simulacion. Todos los statements estan separados por un cambio de linea
+La sintaxis esta formada principalmente de dos tipos de statements: los statements usuales de los lenguajes de propósito general y los statements que tienen que ver con la simulación. Todos los statements estan separados por un cambio de línea
 
-No existe el concepto de tipos en el DSL. Solamente existen `number` y `string`. Los `number` pueden ser cualquier numero racional. Ambos con considerados como expresiones. Los `string` se escriben entre comillas dobles, por ejemplo
+El concepto de 'tipo' para el DSL está simplificado, por supuesto para lograr una interacción más sencilla con el usuario del mismo, solamente existen `number` y `string`. Los `number` pueden ser cualquier número racional. Ambos son considerados como expresiones. Los `string` se escriben entre comillas dobles, por ejemplo:
 
 ```c#
 "Hola mundo!"
 ```
 
-Se pueden declarar variables con la palabra reservada `var` seguido del nombre de la variable, el operador de asignacion `=` y una expresion, ya que las variables tambien son expresiones, por ejmplo
+Para la declaración de variables es necesario utilizar reservada `var` seguido del nombre de la variable, el operador de asignación `=` y el valor que se le desea asignar, nevamente este valor debe ser una expresión válida del DSL y por supuesto las variables también son expresiones, por ejemplo:
 
 ```c#
 var variable1 = <expresion>
 var variable2 = "Hola mundo!"
 ```
 
-Tambien se pueden reasignar las variables, y al funcionar de manera dinamica, aunque una variable sea declarada como `number` luego se puede reasignar como un `string`, por ejemplo
+Tambien se pueden reasignar las variables, y al funcionar de manera dinámica, aunque una variable sea declarada como `number` luego se puede reasignar como un `string`, por ejemplo:
 
 ```c#
 var a = 100
