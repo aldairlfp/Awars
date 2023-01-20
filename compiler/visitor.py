@@ -104,6 +104,8 @@ class FormatVisitor(object):
 class SemanticCheckerVisitor(object):
     def __init__(self):
         self.errors = []
+        self.simulator = None
+        self.units = []
 
     @visitor.on('node')
     def visit(self, node, scope):
@@ -120,12 +122,17 @@ class SemanticCheckerVisitor(object):
                 self.errors.append('Continue outside loop')
             except BreakException:
                 self.errors.append('Break outside loop')
+            except ReturnException:
+                self.errors.append(f'Return outside function')
         return self.errors
 
     @visitor.when(VarDeclarationNode)
     def visit(self, node, scope):
-        if scope.is_var_defined(node.id) and node.reassignament is False:
+        is_var_defined = scope.is_var_defined(node.id)
+        if is_var_defined and not node.reassignament:
             self.errors.append(f'Variable {node.id} already declared')
+        elif not is_var_defined and node.reassignament:
+            self.errors.append(f'Variable {node.id} it is not declared')
         else:
             result = self.visit(node.expression, scope)
             scope.define_variable(node.id, result)
@@ -140,7 +147,10 @@ class SemanticCheckerVisitor(object):
             for param in node.params:
                 child_scope.define_variable(param, None)
             for statement in node.body:
-                self.visit(statement, child_scope)
+                try:
+                    self.visit(statement, child_scope)
+                except ReturnException:
+                    pass
 
     @visitor.when(PrintNode)
     def visit(self, node, scope):
@@ -168,11 +178,11 @@ class SemanticCheckerVisitor(object):
     @visitor.when(IfNode)
     def visit(self, node, scope):
         self.visit(node.condition, scope)
-        child_scope = scope.create_child_scope()
         for child in node.then:
-            self.visit(child, child_scope)
+            self.visit(child, scope.create_child_scope())
         if node.else_ is not None:
-            self.visit(child, child_scope)
+            for stmt in node.else_:
+                self.visit(stmt, scope.create_child_scope())
 
     @visitor.when(WhileNode)
     def visit(self, node, scope):
@@ -208,7 +218,56 @@ class SemanticCheckerVisitor(object):
     def visit(self, node, scope):
         raise ContinueException()
 
+    @visitor.when(ReturnNode)
+    def visit(self, node, scope):
+        raise ReturnException(1)
 
+    @visitor.when(SimulatorNode)
+    def visit(self, node, scope):
+        if self.simulator is None:
+            try:
+                self.simulator = Simulator(node.mode(), int(node.max_turns))
+            except Exception as e:
+                print(e)
+
+    @visitor.when(UnitNode)
+    def visit(self, node, scope):
+        if self.simulator is None:
+            self.errors.append(f'''Units {node.unit.__name__} can not be created in a simulation that it is not defined''')
+        else:
+            self.units = [] if self.units is None else self.units
+            if self.simulator is not None:
+                self.simulator.units(node.unit, int(node.number), node.team, node.behavior)
+                for unit in self.simulator.unit():
+                    unit.strategy(node.behavior, node.strategy(unit))
+
+
+    @visitor.when(FieldNode)
+    def visit(self, node, scope):
+        if self.simulator is None:
+            self.errors.append(f'''Field can not be created in a simulation that it is not defined''')
+        else:
+            self.simulator.board(int(node.height), int(node.width))
+
+    @visitor.when(AllocateNode)
+    def visit(self, node, scope):
+        if self.simulator is None:
+            self.errors.append(f'''The units can not be allocate in a simulation that it is not defined''')
+        else:
+            self.simulator.allocate_units(node.allocate, self.simulator.unit())
+
+    @visitor.when(ExecuteSimulationNode)
+    def visit(self, node, scope):
+        if self.simulator is None:
+            self.errors.append(f'''The simulation can not be executed because it is not defined''')
+        if self.simulator.board_s() == None:
+            self.errors.append(f'''The simulation can not be executed because the field are not defined''')
+        if len(self.simulator.unit()) > 0:
+            for unit in self.simulator.unit():
+              if unit.pos_s() == None:
+                self.errors.append(f'''The simulation can not be executed because the units are not allocate''')
+                break
+            
 class EvaluatorVisitor(object):
     def __init__(self):
         self.errors = []
@@ -283,6 +342,10 @@ class EvaluatorVisitor(object):
             raise FloatStringException()
         else:
             return node.operate(left, right)
+
+    @visitor.when(NotNode)
+    def visit(self, node, scope):
+        return not self.visit(node.expression, scope)
 
     @visitor.when(IfNode)
     def visit(self, node, scope):
