@@ -21,6 +21,13 @@ modes_generator = {
 
 strategies_generator = {
     'hard_fuzzy_strategy': Hard_fuzzy_strategy,
+    'hard_optimal_strategy': Hard_optimal_strategy,
+    'random_strategy': Random_strategy,
+    'greedy_strategy': Greedy_strategy,
+    'runner_strategy': Runner_strategy,
+    'attacker_strategy': Attacker_strategy,
+    'normal_strategy': Normal_strategy,
+    'advanced_strategy': Advanced_strategy,
 }
 
 allocate_generator = {
