@@ -127,11 +127,6 @@ class EqualsNode(BinaryNode):
         return lvalue == rvalue
 
 
-class NotEqualsNode(BinaryNode):
-    def operate(self, lvalue, rvalue):
-        return lvalue != rvalue
-
-
 class LessThanNode(BinaryNode):
     def operate(self, lvalue, rvalue):
         return lvalue < rvalue
@@ -160,6 +155,10 @@ class AndNode(BinaryNode):
 class OrNode(BinaryNode):
     def operate(self, lvalue, rvalue):
         return lvalue or rvalue
+
+class NotNode(ExpressionNode):
+    def __init__(self, expression):
+        self.expression = expression
 
 class SimulatorNode(Node):
     def __init__(self, mode, max_turns):
