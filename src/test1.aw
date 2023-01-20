@@ -32,12 +32,31 @@ func pow(a, b){
 
 print(pow(2, 5))
 
+func hanoi(n, from, to, via){
+    if(n == 1){
+        print("Move disk from " + from + " to " + to)
+    } else {
+        if(n == 2){
+            print("Move disk from " + from + " to " + via)
+            print("Move disk from " + from + " to " + to)
+            print("Move disk from " + via + " to " + to)
+            
+            return
+        }
+        hanoi(n - 1, from, via, to)
+        print("Move disk from " + from + " to " + to)
+        hanoi(n - 1, via, to, from)
+    }
+}
 
-simulator(hard_mode, 1000)
-unit(archer_b,5, "red", hard, hard_fuzzy_strategy) -> simulator
-unit(archer_b,5, "blue", hard, hard_fuzzy_strategy) -> simulator
-field(10, 10) -> simulator
-random_allocate
+
+//simulator(hard_mode, 1000)
+//unit(archer_b,5, "red", hard, hard_fuzzy_strategy) -> simulator
+//unit(archer_b,5, "blue", hard, hard_fuzzy_strategy) -> simulator
+//field(10, 10) -> simulator
+//random_allocate
 //simulator
 //print(fib(8))
 //print(fact(10))
+
+hanoi(5, "A", "C", "B")
