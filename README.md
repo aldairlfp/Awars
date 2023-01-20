@@ -82,9 +82,7 @@ Un lenguaje de dominio específico (DSL, por sus siglas en inglés) es un lengua
 
 Para este caso en particular se utiliza el DSL para facilitarle al usuario la creación de los escenarios de batalla, de esta forma, el usuario no tiene que preocuparse por la sintaxis del lenguaje de programación que se utiliza para la simulación, sino que se puede concentrar en la creación de los escenarios. Evitando con esto la engorrosa tarea de definir los escenarios de batalla en el lenguaje de programación que se utiliza para la simulación.
 
-## Sintaxis
-
-### Statement
+### Sintaxis
 
 La sintaxis esta formada principalmente de dos tipos de statements: los statements usuales de los lenguajes de propósito general y los statements que tienen que ver con la simulación. Todos los statements estan separados por un cambio de línea.
 
@@ -152,90 +150,45 @@ func <nombre_de_la_funcion>(<params>){
 
 Las funciones pueden devolver valores con `return <expresion>`. Las expresiones retornadas por una función pueden ser también vacías, en este caso no puede existir el statment `return`, es decir ninguna función de lenguaje puede tener un `return` sin una expresión válida, en otro caso se obtiene un syntax error.
 
-### Simulation Statement
-
 La simulación se define de la siguiente manera:
 
 ```c#
 simulator(<mode>, <max_turns>)
 ```
 
-`max_turns` es un `number` e indica el máximo de turnos que se ejecutarán en la simulación
+`max_turns` es un `number` e indica el máximo de turnos que se ejecutarán en la simulación. Los `mode` determinan la dificultad del mundo, los cuales son: `normal_mode` y `hard_mode`. Un ejemplo de como inicializar la simulacion es:
 
+```c#
+simulator(hard_mode, 1000)
+```
 
-### Module
+Las unidades se crean de la siguiente manera: `<unit>(<number>, <team>, <strategy>, <strategy_to_use>) -> simulator`. Las `unit` son las siguientes: `normal` `archer_b`, `archer_c`, `swordman` y `spearman`, `number` es la cantidad de unidades que se sumaran de ese tipo, `team` es un `string` con el nombre del equipo, `strategy` es un `string` indicando como se llamara la estrategia a utilizar y `strategy_to_use` es esta estrategia que se utilizara. Las estrategias a usar son: `random_strategy`, `greedy_strategy`, `runner_strategy`, `attacker_strategy`, `normal_strategy`, `advanced_strategy`, `hard_optimal_strategy` y `hard_fuzzy_strategy`.
 
-Este lenguaje está desarrollado en python, con una gramática LALR. Para el desarrollo del compilador se usó PLY, que es una implementación de Python pura del
-constructor de compilación lex/yacc. Incluye soporte al parser LALR(1) así como herramientas
-para el análisis léxico de validación de entrada y para el reporte de errores. El análisis sintáctico se divide en 2 fases: en una se realiza el análisis léxico, con la construcción
-de un lexer, y en la otra se realiza el proceso de parsing, definiendo la gramática e implementando un parser para la construcción del Árbol de Sintaxis Abstracta (AST por sus siglas en inglés).
+El campo de batalla se define como: `field(<width>,<height>) -> simulator`. Donde `width` y `height` son `number`.
+
+Para ubicar a las unidades existe un `statement` llamado `random_allocate` el cual ubica todas las unidades en `simulator` aleatoriamente en el campo de batalla
+
+Y por ultimo para ejecutar la simulacion se realiza simplemente escribiendo `simulator`. Si no hay unidades definidas, ni campo de batalla ni estan ubicadas las unidades, la simulacion no puede comenzar, esto lanza un error de compilacion. Al igual si no se ha definido la simulacion, no se pueden definir unidades, ni campo de batalla, ni ubicar unidades, esto tambien lanza un error de compilacion
+
+### Arquitectura del compilador
+
+Este lenguaje está desarrollado en `Python`, con una gramática LALR. Para el desarrollo del compilador se usó `ply`, que es una implementación de `Python` pura del constructor de compilación lex/yacc. Incluye soporte al parser LALR(1) así como herramientas para el análisis léxico de validación de entrada y para el reporte de errores. El análisis sintáctico se divide en 2 fases: en una se realiza el análisis léxico, con la construcción de un lexer, y en la otra se realiza el proceso de parsing, definiendo la gramática e implementando un parser para la construcción del Árbol de Sintaxis Abstracta (AST por sus siglas en inglés).
+
 El programa fuente se procesa de izquierda a derecha y se agrupan en componentes
 léxicos (tokens) que son secuencias de caracteres que tienen un significado. Todos los espacios
 en blanco, comentarios y demás información innecesaria se elimina del programa fuente. El
 lexer, por lo tanto, convierte una secuencia de caracteres (strings) en una secuencia de tokens.
 
-El parser también se implementó mediante PLY, especificando la gramática y las acciones para
+El parser también se implementó mediante `ply`, especificando la gramática y las acciones para
 cada producción. Para cada regla gramatical hay una función cuyo nombre empieza con p_. El
-docstring de la función contiene la forma de la producción, escrita en EBNF. PLY usa los dos puntos (:) para separar la parte izquierda y la derecha de la producción gramatical. El símbolo del lado izquierdo de la primera función es considerado el símbolo inicial. El cuerpo de esa función contiene código que realiza la acción de esa producción.
-En cada producción se construye un nodo del árbol de sintaxis abstracta.
+docstring de la función contiene la forma de la producción, escrita en EBNF. `ply` usa los dos puntos (:) para separar la parte izquierda y la derecha de la producción gramatical. El símbolo del lado izquierdo de la primera función es considerado el símbolo inicial. El cuerpo de esa función contiene código que realiza la acción de esa producción.
+En cada producción se construye un nodo del árbol de sintaxis abstracta el cual esta definido desde 0.
 
-El procesador de parser de PLY procesa la gramática y genera un parser que usa el algoritmo de
+El procesador de parser de `ply` procesa la gramática y genera un parser que usa el algoritmo de
 shift-reduce LALR(1), que es uno de los más usados en la actualidad. Aunque LALR(1) no puede
 manejar todas las gramáticas libres de contexto, la gramática usada fue refactorizada
 para ser procesada por LALR(1) sin errores.
 
-Para realizar los recorridos en el árbol de derivación se hace uso del patrón visitor. Este patrón nos permite abstraer el concepto de procesamiento de un nodo. Cada elemento del nodo se procesa y se envia a la simulación para ejecutarla
+Para realizar los recorridos en el árbol de derivación se hace uso del patrón visitor. Este patrón nos permite abstraer el concepto de procesamiento de un nodo. Cada elemento del nodo se procesa y se envia a la simulación para ejecutarla. Usando este patron se definio un arbol de chequeo semantico, y un arbol evaluador.
 
-Un ejemplo de la estructura que debe tener el programa es la siguiente. En mapa el usuario carga el mapa a simular, en stops se definen las paradas, en vehicle_type los tipos de vehículos que se usan, en clients, cada una de las empresas clientes que van a simularse, en company se inicializa el presupuesto, la cantidad de vehículos y el deposito y en demandas se definen funciones, variables y se simula el proceso de la aplicación
-
-```python
-{
-	
-	map 
-	{
-		import "mapa.txt"
-	}
-
-	stops 
-	{
-    		s1 (address:"156A, #107, Playa, La Habana, Cuba", people:5)
-	}
-
-	vehicle_type 
-	{
-    		small (miles: 40000, capacity: 30)
-    		medium (miles: 40000, capacity: 70)
-	}
-
-	clients 
-	{
-    		c1 (name: "Coca Cola", stops_list: (s1),depot:s1 ) (*puede cambiarse por []*)
-	}
-	
-	company 
-	{
-    		budget: 1000000
-    		depot (address:"156A, #107, Playa, La Habana, Cuba")
-    		small v1: 5
-    		medium v2: 3
-	}
-	
-	demands
-	{
-		func print() : IO 
-		{
-			out_string("reached!!\n")
-	        }
-
-		func main(): Object 
-		{
-        		print()
-		}
-
-    		test1<- 1
-
-    		test3<- "1"
-    
-		Simulate
-	}
-```
+Por ultimo tenemos los scopes, los cuales se utilizan con los recorridos del AST para verifica que las variables y funciones se puedan utilizar en el scope que le corresponde.
