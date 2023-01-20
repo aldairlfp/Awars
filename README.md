@@ -162,7 +162,11 @@ simulator(<mode>, <max_turns>)
 simulator(hard_mode, 1000)
 ```
 
-Las unidades se crean de la siguiente manera: `<unit>(<number>, <team>, <strategy>, <strategy_to_use>) -> simulator`. Las `unit` son las siguientes: `normal` `archer_b`, `archer_c`, `swordman` y `spearman`, `number` es la cantidad de unidades que se sumaran de ese tipo, `team` es un `string` con el nombre del equipo, `strategy` es un `string` indicando como se llamara la estrategia a utilizar y `strategy_to_use` es esta estrategia que se utilizara. Las estrategias a usar son: `random_strategy`, `greedy_strategy`, `runner_strategy`, `attacker_strategy`, `normal_strategy`, `advanced_strategy`, `hard_optimal_strategy` y `hard_fuzzy_strategy`.
+Las unidades se crean de la siguiente manera:
+
+`<unit>(<number>, <team>, <strategy>, <strategy_to_use>) -> simulator`.
+
+Las `unit` son las siguientes: `normal` `archer_b`, `archer_c`, `swordman` y `spearman`. `number` es la cantidad de unidades que se sumarán de ese tipo, `team` es un `string` con el nombre del equipo, `strategy` es un `string` indicando como se llamará la estrategia a utilizar y `strategy_to_use` es esta estrategia que se utilizará. Las estrategias a usar son: `random_strategy`, `greedy_strategy`, `runner_strategy`, `attacker_strategy`, `normal_strategy`, `advanced_strategy`, `hard_optimal_strategy` y `hard_fuzzy_strategy`.
 
 El campo de batalla se define como: `field(<width>,<height>) -> simulator`. Donde `width` y `height` son `number`.
 
