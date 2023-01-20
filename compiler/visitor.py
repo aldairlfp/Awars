@@ -343,6 +343,10 @@ class EvaluatorVisitor(object):
         else:
             return node.operate(left, right)
 
+    @visitor.when(NotNode)
+    def visit(self, node, scope):
+        return not self.visit(node.expression, scope)
+
     @visitor.when(IfNode)
     def visit(self, node, scope):
         if self.visit(node.condition, scope):

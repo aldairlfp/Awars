@@ -18,7 +18,6 @@ reserved = {
     'field': 'FIELD',
     'hard_mode': 'HARD_MODE',
     'normal_mode': 'NORMAL_MODE',
-    'units': 'UNITS',
     'unit': 'UNIT',
     'normal': 'NORMAL_UNIT',
     'archer_b': 'ARCHER_B_UNIT',
@@ -51,8 +50,6 @@ tokens = [
     'COMMA',
     'LBRACE',
     'RBRACE',
-    'LBRACKET',
-    'RBRACKET',
     'LT',
     'GT',
     'LTE',
@@ -61,7 +58,6 @@ tokens = [
     'NEQ',
     'AND',
     'OR',
-    'NOT',
     'INC',
     'DEC',
     'COMMENT',
@@ -83,8 +79,6 @@ def aw_lexer():
     t_COMMA = r','
     t_LBRACE = r'{'
     t_RBRACE = r'}'
-    t_LBRACKET = r'\['
-    t_RBRACKET = r'\]'
     t_LT = r'<'
     t_GT = r'>'
     t_LTE = r'<='
@@ -93,7 +87,6 @@ def aw_lexer():
     t_NEQ = r'!='
     t_AND = r'&&'
     t_OR = r'\|\|'
-    t_NOT = r'!'
     t_INC = r'\+\+'
     t_DEC = r'--'
     t_SIM_PROPERTY = r'->'
@@ -140,4 +133,4 @@ def aw_lexer():
     def t_eof(t):
         return None
 
-    return lex.lex(debug=True)
+    return lex.lex()

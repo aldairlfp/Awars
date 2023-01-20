@@ -93,7 +93,8 @@ def aw_parser():
         p[0] = SimulatorNode(modes_generator[p[3]], p[5])
 
     def p_simulator_mode(p):
-        'simulator_mode : HARD_MODE'
+        '''simulator_mode : HARD_MODE
+                          | NORMAL_MODE'''
         p[0] = p[1]
 
     def p_simulator_property(p):
@@ -107,7 +108,10 @@ def aw_parser():
 
     def p_type_unit(p):
         '''type_unit : NORMAL_UNIT
-                     | ARCHER_B_UNIT'''
+                     | ARCHER_B_UNIT
+                     | ARCHER_C_UNIT
+                     | SWORDMAN_UNIT
+                     | SPEARMAN_UNIT'''
         p[0] = units_generator[p[1]]
 
     def p_behavior(p):
@@ -115,8 +119,7 @@ def aw_parser():
         p[0] = p[1]
 
     def p_strategy(p):
-        '''strategy : HARD_FUZZY_STRATEGY
-                    | RANDOM_STRATEGY
+        '''strategy : RANDOM_STRATEGY
                     | GREEDY_STRATEGY
                     | RUNNER_STRATEGY
                     | ATTACKER_STRATEGY
@@ -210,7 +213,20 @@ def aw_parser():
         p[0] = ForNode(p[3], p[5], p[7], p[11])
 
     def p_condition(p):
-        '''condition : expression EQ expression
+        '''condition : condition_c AND condition_c
+                     | condition_c OR condition_c
+                     | condition_c
+                       '''
+        if len(p) == 4:
+            if p[2] == '&&':
+                p[0] = AndNode(p[1], p[3])
+            else:
+                p[0] = OrNode(p[1], p[3])
+        else:
+            p[0] = p[1]
+
+    def p_condition_c(p):
+        '''condition_c : expression EQ expression
                      | expression NEQ expression
                      | expression LT expression
                      | expression GT expression
