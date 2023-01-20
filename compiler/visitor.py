@@ -1,8 +1,10 @@
-import cmp.visitor as visitor
-from context import Scope
-from aw_ast import (ProgramNode, PrintNode, VarDeclarationNode, FunctionDeclarationNode, BinaryNode, AtomicNode,
-                    CallNode, IfNode, ReturnNode, WhileNode, ForNode, VariableNode, ConstantNumNode, BreakNode, ContinueNode)
-from utils import BreakException, ContinueException
+import compiler.cmp.visitor as visitor
+from compiler.context import Scope
+from compiler.aw_ast import *
+from compiler.utils import BreakException, ContinueException, FloatStringException, ReturnException
+from simulation.simulation import Simulator
+import copy
+
 
 class FormatVisitor(object):
     @visitor.on('node')
@@ -12,7 +14,8 @@ class FormatVisitor(object):
     @visitor.when(ProgramNode)
     def visit(self, node, tabs=0):
         ans = '\t' * tabs + f'\\__ProgramNode [<stat>; ... <stat>;]'
-        statements = '\n'.join(self.visit(child, tabs + 1) for child in node.statements)
+        statements = '\n'.join(self.visit(child, tabs + 1)
+                               for child in node.statements)
         return f'{ans}\n{statements}'
 
     @visitor.when(PrintNode)
@@ -30,8 +33,9 @@ class FormatVisitor(object):
     @visitor.when(FunctionDeclarationNode)
     def visit(self, node, tabs=0):
         params = ', '.join(node.params)
-        ans = '\t' * tabs + f'\\__FuncDeclarationNode: func {node.id}({params}) <statement_list>'
-        body = self.visit(node.body, tabs + 1)
+        ans = '\t' * tabs + \
+            f'\\__FuncDeclarationNode: func {node.id}({params}) <statement_list>'
+        body = '\n'.join(self.visit(child, tabs + 1) for child in node.body)
         return f'{ans}\n{body}'
 
     @visitor.when(BinaryNode)
@@ -60,7 +64,8 @@ class FormatVisitor(object):
             else_ = '\t' * (tabs + 1) + '\\__else: None'
         else:
             else_ans = '\t' * tabs + '\\__else: <statement_list>'
-            else_ = '\n'.join(self.visit(child, tabs + 1) for child in node.else_)
+            else_ = '\n'.join(self.visit(child, tabs + 1)
+                              for child in node.else_)
             else_ = f'{else_ans}\n{else_}'
         return f'{ans}\n{condition}\n{then}\n{else_}'
 
@@ -79,7 +84,8 @@ class FormatVisitor(object):
 
     @visitor.when(ForNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__ForNode: for(start; condition; increment) <statement_list>'
+        ans = '\t' * tabs + \
+            f'\\__ForNode: for(start; condition; increment) <statement_list>'
         start = self.visit(node.start, tabs + 1)
         condition = self.visit(node.condition, tabs + 1)
         increment = self.visit(node.increment, tabs + 1)
@@ -108,7 +114,12 @@ class SemanticCheckerVisitor(object):
         if scope is None:
             scope = Scope()
         for child in node.statements:
-            self.visit(child, scope)
+            try:
+                self.visit(child, scope)
+            except ContinueException:
+                self.errors.append('Continue outside loop')
+            except BreakException:
+                self.errors.append('Break outside loop')
         return self.errors
 
     @visitor.when(VarDeclarationNode)
@@ -121,11 +132,15 @@ class SemanticCheckerVisitor(object):
 
     @visitor.when(FunctionDeclarationNode)
     def visit(self, node, scope):
-        if scope.is_func_defined(node.id):
+        if scope.is_func_defined(node.id, len(node.params)):
             self.errors.append(f'Function {node.id} already declared')
         else:
-            self.visit(node.body, scope)
             scope.define_function(node.id, node.params)
+            child_scope = scope.create_child_scope()
+            for param in node.params:
+                child_scope.define_variable(param, None)
+            for statement in node.body:
+                self.visit(statement, child_scope)
 
     @visitor.when(PrintNode)
     def visit(self, node, scope):
@@ -142,11 +157,8 @@ class SemanticCheckerVisitor(object):
 
     @visitor.when(CallNode)
     def visit(self, node, scope):
-        if not scope.is_func_defined(node.lex):
+        if not scope.is_func_defined(node.lex, len(node.args)):
             self.errors.append(f'Function {node.lex} not declared')
-        else:
-            for arg in node.args:
-                self.visit(arg, scope)
 
     @visitor.when(BinaryNode)
     def visit(self, node, scope):
@@ -160,15 +172,19 @@ class SemanticCheckerVisitor(object):
         for child in node.then:
             self.visit(child, child_scope)
         if node.else_ is not None:
-            for child in node.else_:
-                self.visit(child, scope)
+            self.visit(child, child_scope)
 
     @visitor.when(WhileNode)
     def visit(self, node, scope):
         self.visit(node.condition, scope)
         child_scope = scope.create_child_scope()
         for child in node.body:
-            self.visit(child, child_scope)
+            try:
+                self.visit(child, child_scope)
+            except ContinueException:
+                pass
+            except BreakException:
+                pass
 
     @visitor.when(ForNode)
     def visit(self, node, scope):
@@ -177,13 +193,28 @@ class SemanticCheckerVisitor(object):
         self.visit(node.increment, scope)
         child_scope = scope.create_child_scope()
         for child in node.body:
-            self.visit(child, child_scope)
+            try:
+                self.visit(child, child_scope)
+            except ContinueException:
+                pass
+            except BreakException:
+                pass
+
+    @visitor.when(BreakNode)
+    def visit(self, node, scope):
+        raise BreakException()
+
+    @visitor.when(ContinueNode)
+    def visit(self, node, scope):
+        raise ContinueException()
 
 
 class EvaluatorVisitor(object):
     def __init__(self):
         self.errors = []
         self.functions = {}
+        self.simulator = None
+        self.units = None
 
     @visitor.on('node')
     def visit(self, node, scope):
@@ -193,8 +224,11 @@ class EvaluatorVisitor(object):
     def visit(self, node, scope=None):
         if scope is None:
             scope = Scope()
-        for child in node.statements:
-            self.visit(child, scope)
+        try:
+            for child in node.statements:
+                self.visit(child, scope)
+        except FloatStringException():
+            pass
         return self.errors
 
     @visitor.when(VarDeclarationNode)
@@ -204,8 +238,11 @@ class EvaluatorVisitor(object):
 
     @visitor.when(FunctionDeclarationNode)
     def visit(self, node, scope):
-        scope.define_function(node.id, node.params)
-        self.functions[node.id] = node
+        child_scope = scope.create_child_scope()
+        child_scope.define_function(node.id, node.params)
+        for param in node.params:
+            child_scope.define_variable(param, None)
+        self.functions[node.id] = (node, child_scope)
 
     @visitor.when(PrintNode)
     def visit(self, node, scope):
@@ -215,24 +252,37 @@ class EvaluatorVisitor(object):
     def visit(self, node, scope):
         return node.lex
 
+    @visitor.when(ConstantStringNode)
+    def visit(self, node, scope):
+        return node.lex
+
     @visitor.when(VariableNode)
     def visit(self, node, scope):
         return scope.get_variable(node.lex).value
 
     @visitor.when(CallNode)
     def visit(self, node, scope):
-        func = self.functions[node.lex]
-        child_scope = scope.create_child_scope()
-        for param, arg in zip(func.params, node.args):
-            child_scope.define_variable(param, self.visit(arg, scope))
-        for child in func.body:
-            self.visit(child, child_scope)
+        func, func_scope = self.functions[node.lex]
+        func_scope_c = copy.deepcopy(func_scope)
+        for i, param in enumerate(func.params):
+            arg = self.visit(node.args[i], scope)
+            func_scope_c.redefine_call_arg(param, arg)
+        for body in func.body:
+            try:
+                self.visit(body, func_scope_c)
+            except ReturnException as e:
+                return e.value
 
     @visitor.when(BinaryNode)
     def visit(self, node, scope):
         left = self.visit(node.left, scope)
         right = self.visit(node.right, scope)
-        return node.operate(left, right)
+        if isinstance(left, str) and isinstance(right, float) or \
+                isinstance(left, float) and isinstance(right, str):
+            self.errors.append('Cannot operate between string and number')
+            raise FloatStringException()
+        else:
+            return node.operate(left, right)
 
     @visitor.when(IfNode)
     def visit(self, node, scope):
@@ -246,10 +296,15 @@ class EvaluatorVisitor(object):
 
     @visitor.when(WhileNode)
     def visit(self, node, scope):
+        child_scope = scope.create_child_scope()
         while self.visit(node.condition, scope):
-            child_scope = scope.create_child_scope()
-            for child in node.body:
-                self.visit(child, child_scope)
+            try:
+                for child in node.body:
+                    self.visit(child, child_scope)
+            except ContinueException:
+                continue
+            except BreakException:
+                break
 
     @visitor.when(ForNode)
     def visit(self, node, scope):
@@ -263,11 +318,13 @@ class EvaluatorVisitor(object):
                 continue
             except BreakException:
                 break
-            self.visit(node.increment, child_scope)
+            finally:
+                self.visit(node.increment, child_scope)
 
     @visitor.when(ReturnNode)
     def visit(self, node, scope):
-        return self.visit(node.expression, scope)
+        value = self.visit(node.expression, scope)
+        raise ReturnException(value)
 
     @visitor.when(BreakNode)
     def visit(self, node, scope):
@@ -276,3 +333,30 @@ class EvaluatorVisitor(object):
     @visitor.when(ContinueNode)
     def visit(self, node, scope):
         raise ContinueException()
+
+    @visitor.when(SimulatorNode)
+    def visit(self, node, scope):
+        self.simulator = Simulator(node.mode(), node.max_turns)
+
+    @visitor.when(UnitNode)
+    def visit(self, node, scope):
+        self.units = [] if self.units is None else self.units
+        if self.simulator is not None:
+            self.simulator.units(node.unit, int(node.number), node.team, node.behavior)
+            for unit in self.simulator.unit():
+                unit.strategy(node.behavior, node.strategy(unit))
+
+    @visitor.when(FieldNode)
+    def visit(self, node, scope):
+        if self.simulator is not None:
+            self.simulator.board(int(node.height), int(node.width))      
+
+    @visitor.when(AllocateNode)
+    def visit(self, node, scope):
+        if self.simulator is not None:
+            self.simulator.allocate_units(node.allocate, self.simulator.unit())
+
+    @visitor.when(ExecuteSimulationNode)
+    def visit(self, node, scope):
+        if self.simulator is not None:
+            self.simulator.execute()

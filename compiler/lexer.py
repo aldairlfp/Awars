@@ -1,6 +1,7 @@
-import ply.lex as lex
+import compiler.ply.lex as lex
 
-literals = ['+', '-', '*', '/', '(', ')', '=', ';', ',', '{', '}', '[', ']', '<', '>', '&', '|', '!']
+literals = ['+', '-', '*', '/',
+            '(', ')', '=', ';', ',', '{', '}', '[', ']', '<', '>', '&', '|', '!']
 
 reserved = {
     'func': 'FUNCTION',
@@ -8,54 +9,65 @@ reserved = {
     'else': 'ELSE',
     'for': 'FOR',
     'while': 'WHILE',
-    'number': 'NUMBERTYPE',
-    'string': 'STRING',
+    'var': 'VAR',
     'return': 'RETURN',
-    'void': 'VOID',
     'break': 'BREAK',
     'continue': 'CONTINUE',
-    'switch': 'SWITCH',
-    'case': 'CASE',
-    'soldier': 'SOLDIER',
-    'field': 'FIELD',
-    'enemy': 'ENEMY',
-    'obstacle': 'OBSTACLE',
-    'default': 'DEFAULT',
     'print': 'PRINT',
+    'simulator': 'SIMULATOR',
+    'field': 'FIELD',
+    'hard_mode': 'HARD_MODE',
+    'units': 'UNITS',
+    'unit': 'UNIT',
+    'normal': 'NORMAL_UNIT',
+    'archer_b': 'ARCHER_B_UNIT',
+    'archer_c': 'ARCHER_C_UNIT',
+    'swordman': 'SWORDMAN_UNIT',
+    'spearman': 'SPEARMAN_UNIT',
+    'hard': 'HARD_BEHAVIOUR',
+    'random_strategy': 'RANDOM_STRATEGY',
+    'greedy_strategy': 'GREEDY_STRATEGY',
+    'runner_strategy': 'RUNNER_STRATEGY',
+    'attacker_strategy': 'ATTACKER_STRATEGY',
+    'normal_strategy': 'NORMAL_STRATEGY',
+    'advanced_strategy': 'ADVANCED_STRATEGY',
+    'hard_optimal_strategy': 'HARD_OPTIMAL_STRATEGY',
+    'hard_fuzzy_strategy': 'HARD_FUZZY_STRATEGY',
+    'random_allocate': 'RANDOM_ALLOCATE' 
 }
 
 tokens = [
-             'PLUS',
-             'MINUS',
-             'STAR',
-             'DIVIDE',
-             'LPAREN',
-             'RPAREN',
-             'NUMBER',
-             'ID',
-             'ASSIGN',
-             'SEMI',
-             'COMMA',
-             'LBRACE',
-             'RBRACE',
-             'LBRACKET',
-             'RBRACKET',
-             'LT',
-             'GT',
-             'LTE',
-             'GTE',
-             'EQ',
-             'NEQ',
-             'AND',
-             'OR',
-             'NOT',
-             'INC',
-             'DEC',
-             'COMMENT',
-             'STRING_LITERAL',
-             'CHAR_LITERAL',
-             'newline',
-         ] + list(reserved.values())
+    'PLUS',
+    'MINUS',
+    'STAR',
+    'DIVIDE',
+    'LPAREN',
+    'RPAREN',
+    'NUMBER',
+    'ID',
+    'ASSIGN',
+    'SEMI',
+    'COMMA',
+    'LBRACE',
+    'RBRACE',
+    'LBRACKET',
+    'RBRACKET',
+    'LT',
+    'GT',
+    'LTE',
+    'GTE',
+    'EQ',
+    'NEQ',
+    'AND',
+    'OR',
+    'NOT',
+    'INC',
+    'DEC',
+    'COMMENT',
+    'STRING',
+    'newline',
+    'SIM_PROPERTY',
+] + list(reserved.values())
 
 
 def aw_lexer():
@@ -83,8 +95,7 @@ def aw_lexer():
     t_NOT = r'!'
     t_INC = r'\+\+'
     t_DEC = r'--'
-    t_STRING_LITERAL = r'\".*\"'
-    t_CHAR_LITERAL = r'\'.\''
+    t_SIM_PROPERTY = r'->'
 
     def t_ID(t):
         r'[a-zA-Z_][a-zA-Z_0-9]*'
@@ -94,6 +105,10 @@ def aw_lexer():
     def t_NUMBER(t):
         r'\d+'
         t.value = float(t.value)
+        return t
+
+    def t_STRING(t):
+        r'\"[^\"]*\"'
         return t
 
     def t_COMMENT(t):

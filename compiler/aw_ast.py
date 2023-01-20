@@ -3,7 +3,9 @@ class Node:
 
 
 class ProgramNode(Node):
-    def __init__(self, statements):
+    def __init__(self, simulator, units, statements):
+        self.simulator = simulator
+        self.units = units
         self.statements = statements
 
 
@@ -25,7 +27,7 @@ class VarDeclarationNode(StatementNode):
 class FunctionDeclarationNode(StatementNode):
     def __init__(self, id, params, body):
         self.id = id
-        self.params = params
+        self.params = params if params[0] is not None else []
         self.body = body
 
 
@@ -49,6 +51,10 @@ class BinaryNode(ExpressionNode):
 
 
 class ConstantNumNode(AtomicNode):
+    pass
+
+
+class ConstantStringNode(AtomicNode):
     pass
 
 
@@ -115,34 +121,70 @@ class DivNode(BinaryNode):
     def operate(self, lvalue, rvalue):
         return lvalue / rvalue
 
+
 class EqualsNode(BinaryNode):
     def operate(self, lvalue, rvalue):
         return lvalue == rvalue
+
 
 class NotEqualsNode(BinaryNode):
     def operate(self, lvalue, rvalue):
         return lvalue != rvalue
 
+
 class LessThanNode(BinaryNode):
     def operate(self, lvalue, rvalue):
         return lvalue < rvalue
+
 
 class LessThanEqualsNode(BinaryNode):
     def operate(self, lvalue, rvalue):
         return lvalue <= rvalue
 
+
 class GreaterThanNode(BinaryNode):
     def operate(self, lvalue, rvalue):
         return lvalue > rvalue
+
 
 class GreaterThanEqualsNode(BinaryNode):
     def operate(self, lvalue, rvalue):
         return lvalue >= rvalue
 
+
 class AndNode(BinaryNode):
     def operate(self, lvalue, rvalue):
         return lvalue and rvalue
 
+
 class OrNode(BinaryNode):
     def operate(self, lvalue, rvalue):
         return lvalue or rvalue
+
+class SimulatorNode(Node):
+    def __init__(self, mode, max_turns):
+        self.mode = mode
+        self.max_turns = max_turns
+
+class SimulatorPropertyNode(Node):
+    pass
+
+class UnitNode(SimulatorPropertyNode):
+    def __init__(self, unit, number, team, behavior, strategy):
+        self.unit = unit
+        self.number = number
+        self.team = team
+        self.behavior = behavior
+        self.strategy = strategy
+
+class FieldNode(SimulatorPropertyNode):
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+
+class AllocateNode(Node):
+    def __init__(self, allocate):
+        self.allocate = allocate
+
+class ExecuteSimulationNode(Node):
+    pass

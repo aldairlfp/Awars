@@ -1,3 +1,0 @@
-Board:
-    1 - Make some obstacles
-    

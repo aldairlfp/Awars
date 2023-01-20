@@ -1,7 +1,7 @@
-from simulation.units.unit import *
+from simulation.Units.unit import *
 from simulation.equipment.weapon.weapons import *
 from simulation.equipment.armor.armors import *
-from simulation.units.chess_pieces import *
+from simulation.Units.chess_pieces import *
 
 def normal_unit(id, team, strategy):
     weapon = Hand()
