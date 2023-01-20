@@ -9,8 +9,12 @@
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
-            "program": "D:\\School\\AI\\Battle-Simulation\\run.py",
+            "program": "read.py",
+            // "program": "run.py",
             "console": "integratedTerminal",
+            "args": [
+                "src/test1.aw"
+            ],
             "justMyCode": true
         }
     ]

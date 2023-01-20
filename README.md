@@ -76,6 +76,164 @@ Cada uno de estos modificadores tienen como ojetivo cambiar las condiciones con 
 
 La idea detrás de estos modificadores en el terreno es que el proyecto sea extensible a generar climas, terreno, estructuras, elevaciones, etc. Además de facilitar la posibilidad de tener acciones de las unidades que le permitan modificar el terreno para más conveniencia en la simulación ya sea construcción de estructuras como modificar la elevación del terreno incluso acomodarse y construir para no recibir las penalizaciones por clima.
 
-## Lenguaje
+## DSL
 
-Para controlar a las unidades, crear el campo de batalla, crear las armas y demás se utilizara un Domain Specific Language llamado `awar`. Cuenta con las principales funcionalidades de control de flujos como `if` y `while`.
+Un lenguaje de dominio específico (DSL, por sus siglas en inglés) es un lenguaje de programación diseñado para resolver problemas específicos de un dominio particular. En el caso de un simulador de batallas, se puede crear un DSL para codificar las caracteristicas del campo de batalla. De esta forma, se puede conectar la simulacion para evaluar las situaciones que se pueden presentar. Esto permite que sea mas optimizado y mas facil de controlar el simulador en diferentes escenarios.
+
+## Sintaxis
+
+### Statement
+
+La sintaxis esta formada principalmente de dos tipos de statements: los statements usuales de los lenguajes de proposito general y los statements que tienen que ver con la simulacion. Todos los statements estan separados por un cambio de linea
+
+No existe el concepto de tipos en el DSL. Solamente existen `number` y `string`. Los `number` pueden ser cualquier numero racional. Ambos con considerados como expresiones. Los `string` se escriben entre comillas dobles, por ejemplo
+
+```c#
+"Hola mundo!"
+```
+
+Se pueden declarar variables con la palabra reservada `var` seguido del nombre de la variable, el operador de asignacion `=` y una expresion, ya que las variables tambien son expresiones, por ejmplo
+
+```c#
+var variable1 = <expresion>
+var variable2 = "Hola mundo!"
+```
+
+Tambien se pueden reasignar las variables, y al funcionar de manera dinamica, aunque una variable sea declarada como `number` luego se puede reasignar como un `string`, por ejemplo
+
+```c#
+var a = 100
+a = "hola"
+```
+
+Existe una funcion built-in la cual es `print`, que recibe como argumento una expresion y la imprime, por ejemplo
+
+```c#
+print(<expresion>)
+```
+
+El lenguaje cuenta con controladores de flujo. Primero esta el `if` el cual funciona de la siguiente manera
+
+```c#
+if(<condition>){
+	<statement>
+} else {
+	<statement>
+}
+```
+
+Cabe destacar que entre `}` y el `else` no debe haber un cambio de linea.
+
+Tambien cuenta con ciclos como `while` y `for` los cuales se definen de la siguiente manera
+
+```c#
+while(<condition>){
+	<statement>
+}
+```
+
+```c#
+for(<declaration>; <condition>; <increment>)
+```
+
+Los ciclos pueden tener un `break` para detener su ejecucion, o `continue` para saltar a la siguiente iteracion
+
+Para declarar funciones la sintaxis es la siguiente
+
+```
+func nombre_de_la_funcion(<params>){
+	<statement>
+}
+```
+
+Las funciones pueden devolver valores con `return <expresion>`. Puede ser vacias, en este caso no debe existir el statment `return`, entonces no devuelve ningun valor
+
+### Simulation Statement
+
+La simulacion se define de la siguiente manera
+
+```
+simulator(<mode>, <max_turns>)
+```
+
+`max_turns` es un `number` e indica el maximo de turnos que se ejecutaran en la simulacion
+
+Los tipos de modos son 
+
+### Module
+
+Este lenguaje esta desarrollado en python, con una gramatica LALR. Para el desarrollo del compilador se usó PLY, que es una implementación de Python pura del
+constructor de compilación lex/yacc. Incluye soporte al parser LALR(1) así como herramientas
+para el análisis léxico de validación de entrada y para el reporte de errores. El análisis sintáctico se divide en 2 fases: en una se realiza el análisis léxico, con la construcción
+de un lexer, y en la otra se realiza el proceso de parsing, definiendo la gramática e implementando un parser para la construcción del Árbol de Sintaxis Abstracta (AST).
+El programa fuente se procesa de izquierda a derecha y se agrupan en componentes
+léxicos (tokens) que son secuencias de caracteres que tienen un significado. Todos los espacios
+en blanco, comentarios y demás información innecesaria se elimina del programa fuente. El
+lexer, por lo tanto, convierte una secuencia de caracteres (strings) en una secuencia de tokens.
+
+El parser también se implementó mediante PLY, especificando la gramática y las acciones para
+cada producción. Para cada regla gramatical hay una función cuyo nombre empieza con p_. El
+docstring de la función contiene la forma de la producción, escrita en EBNF. PLY usa los dos puntos (:) para separar la parte izquierda y la derecha de la producción gramatical. El símbolo del lado izquierdo de la primera función es considerado el símbolo
+inicial. El cuerpo de esa función contiene código que realiza la acción de esa producción.
+En cada producción se construye un nodo del árbol de sintaxis abstracta.
+
+El procesador de parser de PLY procesa la gramática y genera un parser que usa el algoritmo de
+shift-reduce LALR(1), que es uno de los más usados en la actualidad. Aunque LALR(1) no puede
+manejar todas las gramáticas libres de contexto, la gramática usada fue refactorizada
+para ser procesada por LALR(1) sin errores.
+
+Para realizar los recorridos en el árbol de derivación se hace uso del patrón visitor. Este patrón nos permite abstraer el concepto de procesamiento de un nodo. Cada elemento del nodo se procesa y se envia a la simulacion para ejecutarla
+
+Un ejemplo de la estructura que debe tener el programa es la siguiente. En mapa el usuario carga el mapa a simular, en stops se definen las paradas, en vehicle_type los tipos de vehiculos que se usan, en clients, cada una de las empresas clientes que van a simularse, en company se inicializa el presupuesto, la cantidad de vehiculos y el deposito y en demandas se definen funciones, variables y se Simula el proceso de la aplicacion
+
+```python
+{
+	
+	map 
+	{
+		import "mapa.txt"
+	}
+
+	stops 
+	{
+    		s1 (address:"156A, #107, Playa, La Habana, Cuba", people:5)
+	}
+
+	vehicle_type 
+	{
+    		small (miles: 40000, capacity: 30)
+    		medium (miles: 40000, capacity: 70)
+	}
+
+	clients 
+	{
+    		c1 (name: "Coca Cola", stops_list: (s1),depot:s1 ) (*puede cambiarse por []*)
+	}
+	
+	company 
+	{
+    		budget: 1000000
+    		depot (address:"156A, #107, Playa, La Habana, Cuba")
+    		small v1: 5
+    		medium v2: 3
+	}
+	
+	demands
+	{
+		func print() : IO 
+		{
+			out_string("reached!!\n")
+	        }
+
+		func main(): Object 
+		{
+        		print()
+		}
+
+    		test1<- 1
+
+    		test3<- "1"
+    
+		Simulate
+	}
+```
