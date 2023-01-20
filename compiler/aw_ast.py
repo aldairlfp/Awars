@@ -166,9 +166,17 @@ class SimulatorNode(Node):
         self.mode = mode
         self.max_turns = max_turns
 
-class UnitNode(Node):
+class SimulatorPropertyNode(Node):
+    pass
+
+class UnitNode(SimulatorPropertyNode):
     def __init__(self, unit, number, team, behavior):
         self.unit = unit
         self.number = number
         self.team = team
         self.behavior = behavior
+
+class FieldNode(SimulatorPropertyNode):
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height

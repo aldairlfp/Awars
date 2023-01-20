@@ -337,11 +337,14 @@ class EvaluatorVisitor(object):
     @visitor.when(SimulatorNode)
     def visit(self, node, scope):
         self.simulator = Simulator(node.mode(), node.max_turns)
-        self.simulator.board(19, 19)
 
     @visitor.when(UnitNode)
     def visit(self, node, scope):
         self.units = [] if self.units is None else self.units
         if self.simulator is not None:
             self.simulator.units(node.unit, int(node.number), node.team, node.behavior)
-            
+
+    @visitor.when(FieldNode)
+    def visit(self, node, scope):
+        if self.simulator is not None:
+            self.simulator.board(int(node.height), int(node.width))      

@@ -65,6 +65,7 @@ tokens = [
     'COMMENT',
     'STRING',
     'newline',
+    'SIM_PROPERTY',
 ] + list(reserved.values())
 
 
@@ -93,6 +94,7 @@ def aw_lexer():
     t_NOT = r'!'
     t_INC = r'\+\+'
     t_DEC = r'--'
+    t_SIM_PROPERTY = r'->'
 
     def t_ID(t):
         r'[a-zA-Z_][a-zA-Z_0-9]*'

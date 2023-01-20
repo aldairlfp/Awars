@@ -3,6 +3,7 @@ from compiler.lexer import tokens
 from compiler.aw_ast import *
 from simulation.Units.unit_generator import *
 from simulation.modes.modes import Normal_mode, Hard_mode
+from algoritms.strategies.strategies import *
 
 units_generator = {
     'normal': normal_unit,
@@ -15,6 +16,10 @@ units_generator = {
 modes_generator = {
     'normal_mode': Normal_mode,
     'hard_mode': Hard_mode,
+}
+
+strategies_generator = {
+    'hard_fuzzy_strategy': Hard_fuzzy_strategy,
 }
 
 
@@ -62,9 +67,8 @@ def aw_parser():
         p[0] = []
 
     def p_simulation_statement(p):
-        '''simulation_statement : simulator_statement
-                                | unit_statement
-                                | field_statement'''
+        '''simulation_statement : simulator_property SIM_PROPERTY SIMULATOR
+                                | simulator_statement'''
         p[0] = p[1]
 
     def p_simulator_statement(p):
@@ -75,8 +79,13 @@ def aw_parser():
         'simulator_mode : HARD_MODE'
         p[0] = p[1]
 
-    def p_unit_statement(p):
-        'unit_statement : UNIT LPAREN type_unit COMMA NUMBER COMMA STRING COMMA behavior RPAREN'
+    def p_simulator_property(p):
+        '''simulator_property : unit_property
+                              | field_property'''
+        p[0] = p[1]
+
+    def p_unit_property(p):
+        'unit_property : UNIT LPAREN type_unit COMMA NUMBER COMMA STRING COMMA behavior RPAREN'
         p[0] = UnitNode(p[3], p[5], p[7][1:-1], p[9])
 
     def p_type_unit(p):
@@ -88,9 +97,9 @@ def aw_parser():
         'behavior : HARD_BEHAVIOUR'
         p[0] = p[1]
 
-    def p_field_statement(p):
-        'field_statement : FIELD LPAREN NUMBER COMMA NUMBER RPAREN'
-        p[0] = p[3], p[5]
+    def p_field_property(p):
+        'field_property : FIELD LPAREN NUMBER COMMA NUMBER RPAREN'
+        p[0] = FieldNode(p[3], p[5])
 
     def p_statement(p):
         '''statement : assignment
