@@ -178,11 +178,11 @@ class SemanticCheckerVisitor(object):
     @visitor.when(IfNode)
     def visit(self, node, scope):
         self.visit(node.condition, scope)
-        child_scope = scope.create_child_scope()
         for child in node.then:
-            self.visit(child, child_scope)
+            self.visit(child, scope.create_child_scope())
         if node.else_ is not None:
-            self.visit(child, child_scope)
+            for stmt in node.else_:
+                self.visit(stmt, scope.create_child_scope())
 
     @visitor.when(WhileNode)
     def visit(self, node, scope):
