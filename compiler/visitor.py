@@ -104,6 +104,7 @@ class FormatVisitor(object):
 class SemanticCheckerVisitor(object):
     def __init__(self):
         self.errors = []
+        self.simulator = None
 
     @visitor.on('node')
     def visit(self, node, scope):
@@ -120,6 +121,8 @@ class SemanticCheckerVisitor(object):
                 self.errors.append('Continue outside loop')
             except BreakException:
                 self.errors.append('Break outside loop')
+            except ReturnException:
+                self.errors.append(f'Return outside function')
         return self.errors
 
     @visitor.when(VarDeclarationNode)
@@ -143,7 +146,10 @@ class SemanticCheckerVisitor(object):
             for param in node.params:
                 child_scope.define_variable(param, None)
             for statement in node.body:
-                self.visit(statement, child_scope)
+                try:
+                    self.visit(statement, child_scope)
+                except ReturnException:
+                    pass
 
     @visitor.when(PrintNode)
     def visit(self, node, scope):
@@ -210,6 +216,10 @@ class SemanticCheckerVisitor(object):
     @visitor.when(ContinueNode)
     def visit(self, node, scope):
         raise ContinueException()
+
+    @visitor.when(ReturnNode)
+    def visit(self, node, scope):
+        raise ReturnException(1)
 
 
 class EvaluatorVisitor(object):
