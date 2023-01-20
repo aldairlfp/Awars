@@ -181,3 +181,10 @@ class FieldNode(SimulatorPropertyNode):
     def __init__(self, width, height):
         self.width = width
         self.height = height
+
+class AllocateNode(Node):
+    def __init__(self, allocate):
+        self.allocate = allocate
+
+class ExecuteSimulationNode(Node):
+    pass

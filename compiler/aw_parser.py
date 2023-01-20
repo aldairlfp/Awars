@@ -4,6 +4,7 @@ from compiler.aw_ast import *
 from simulation.Units.unit_generator import *
 from simulation.modes.modes import Normal_mode, Hard_mode
 from algoritms.strategies.strategies import *
+from simulation.Units.units_allocator import random_allocator
 
 units_generator = {
     'normal': normal_unit,
@@ -20,6 +21,10 @@ modes_generator = {
 
 strategies_generator = {
     'hard_fuzzy_strategy': Hard_fuzzy_strategy,
+}
+
+allocate_generator = {
+    'random_allocate': random_allocator,
 }
 
 
@@ -68,8 +73,13 @@ def aw_parser():
 
     def p_simulation_statement(p):
         '''simulation_statement : simulator_property SIM_PROPERTY SIMULATOR
-                                | simulator_statement'''
-        p[0] = p[1]
+                                | simulator_statement
+                                | allocate_statement
+                                | SIMULATOR'''
+        if p[1] == 'simulator':
+            p[0] = ExecuteSimulationNode()
+        else:
+            p[0] = p[1]
 
     def p_simulator_statement(p):
         'simulator_statement : SIMULATOR LPAREN simulator_mode COMMA NUMBER RPAREN'
@@ -104,6 +114,10 @@ def aw_parser():
     def p_field_property(p):
         'field_property : FIELD LPAREN NUMBER COMMA NUMBER RPAREN'
         p[0] = FieldNode(p[3], p[5])
+
+    def p_allocate_statement(p):
+        'allocate_statement : RANDOM_ALLOCATE'
+        p[0] = AllocateNode(allocate_generator[p[1]])
 
     def p_statement(p):
         '''statement : assignment

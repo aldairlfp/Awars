@@ -33,6 +33,7 @@ reserved = {
     'advanced_strategy': 'ADVANCED_STRATEGY',
     'hard_optimal_strategy': 'HARD_OPTIMAL_STRATEGY',
     'hard_fuzzy_strategy': 'HARD_FUZZY_STRATEGY',
+    'random_allocate': 'RANDOM_ALLOCATE' 
 }
 
 tokens = [

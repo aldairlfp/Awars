@@ -343,10 +343,20 @@ class EvaluatorVisitor(object):
         self.units = [] if self.units is None else self.units
         if self.simulator is not None:
             self.simulator.units(node.unit, int(node.number), node.team, node.behavior)
-            unit = self.simulator.unit()[-1]
-            self.simulator.unit()[-1].strategy(node.behavior, node.strategy(unit))
+            for unit in self.simulator.unit():
+                unit.strategy(node.behavior, node.strategy(unit))
 
     @visitor.when(FieldNode)
     def visit(self, node, scope):
         if self.simulator is not None:
             self.simulator.board(int(node.height), int(node.width))      
+
+    @visitor.when(AllocateNode)
+    def visit(self, node, scope):
+        if self.simulator is not None:
+            self.simulator.allocate_units(node.allocate, self.simulator.unit())
+
+    @visitor.when(ExecuteSimulationNode)
+    def visit(self, node, scope):
+        if self.simulator is not None:
+            self.simulator.execute()
