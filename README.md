@@ -86,7 +86,9 @@ Para este caso en particular se utiliza el DSL para facilitarle al usuario la cr
 
 ### Statement
 
-La sintaxis esta formada principalmente de dos tipos de statements: los statements usuales de los lenguajes de propósito general y los statements que tienen que ver con la simulación. Todos los statements estan separados por un cambio de línea
+La sintaxis esta formada principalmente de dos tipos de statements: los statements usuales de los lenguajes de propósito general y los statements que tienen que ver con la simulación. Todos los statements estan separados por un cambio de línea.
+
+El Lenguaje para garantizar un mínimo de correcto uso realiza un chequeo de sintaxis, es decir, si el usuario escribe algo que no es un statement válido, el lenguaje no lo va a aceptar y va a mostrar un error. Los errores saltan en tiempo de compilación, es decir, cuando el usuario ejecuta el programa y se está compilando el mismo.
 
 El concepto de 'tipo' para el DSL está simplificado, por supuesto para lograr una interacción más sencilla con el usuario del mismo, solamente existen `number` y `string`. Los `number` pueden ser cualquier número racional. Ambos son considerados como expresiones. Los `string` se escriben entre comillas dobles, por ejemplo:
 
@@ -101,20 +103,20 @@ var variable1 = <expresion>
 var variable2 = "Hola mundo!"
 ```
 
-Tambien se pueden reasignar las variables, y al funcionar de manera dinámica, aunque una variable sea declarada como `number` luego se puede reasignar como un `string`, por ejemplo:
+Las variables, al ser expresiones del lenguaje pueden ser reasignables las variables, es decir, lo que está almacenado en la variable puede ser cambiado cuantas veces se desee en el código, mientras se tenga acceso a la variable en el entorno en el cual se le llama, y al funcionar de manera dinámica, aunque una variable sea declarada como `number` luego se puede reasignar como un `string`, por ejemplo:
 
 ```c#
 var a = 100
 a = "hola"
 ```
 
-Existe una funcion built-in la cual es `print`, que recibe como argumento una expresion y la imprime, por ejemplo
+Para facilitar el manejo visual de las expresiones y garantizar un mejor control del usuario existe una función built-in la cual es `print`, que recibe como argumento una expresión y la imprime, por ejemplo:
 
 ```c#
 print(<expresion>)
 ```
 
-El lenguaje cuenta con controladores de flujo. Primero esta el `if` el cual funciona de la siguiente manera
+Dado que el lenguaje es Turing completo, es decir en el se pueden programar todos los algoritmos que sean Turing computables y se obtendrá una solución, cuenta con controladores de flujo. Primero está el `if` el cual funciona de la siguiente manera:
 
 ```c#
 if(<condition>){
@@ -124,9 +126,9 @@ if(<condition>){
 }
 ```
 
-Cabe destacar que entre `}` y el `else` no debe haber un cambio de linea.
+Cabe destacar que entre `}` y el `else` no puede haber un cambio de línea, dado el caso, el `else` no será reconocido como parte de la expresión `if`, de dónde se obtiene un error de compilación.
 
-Tambien cuenta con ciclos como `while` y `for` los cuales se definen de la siguiente manera
+También cuenta con ciclos como `while` y `for` los cuales se definen de la siguiente manera:
 
 ```c#
 while(<condition>){
@@ -138,36 +140,35 @@ while(<condition>){
 for(<declaration>; <condition>; <increment>)
 ```
 
-Los ciclos pueden tener un `break` para detener su ejecucion, o `continue` para saltar a la siguiente iteracion
+Los ciclos pueden tener un `break` para detener su ejecución, o `continue` para saltar a la siguiente iteración
 
-Para declarar funciones la sintaxis es la siguiente
+Claramente el lenguaje permite declarar funciones para encapsular determinados procedimientos, para esto la sintaxis es la siguiente:
 
-```
-func nombre_de_la_funcion(<params>){
+```c#
+func <nombre_de_la_funcion>(<params>){
 	<statement>
 }
 ```
 
-Las funciones pueden devolver valores con `return <expresion>`. Puede ser vacias, en este caso no debe existir el statment `return`, entonces no devuelve ningun valor
+Las funciones pueden devolver valores con `return <expresion>`. Las expresiones retornadas por una función pueden ser también vacías, en este caso no puede existir el statment `return`, es decir ninguna función de lenguaje puede tener un `return` sin una expresión válida, en otro caso se obtiene un syntax error.
 
 ### Simulation Statement
 
-La simulacion se define de la siguiente manera
+La simulación se define de la siguiente manera:
 
-```
+```c#
 simulator(<mode>, <max_turns>)
 ```
 
-`max_turns` es un `number` e indica el maximo de turnos que se ejecutaran en la simulacion
+`max_turns` es un `number` e indica el máximo de turnos que se ejecutarán en la simulación
 
-Los tipos de modos son 
 
 ### Module
 
-Este lenguaje esta desarrollado en python, con una gramatica LALR. Para el desarrollo del compilador se usó PLY, que es una implementación de Python pura del
+Este lenguaje está desarrollado en python, con una gramática LALR. Para el desarrollo del compilador se usó PLY, que es una implementación de Python pura del
 constructor de compilación lex/yacc. Incluye soporte al parser LALR(1) así como herramientas
 para el análisis léxico de validación de entrada y para el reporte de errores. El análisis sintáctico se divide en 2 fases: en una se realiza el análisis léxico, con la construcción
-de un lexer, y en la otra se realiza el proceso de parsing, definiendo la gramática e implementando un parser para la construcción del Árbol de Sintaxis Abstracta (AST).
+de un lexer, y en la otra se realiza el proceso de parsing, definiendo la gramática e implementando un parser para la construcción del Árbol de Sintaxis Abstracta (AST por sus siglas en inglés).
 El programa fuente se procesa de izquierda a derecha y se agrupan en componentes
 léxicos (tokens) que son secuencias de caracteres que tienen un significado. Todos los espacios
 en blanco, comentarios y demás información innecesaria se elimina del programa fuente. El
@@ -175,8 +176,7 @@ lexer, por lo tanto, convierte una secuencia de caracteres (strings) en una secu
 
 El parser también se implementó mediante PLY, especificando la gramática y las acciones para
 cada producción. Para cada regla gramatical hay una función cuyo nombre empieza con p_. El
-docstring de la función contiene la forma de la producción, escrita en EBNF. PLY usa los dos puntos (:) para separar la parte izquierda y la derecha de la producción gramatical. El símbolo del lado izquierdo de la primera función es considerado el símbolo
-inicial. El cuerpo de esa función contiene código que realiza la acción de esa producción.
+docstring de la función contiene la forma de la producción, escrita en EBNF. PLY usa los dos puntos (:) para separar la parte izquierda y la derecha de la producción gramatical. El símbolo del lado izquierdo de la primera función es considerado el símbolo inicial. El cuerpo de esa función contiene código que realiza la acción de esa producción.
 En cada producción se construye un nodo del árbol de sintaxis abstracta.
 
 El procesador de parser de PLY procesa la gramática y genera un parser que usa el algoritmo de
@@ -184,9 +184,9 @@ shift-reduce LALR(1), que es uno de los más usados en la actualidad. Aunque LAL
 manejar todas las gramáticas libres de contexto, la gramática usada fue refactorizada
 para ser procesada por LALR(1) sin errores.
 
-Para realizar los recorridos en el árbol de derivación se hace uso del patrón visitor. Este patrón nos permite abstraer el concepto de procesamiento de un nodo. Cada elemento del nodo se procesa y se envia a la simulacion para ejecutarla
+Para realizar los recorridos en el árbol de derivación se hace uso del patrón visitor. Este patrón nos permite abstraer el concepto de procesamiento de un nodo. Cada elemento del nodo se procesa y se envia a la simulación para ejecutarla
 
-Un ejemplo de la estructura que debe tener el programa es la siguiente. En mapa el usuario carga el mapa a simular, en stops se definen las paradas, en vehicle_type los tipos de vehiculos que se usan, en clients, cada una de las empresas clientes que van a simularse, en company se inicializa el presupuesto, la cantidad de vehiculos y el deposito y en demandas se definen funciones, variables y se Simula el proceso de la aplicacion
+Un ejemplo de la estructura que debe tener el programa es la siguiente. En mapa el usuario carga el mapa a simular, en stops se definen las paradas, en vehicle_type los tipos de vehículos que se usan, en clients, cada una de las empresas clientes que van a simularse, en company se inicializa el presupuesto, la cantidad de vehículos y el deposito y en demandas se definen funciones, variables y se simula el proceso de la aplicación
 
 ```python
 {
