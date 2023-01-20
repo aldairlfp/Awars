@@ -63,6 +63,7 @@ class Simulator():
             raise IndexError("Invalid position")
         
     def execute(self):
+        
         winner = self.check_winner()
         while  self._turn < self._max_turn and winner[0] == False:
             print("Turn: " + str(self._turn + 1))
