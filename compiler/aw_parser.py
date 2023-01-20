@@ -176,7 +176,7 @@ def aw_parser():
         p[0] = PrintNode(p[3])
 
     def p_function_statement(p):
-        'function_statement : FUNCTION ID LPAREN params RPAREN LBRACE newline newline_or_empty statement_list RBRACE'
+        'function_statement : FUNCTION ID LPAREN params RPAREN LBRACE newline newline_or_empty all_statements_list RBRACE'
         p[0] = FunctionDeclarationNode(p[2], p[4], p[9])
 
     def p_params(p):
