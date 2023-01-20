@@ -85,8 +85,8 @@ def aw_parser():
         p[0] = p[1]
 
     def p_unit_property(p):
-        'unit_property : UNIT LPAREN type_unit COMMA NUMBER COMMA STRING COMMA behavior RPAREN'
-        p[0] = UnitNode(p[3], p[5], p[7][1:-1], p[9])
+        'unit_property : UNIT LPAREN type_unit COMMA NUMBER COMMA STRING COMMA behavior COMMA strategy RPAREN'
+        p[0] = UnitNode(p[3], p[5], p[7][1:-1], p[9], p[11])
 
     def p_type_unit(p):
         '''type_unit : NORMAL_UNIT
@@ -96,6 +96,10 @@ def aw_parser():
     def p_behavior(p):
         'behavior : HARD_BEHAVIOUR'
         p[0] = p[1]
+
+    def p_strategy(p):
+        'strategy : HARD_FUZZY_STRATEGY'
+        p[0] = strategies_generator[p[1]]
 
     def p_field_property(p):
         'field_property : FIELD LPAREN NUMBER COMMA NUMBER RPAREN'

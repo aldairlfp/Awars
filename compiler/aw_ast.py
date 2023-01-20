@@ -170,11 +170,12 @@ class SimulatorPropertyNode(Node):
     pass
 
 class UnitNode(SimulatorPropertyNode):
-    def __init__(self, unit, number, team, behavior):
+    def __init__(self, unit, number, team, behavior, strategy):
         self.unit = unit
         self.number = number
         self.team = team
         self.behavior = behavior
+        self.strategy = strategy
 
 class FieldNode(SimulatorPropertyNode):
     def __init__(self, width, height):
