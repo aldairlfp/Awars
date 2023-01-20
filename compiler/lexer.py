@@ -17,6 +17,7 @@ reserved = {
     'simulator': 'SIMULATOR',
     'field': 'FIELD',
     'hard_mode': 'HARD_MODE',
+    'normal_mode': 'NORMAL_MODE',
     'units': 'UNITS',
     'unit': 'UNIT',
     'normal': 'NORMAL_UNIT',
