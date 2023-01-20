@@ -105,6 +105,7 @@ class SemanticCheckerVisitor(object):
     def __init__(self):
         self.errors = []
         self.simulator = None
+        self.units = []
 
     @visitor.on('node')
     def visit(self, node, scope):
@@ -221,7 +222,52 @@ class SemanticCheckerVisitor(object):
     def visit(self, node, scope):
         raise ReturnException(1)
 
+    @visitor.when(SimulatorNode)
+    def visit(self, node, scope):
+        if self.simulator is None:
+            try:
+                self.simulator = Simulator(node.mode(), int(node.max_turns))
+            except Exception as e:
+                print(e)
 
+    @visitor.when(UnitNode)
+    def visit(self, node, scope):
+        if self.simulator is None:
+            self.errors.append(f'''Units {node.unit.__name__} can not be created in a simulation that it is not defined''')
+        else:
+            self.units = [] if self.units is None else self.units
+            if self.simulator is not None:
+                self.simulator.units(node.unit, int(node.number), node.team, node.behavior)
+                for unit in self.simulator.unit():
+                    unit.strategy(node.behavior, node.strategy(unit))
+
+
+    @visitor.when(FieldNode)
+    def visit(self, node, scope):
+        if self.simulator is None:
+            self.errors.append(f'''Field can not be created in a simulation that it is not defined''')
+        else:
+            self.simulator.board(int(node.height), int(node.width))
+
+    @visitor.when(AllocateNode)
+    def visit(self, node, scope):
+        if self.simulator is None:
+            self.errors.append(f'''The units can not be allocate in a simulation that it is not defined''')
+        else:
+            self.simulator.allocate_units(node.allocate, self.simulator.unit())
+
+    @visitor.when(ExecuteSimulationNode)
+    def visit(self, node, scope):
+        if self.simulator is None:
+            self.errors.append(f'''The simulation can not be executed because it is not defined''')
+        if self.simulator.board_s() == None:
+            self.errors.append(f'''The simulation can not be executed because the field are not defined''')
+        if len(self.simulator.unit()) > 0:
+            for unit in self.simulator.unit():
+              if unit.pos_s() == None:
+                self.errors.append(f'''The simulation can not be executed because the units are not allocate''')
+                break
+            
 class EvaluatorVisitor(object):
     def __init__(self):
         self.errors = []
