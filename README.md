@@ -78,7 +78,9 @@ La idea detrás de estos modificadores en el terreno es que el proyecto sea exte
 
 ## DSL
 
-Un lenguaje de dominio específico (DSL, por sus siglas en inglés) es un lenguaje de programación diseñado para resolver problemas específicos de un dominio particular. En el caso de un simulador de batallas, se puede crear un DSL para codificar las caracteristicas del campo de batalla. De esta forma, se puede conectar la simulacion para evaluar las situaciones que se pueden presentar. Esto permite que sea mas optimizado y mas facil de controlar el simulador en diferentes escenarios.
+Un lenguaje de dominio específico (DSL, por sus siglas en inglés) es un lenguaje de programación diseñado para resolver problemas específicos de un dominio particular. En el caso de un simulador de batallas, se puede crear un DSL para codificar las caracteristicas del campo de batalla. De esta forma, se puede conectar la simulación para evaluar las situaciones que se pueden presentar. Esto permite que sea optimizado y más facil de controlar el simulador en diferentes escenarios, por supuesto en lo referido a la simulación.
+
+Para este caso en particular se utiliza el DSL para facilitarle al usuario la creación de los escenarios de batalla, de esta forma, el usuario no tiene que preocuparse por la sintaxis del lenguaje de programación que se utiliza para la simulación, sino que se puede concentrar en la creación de los escenarios. Evitando con esto la engorrosa tarea de definir los escenarios de batalla en el lenguaje de programación que se utiliza para la simulación.
 
 ## Sintaxis
 
