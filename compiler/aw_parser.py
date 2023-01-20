@@ -115,7 +115,16 @@ def aw_parser():
         p[0] = p[1]
 
     def p_strategy(p):
-        'strategy : HARD_FUZZY_STRATEGY'
+        '''strategy : HARD_FUZZY_STRATEGY
+                    | RANDOM_STRATEGY
+                    | GREEDY_STRATEGY
+                    | RUNNER_STRATEGY
+                    | ATTACKER_STRATEGY
+                    | NORMAL_STRATEGY
+                    | ADVANCED_STRATEGY
+                    | HARD_OPTIMAL_STRATEGY
+                    | HARD_FUZZY_STRATEGY
+                    | RANDOM_ALLOCATE'''
         p[0] = strategies_generator[p[1]]
 
     def p_field_property(p):
