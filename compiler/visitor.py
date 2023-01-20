@@ -343,7 +343,8 @@ class EvaluatorVisitor(object):
         self.units = [] if self.units is None else self.units
         if self.simulator is not None:
             self.simulator.units(node.unit, int(node.number), node.team, node.behavior)
-            self.unit[-1].strategy(node.behavior, node.strategy())
+            unit = self.simulator.unit()[-1]
+            self.simulator.unit()[-1].strategy(node.behavior, node.strategy(unit))
 
     @visitor.when(FieldNode)
     def visit(self, node, scope):
