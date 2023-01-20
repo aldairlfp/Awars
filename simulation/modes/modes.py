@@ -1,7 +1,7 @@
 from simulation.board.maps_gen.map_generators import normal_map
 from simulation.executers.action_exe import Action_executer, Advanced_executer
 from simulation.board.board import Board
-from algoritms.utils.search import octal_distance
+from algorithms.utils.search import octal_distance
 
 class Mode():
     def __init__(self) -> None:

@@ -45,8 +45,6 @@ func hanoi(n, from, to, via){
     }
 }
 
-func test()
-
 
 //simulator(hard_mode, 1000)
 //unit(archer_b,5, "red", hard, hard_fuzzy_strategy) -> simulator

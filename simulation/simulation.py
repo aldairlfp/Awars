@@ -1,4 +1,4 @@
-from algoritms.utils.search import BFS
+from algorithms.utils.search import BFS
 
 class Simulator():
     def __init__(self, mode, max_turn = 100) -> None:

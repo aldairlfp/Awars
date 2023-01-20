@@ -3,7 +3,7 @@ from compiler.lexer import tokens
 from compiler.aw_ast import *
 from simulation.Units.unit_generator import *
 from simulation.modes.modes import Normal_mode, Hard_mode
-from algoritms.strategies.strategies import *
+from algorithms.strategies.strategies import *
 from simulation.Units.units_allocator import random_allocator
 
 units_generator = {
