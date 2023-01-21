@@ -1,5 +1,13 @@
 # Awars
 
+## Título
+
+Proyecto Final de Compilación, Simulación e Inteligencia Artificial.
+
+Carrera: Ciencias de la Computación.
+
+Tercer año.
+
 ## Integrantes
 
 - Jesús Aldair Alfonso Pérez C-312
@@ -7,37 +15,90 @@
 
 ## Resumen
 
-Awar es un simulador de modos de batalla, donde las unidades (agentes) involucradas se enfrentan para salir victoriosos sobre el enemigo con las condiciones que presente el enfrentamiento.
+Awar es un simulador de modos de batalla, donde las unidades (agentes) involucradas se enfrentan para salir victoriosos sobre el enemigo con las condiciones que presente el enfrentamiento. La idea general es llevar a cabo una simulación por agentes no determinista con el objetivo de poder verificar durante la ejecución el comportamiento de los agentes en la misma. Parte del trabajo consiste en hacer agentes inteligentes para poder verificar su comportamiento durante la simulación y poder acercar la ejecución de la misma lo más posible a la realidad. Para ello es necesario una genración de mapas de acorde a que se quiera tener en cuenta en durante la sumilación, dado que las condiciones del mapa claramente pueden influir directamente en el resultado de la batalla es necesario una implementación correcta de un generador de mapas para el modo de simulación deseado. el modo de simulación hace neta referencia a la pregunta ¿Qué deseamos simular?. Teniendo en cuneta esto las características de las unidades (agentes), la simulación brindará datos estadísticos de como se resuelve el estado inicial en múltiples ocaciones.
 
 ## Simulación
 
-La simulación se llevó a cabo con el concepto de agentes y lógica difusa para lograr un ligero acercamiento a la realidad, para llevar a cabo la simulación son necesarias las unidades implicadas, un modo de batalla o simulación. Indistintamente de como se distribuyen las unidades, que es a definir por el usuario.
+Para llevar a cabo la simulación es necesario haber definido previamente el modo de simulación, las unidades y con el modo una forma correcta de generar el mapa que sea consecuente con el mismo. Esto deja la posibilidad de simular cualquier entorno que se desarrolle con agentes inteligentes en un mapa determinado, nuevamente cabe destacar que es necesario que todo sea acorde a lo que se quiere simular para obtener resultados lo más realistas posibles de lo que se desea simular.
 
-El Simulador, dada su estructura, permite ejecutar en él cualquier problema de unidades (agentes) en un mapa. Esto es posible dado que para cada problema se reduce a definir correctamente el modo de simulación de acorde al problema que se quiere simular. El objetivo de esta arquitectura es hacer cada paso lo más extensible posible para futuras mejoras.
+La simulación se llevó a cabo con el concepto de agentes inteligentes. Los agentes de la simulación son enteramente reactivos a la situación, es decir ellos no tienen uso de una memoria de lo que han ¨vivido¨, sino que su accionar está determinado enteramente por el contexto en el que se encuentran, tomando a su vez las deciones de acorde a la estrategia, forma de pensar del agente. Esta estrategia del agente está descrita por medio de un sistema de evaluación de las acciones que varía de acorde a la estrategia usada por el agente, la resolución de un Problema de Satisfacción de restricciones y un Minimax para lograr en el agente una idea básica de planificación.
+
+El Simulador como bien antes se mencionaba deja espacio para poder simular cualquier entorno que tenga unidades (agentes) en un mapa donde interactúen entre sí siempre y cuando se defina a través del modo de simulación las especificaciones correctas a tener en cuenta a lo largo de la simulación, se definan las acciones posibles a realizar en la misma, y que el resultado pueda ser obtenido analizando el entorno y reaccionando al mismo sin interacción externa ajena al modo de simulación y al agente en sí mismo.
+
+### Arquitectura
+
+La arquitectura de la simulación está basada en un simulador que a su vez contiene un modo de simulación, un mapa donde se ejecuta la misma y las unidades que se quiere simular su comportamiento, el modo de simulación contiene el generador de mapas, este modifica el mapa de la simulación para establecer uno acorde a lo que se desea simular.   El modo interactúa directamente con la simulación durante su ejecución, a través del validardor de acciones, dado que las acciones sobre la simulación por parte de los agentes se ejecutan solo si el modo las valida y es el modo quien determina en parámetros reales el efecto de la acción en la simulación, teniendo en cuenta las condiciones establecidas en el mismo, de ahí la importancia de una correcta implementación para obtener resultados de acorde a los deseados en el proceso de simulación. El mapa que es generado por el modo está diseñado para contemplar determinadas características que influencian la simulación como bien antes mencionado a través del modo. Las unidades interactúan con la simulación turno a turno, en un turno todas las unidades en la simulación le dicen al simulador que acciones ellos quieren realizar en orden de acuerdo a su evaluación, esto es lo que recibe el modo para decidir cual ejecuta, cabe mencionar que siempre se ejecuta la primera acción válida que devuelva el agente a la simulación luego de evaluar todas las posibles acciones a realizar. Para la ubicación de las unidades en el mapa el simulador requiere de la implementación de un ¨ubicador de unidades¨, este ubicador de unidades necesita saber que función se desea seguir para ubicar los agentes en el mapa y las unidades que se quieren ubicar dado que esta es una de las formas posibles de asignarle unidades a la simulación.
+
+A groso modo el proceso de simulación es una constante interacciones entre ¨simulador¨-¨agente¨-¨simulador¨-¨modo de simulación¨-¨mapa¨-¨agentes¨. ¿Cómo así? El ¨simulador¨ le pide al ¨agente¨ que relaice una acción, este le devuelve todas las acciones que puede realizar, el ¨simulador¨ toma la primera en la lista devuelta y le pide al ¨modo de simulación¨ que la valide, el ¨modo de simulación¨ valida la acción, en caso de no ser válida el ¨simulador¨ le envía
+la siguiente y así hasta encontrar una válida, una vez que la acción sea válida el ¨modo de simulación¨ la ejecuta sobre el mapa y determina según la acción que efectos trae como consecuencia sobre el que ejecuta la acción y el resto de los agentes en la simulación.
 
 ### Modo de Simulación
 
-El modo de simulación determina bajo que condiciones se lleva a cabo la simulación, es este el que sabe generar un mapa, a través de un generador de mapas que es posible definirlo a su vez, lleva el control de como ejecutar cada acción sobre la simulación y cuando esta es válida o no en el contexto, el modo debe tener en cuenta cada uno de los modificadores de bonificaciones y penalizaciones que brinde el mapa y él mismo.
+El modo de simulación determina bajo que condiciones se lleva a cabo la simulación, la idea es tener un controlador de la simulación, es decir algo que tenga las reglas con las que se comportará la simulación, de manera que no le permita a los agentes implicados en la misma realizar nada fuera de los parámetros esperados. Este modo para su implementación requiere de un generador de mapas, con el objetivo de asegurar que el mapa generado tenga las condiciones que el modo requiere, es necesario en su implementación una forma de validar la acción a realizar en la simulación para así llevar un control de lo que se puedo o no hacer durante el proceso de simulación, evitando tener problemas de acciones inválidas o que algun agente haga ¨trampa¨ en la simulación dado que esto claramente influye en el resultado que se obtendrá en la simulación. El objetivo del modo es condicionar la simulación completamente a los parámetros deseados, en términos claros es como el ¨juez¨ que juzga que está correcto o mal, que usa a la hora de realizar las acciones penalizaciones y bonificaciones, tanto las que brinde el mapa como cualquier otra que se desee implementar en el mismo.
 
 #### Modo Normal
 
-Este modo de simulación no tiene en cuenta modificadores del terreno, para bonificaciones o penalizaciones de ataque, precisión, movimiento o armadura.
+El modo normal de simulación es producto de la primera implementación de pruebas para el proyecto, en este modo no se contemplan ninguno de los modificadores del mapa, el mapa es completamente un suelo de ¨hierba¨, con clima ¨soleado¨, sin ¨estructuras¨ ni ¨elevaciones¨, donde las bonificaciones de movimiento, precisión, ataque y defensa son todas el básico establecido en la creación de los agentes.
+
+Como bien se puede notar este ¨modo¨ tuvo como objetivo las primeras pruebas de este proyecto, además de dejar espacio a una simulación más sencilla en cuanto a creación y a ejecución.
 
 #### Modo Difícil
 
-El modo difícil de simulación tiene en cuenta bonificaciones y penalizaciones del terreno para llevar a cabo la ejecución de las acciones y a la hora de validarlas. Para este modo tanto la precisión, la capacidad de movimiento, el ataque, la defensa y la visión están afectadas por las condiciones de la simulación.
+Este ¨modo de simulación¨ es la versión más detallada del entorno de simulación donde si se prueban las características del mapa, dígase ¨estructuras¨, ¨clima¨, ¨terreno¨ y ¨elevaciones¨. Cabe mencionar que se explica más adelante que son cada una de estas características del mapa básico más adelante.
+
+El ¨modo difícil¨ tiene como objetivo evaluar el comportamiento de la simulación dependiendo de todas las características en la misma, más allá de ser ajeno a que los agentes, que en sus versiones de estrategia más desarrolladas siempre tienen en cuenta las características del terreno para determinar su forma de actuar, es estrictamente el modo el que decide cuanto influye esto en el resultado de la acción. Por eso, este modo, es la prueba de que funcionasen cada uno de los aspectos de la simulación de forma correcta.
 
 #### Modo Ajedrez
 
-El modo de ajedrez está pensado para la ejecución del ajedrez, validando cada movida y llevando a cabo la ejecución de la misma con las condiciones del ajedrez.
+El ajedrez es un juego de tablero para dos jugadores (equipos), que disponen al inicio de 16 piezas móviles que se colocan sobre un tablero, el jugador de las piezas ¨blancas¨ y el jugador de las piezas ¨negras¨. Se juega sobre un tablero cuadriculado de 8×8 casillas. Las piezas de cada jugador estan conformadas por un rey, una dama, dos alfiles, dos caballos, dos torres y ocho peones. Se trata de un juego de estrategia en el que el objetivo es derrocar al rey del oponente. Esto se hace amenazando la casilla que ocupa el rey con alguna de las piezas propias sin que el otro jugador pueda proteger a su rey interponiendo una pieza entre su rey y la pieza que lo amenaza, mover su rey a un escaque libre o capturar a la pieza que lo está amenazando, lo que trae como resultado el jaque mate y el fin de la partida.
 
-#### Generador de mapas
+Para este modo se diseñó un tipo especial de agente no inteligente que consiste en cada una de las piezas que tiene cada jugador ¨Rey (King)¨, ¨Reina (Queen)¨, ¨Alfil (Bishop)¨, ¨Caballo (Knight)¨, ¨Torre (Rook)¨ y ¨Peón (Pawn)¨. El tablero no tiene bonificaciones ni penalizaciones, aunque se deja la posibilidad de una implementación de un modo especial dónde esto se tenga en cuenta.
 
-La idea detrás de tener un generador de mapas es que en un mismo modo puedan ser utilizados muchos mapas distintos que cumplan con las especificaciones del modo de simulación, con el objetivo de hacer el modo lo más extensible posible.
+La validación de las jugadas del ajedrez se realiza teniendo en cuenta las reglas cláscicas y la ubicación de las piezas es determinada por una función especial que coloca las piezas en el orden correcto paa el inicio de la partida. Nuevamente en caso del usuario desear algo distinto se deja en sus manos la implementación de cualquier forma especial de realizar estas operaciones.
+
+### Generador de mapas
+
+Los generadores de mapas están contemplados en los ¨modos de simulación¨ como bien antes se menciona, con el objetivo de que sea a través de este que se llegue a la creación de un mapa ¨correcto¨ para la simulación. Las funciones de generación de mapas establecen las condiciones iniciales del terreno y todo lo que esto conlleva, ya sea asiganción deestructuras, suelos, clima, y elevaciones, características que a su vez tendrán su influencia en el transcurso de la simulación y que pueden determinar el resultado de la misma, acercándola a algo que pueda ser ¨justo¨ o desbalanceando el entorno completamente en favor de cualquiera de los participantes.
+
+#### Generador de mapas básico
+
+El generador de mapas básico genera una dispoción de terreno sin alturas, es decir terreno llano, con clima completamente soleado, y el terreno es enteramente de hierba. El objetivo de la creación de este tipo de terreno se remite a algo similar al ¨modo de simulación normal¨ siendo enteramente el modo de prueba de que la simulación funcionase correctamente. Más allá del motivo de la implementación de este generador, este está presente con el objetivo de hacer un mapa ¨parejo¨ para todos los implicados en el proceso de simulación, al no brindar ni penalizaciones ni bonificaciones a ninguno de los participantes. Aún con la simplicidad del mismo se pudn obtener escenarios de simulación que sean de agrado para el usuario del proyecto.
+
+#### Generador de mapas de Ajedrez
+
+El mapa de Ajedrez es un mapa especial, donde cada casilla no presenta ninguna de las características especiales ya antes mencionada, de dónde siempre será un tablero de 8x8 casillas con casillas vacías o casillas ocupadas por las piezas pertenecientes a cualquiera de los dos implicados en la partida de ajedrez.
+
+Este generador simplemete incializa un mapa de tamaño 8x8 casillas con todas las casillas vacías para luego sea trabajo del ¨ubicador¨ disponer del posicionamiento correcto de las piezas en el tablero. Cabe mencionar que para el ajedrez lo que se ubica en el tablero (mapa) no son los agentes inteligentes que llevaran a cabo la simulación sino las piezas que serán controladas por los mismos.
 
 ### Unidad
 
-Las unidades (agentes) son las que llevan a cabo cada acción en la simulación a través de una toma de decisiones simple, toma de decisiones que es representada por su estrategia resolviendo ademas un problema de CSP y utilizando un MiniMax para obtener un mejor resultado en cada momento, cada unidad toma las deciciones enteramente dado el contexto en el que se encuentre.
+Las unidades (agentes) son las que llevan a cabo cada acción en la simulación a través de una toma de decisiones simple. Esta toma de decisiones de las unidades es determinada por su estrategia, la cual puede variar en función de la creación de la unidad a la hora de inicializar el proceso de simulación. Las unidades son por su implementación agentes puramente reactivos y semi-inteligentes. Concesptos que se explican a continuación.
+
+#### Agente
+
+Un agente es un sistema computacional situado dentro de un medio-ambiente, dentro del cual es capaz de realizar acciones autónomas encaminadas a lograr sus objetivos. (Libro: Temas de Simulación pág 46. Concepto de Agente)
+
+#### Agente Inteligente
+
+Un agente inteligente es quel que es capaz de realizar acciones autonomas flexibles para lograr sus objetivos, en donde flexible significa tres cosas:
+
+· Reactivo: Un agente inteligente debe ser capaz de percibir su ambiente y responder de un modo oportuno a los cambios que ocurren para lograr sus objetivos.
+
+· Pro-Activo: Un agente debe ser capaz de mostrar un comportamiento goal-directed tomando la iniciativa para lograr sus objetivos
+
+· Sociable: Un agente inteligente debe ser capaz de interactuar con otros agentes (posiblemente también con humanos), para lograr sus objetivos.
+
+(Libro: Temas de Simulación pág 46. Concepto de Agente)
+
+#### Agente puramente Reactivo
+
+Ciertos tipos de agentes deciden que hacer sin hacer referencia a su historia. Ellos basan su decisión enteramente en el presente, sin referencia a todo lo pasado. Aeste tipo de agentes los llamaremos agentes puramente reactivos, debido a que simplemente responden directamente al ambiente. Formalmente, el comportamiento de estos agentes puede ser representado con una función ¨Ag: E* -> Ac¨.
+
+#### Percepción
+
+La primero para la hora de la construcción del agente es dividir la función de decisión en percepción y acción.
+
+La idea es que la función ¨see¨ capta la habilidad de observar su ambiente, mientras que la función ¨action¨ respresenta el proceso de toma de decisón del agente.
 
 #### Tipos de unidad
 
@@ -62,6 +123,14 @@ La diferencia de las unidades de ajedrez respecto a las básicas es que estas a 
 Para definir el comportamiento de las unidades estas traen incormporadas un conjunto de estrategias, las cuales son las encargadas de resolver el problema de evaluar cada acción en el contexto dado para el agente, por consiguiente, el problema fue atacado con los algoritmos de CSP para resolver las restricciones que pueda presentar el entorno y las limitaciones del agente y a su vez se utilizó un minimax clásico para obtener un comportamiento más detallado a profundidad de la embergadura de cada acción.
 
 Cabe mencionar que las estrategias van desde las muy simples (Aleatorio, Goloso, Atacante) hasta unas un poco más elaboradas (las antes mencionadas con minimax y CSP, incluso estrategias con lógica difusa para hacer no determinista la toma de decisiones).
+
+##### Problema de Satisfacción de Restricciones
+
+El CSP (por sus siglas en inglés) no es más que una forma de Inteligencia Artificial para como su nombre indica atacar problemas de satisfacción de restricciones. Para ducumentación al respecto de este algoritmo ver el Artificial Intelligence A Modern Approach, Global Edition Pearson, pág 164. En el proyecto esto es usado para que los agentes a la hora de tomar las decisiones estas tengan en cuenta todas las restricciones que vienen implicitas en el ambiente, para así obtener una evaluación más acertada y acciones válidas de acorde a cada instante.
+
+##### Minimax
+
+La otra forma implicada en la toma de decisiones de los agentes fue por la idea de modelar el problema a uno de búsqueda adversarial de suma cero y usar minimax para obtener las acciones positivas de acorde a un futuro cercano. Es importante mencionar que para poder usar esta técnica de Inteligencia Artificial fue necesario constuir evaluadores que modelaran el problema de la simulación deseada a un problema de suma cero, en otro ámbito no se debía aplicar este algoritmo. Para más información acerca de los requisitos y el concepto del algoritmo de Minimax véase Artificial Intelligence A Modern Approach, Global Edition Pearson, pág 192.
 
 ### Entorno
 

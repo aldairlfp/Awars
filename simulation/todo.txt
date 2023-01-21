@@ -1,0 +1,12 @@
+Improvement:
+
+- Function to evaluate a map with some conditions
+    - Create a board generator not deterministic
+        - Create a matrix to contains a distribution of all vars in a map's cell
+        - Analize the 8-neighborhood to get the cell distribution
+        - Set the cell value by the actual distribution
+        
+        - Modify the the distribution matrix with genetic alg 
+        
+    - Use Diferential Evolution meta-heuristic
+        - modify the map with the heuristic
