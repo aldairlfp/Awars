@@ -1,4 +1,4 @@
-from algoritms.utils.search import BFS
+from algorithms.utils.search import BFS
 class Action():
     def __init__(self, name, unit, board) -> None:
         self._name = name

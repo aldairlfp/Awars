@@ -1,4 +1,4 @@
-from algoritms.utils.search import octal_distance, BFS
+from algorithms.utils.search import octal_distance, BFS
 from simulation.equipment.weapon.weapons import *
 
 def normal_evaluator(unit, action, **kwargs):
