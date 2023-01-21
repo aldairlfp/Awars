@@ -15,12 +15,7 @@ Tercer año.
 
 ## Resumen
 
-<<<<<<< HEAD
 Awar es un simulador de modos de batalla, donde las unidades (agentes) involucradas se enfrentan para salir victoriosos sobre el enemigo con las condiciones que presente el enfrentamiento. La idea general es llevar a cabo una simulación por agentes no determinista con el objetivo de poder verificar durante la ejecución el comportamiento de los agentes en la misma. Parte del trabajo consiste en hacer agentes inteligentes para poder verificar su comportamiento durante la simulación y poder acercar la ejecución de la misma lo más posible a la realidad. Para ello es necesario una genración de mapas de acorde a que se quiera tener en cuenta en durante la sumilación, dado que las condiciones del mapa claramente pueden influir directamente en el resultado de la batalla es necesario una implementación correcta de un generador de mapas para el modo de simulación deseado. el modo de simulación hace neta referencia a la pregunta ¿Qué deseamos simular?. Teniendo en cuneta esto las características de las unidades (agentes), la simulación brindará datos estadísticos de como se resuelve el estado inicial en múltiples ocaciones.
-=======
-
-Awar es un simulador de modos de batalla, donde las unidades (agentes) involucradas se enfrentan para salir victoriosos sobre el enemigo con las condiciones que presente el enfrentamiento.
->>>>>>> 8622e3d59a86f646c167805e4ef0163a5791961e
 
 ## Simulación
 
