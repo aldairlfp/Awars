@@ -7,6 +7,7 @@
 
 ## Resumen
 
+
 Awar es un simulador de modos de batalla, donde las unidades (agentes) involucradas se enfrentan para salir victoriosos sobre el enemigo con las condiciones que presente el enfrentamiento.
 
 ## Simulación
@@ -14,6 +15,7 @@ Awar es un simulador de modos de batalla, donde las unidades (agentes) involucra
 La simulación se llevó a cabo con el concepto de agentes y lógica difusa para lograr un ligero acercamiento a la realidad, para llevar a cabo la simulación son necesarias las unidades implicadas, un modo de batalla o simulación. Indistintamente de como se distribuyen las unidades, que es a definir por el usuario.
 
 El Simulador, dada su estructura, permite ejecutar en él cualquier problema de unidades (agentes) en un mapa. Esto es posible dado que para cada problema se reduce a definir correctamente el modo de simulación de acorde al problema que se quiere simular. El objetivo de esta arquitectura es hacer cada paso lo más extensible posible para futuras mejoras.
+
 
 ### Modo de Simulación
 
