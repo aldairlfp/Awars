@@ -1,6 +1,6 @@
 from random import *
-from algoritms.strategies.evaluators import *
-from algoritms.utils.search import BFS
+from algorithms.strategies.evaluators import *
+from algorithms.utils.search import BFS
 
 class Strategy():
     def __init__(self, unit, evaluator):

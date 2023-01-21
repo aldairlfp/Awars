@@ -1,4 +1,4 @@
-from algoritms.utils.search import chess_in_board
+from algorithms.utils.search import chess_in_board
 
 class Chess_piece():
     def __init__(self, pos, name, color, value = 1):

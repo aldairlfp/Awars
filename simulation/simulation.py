@@ -1,4 +1,4 @@
-from algoritms.utils.search import BFS
+from algorithms.utils.search import BFS
 
 class Simulator():
     def __init__(self, mode, max_turn = 100) -> None:
@@ -63,6 +63,7 @@ class Simulator():
             raise IndexError("Invalid position")
         
     def execute(self):
+        
         winner = self.check_winner()
         while  self._turn < self._max_turn and winner[0] == False:
             print("Turn: " + str(self._turn + 1))

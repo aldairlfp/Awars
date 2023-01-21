@@ -1,4 +1,4 @@
-from algoritms.strategies.chess_evaluator import chess_evaluator
+from algorithms.strategies.chess_evaluator import chess_evaluator
 from simulation.board.chess_board import Chess_board
 
 class Chess_strategy():
