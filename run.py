@@ -1,6 +1,6 @@
 import simulation.simulation as simulation
-from simulation.Units.unit_generator import *
-from simulation.Units.units_allocator import random_allocator
+from simulation.units.unit_generator import *
+from simulation.units.units_allocator import random_allocator
 from algorithms.strategies.strategies import *
 from simulation.modes.modes import Normal_mode, Hard_mode
 
