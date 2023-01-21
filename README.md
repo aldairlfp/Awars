@@ -15,7 +15,12 @@ Tercer año.
 
 ## Resumen
 
+<<<<<<< HEAD
 Awar es un simulador de modos de batalla, donde las unidades (agentes) involucradas se enfrentan para salir victoriosos sobre el enemigo con las condiciones que presente el enfrentamiento. La idea general es llevar a cabo una simulación por agentes no determinista con el objetivo de poder verificar durante la ejecución el comportamiento de los agentes en la misma. Parte del trabajo consiste en hacer agentes inteligentes para poder verificar su comportamiento durante la simulación y poder acercar la ejecución de la misma lo más posible a la realidad. Para ello es necesario una genración de mapas de acorde a que se quiera tener en cuenta en durante la sumilación, dado que las condiciones del mapa claramente pueden influir directamente en el resultado de la batalla es necesario una implementación correcta de un generador de mapas para el modo de simulación deseado. el modo de simulación hace neta referencia a la pregunta ¿Qué deseamos simular?. Teniendo en cuneta esto las características de las unidades (agentes), la simulación brindará datos estadísticos de como se resuelve el estado inicial en múltiples ocaciones.
+=======
+
+Awar es un simulador de modos de batalla, donde las unidades (agentes) involucradas se enfrentan para salir victoriosos sobre el enemigo con las condiciones que presente el enfrentamiento.
+>>>>>>> 8622e3d59a86f646c167805e4ef0163a5791961e
 
 ## Simulación
 
@@ -31,6 +36,7 @@ La arquitectura de la simulación está basada en un simulador que a su vez cont
 
 A groso modo el proceso de simulación es una constante interacciones entre ¨simulador¨-¨agente¨-¨simulador¨-¨modo de simulación¨-¨mapa¨-¨agentes¨. ¿Cómo así? El ¨simulador¨ le pide al ¨agente¨ que relaice una acción, este le devuelve todas las acciones que puede realizar, el ¨simulador¨ toma la primera en la lista devuelta y le pide al ¨modo de simulación¨ que la valide, el ¨modo de simulación¨ valida la acción, en caso de no ser válida el ¨simulador¨ le envía
 la siguiente y así hasta encontrar una válida, una vez que la acción sea válida el ¨modo de simulación¨ la ejecuta sobre el mapa y determina según la acción que efectos trae como consecuencia sobre el que ejecuta la acción y el resto de los agentes en la simulación.
+
 
 ### Modo de Simulación
 
