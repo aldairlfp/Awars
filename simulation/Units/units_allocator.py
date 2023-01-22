@@ -1,6 +1,6 @@
 from random import randint
-from simulation.Units.chess_pieces import *
-from simulation.Units.unit import Chess_unit
+from simulation.units.chess_pieces import *
+from simulation.units.unit import Chess_unit
 
 def random_allocator(board, units):
     for unit in units:
